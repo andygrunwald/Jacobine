@@ -90,6 +90,7 @@ Vagrant.configure("2") do |config|
     #chef.add_recipe "phploc"
     chef.add_role "base"
     chef.add_role "web"
+    chef.add_role "application"
   #
   #   # You may also specify custom JSON attributes:
     chef.json = { 
