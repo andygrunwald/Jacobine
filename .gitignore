@@ -1,4 +1,5 @@
 .DS_STORE
 Chef/tmp
 Chef/cookbooks
+tmp
 .vagrant
