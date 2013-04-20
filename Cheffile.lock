@@ -21,8 +21,24 @@ SITE
       chef_handler (>= 0.0.0)
     yum (2.2.0)
 
+GIT
+  remote: https://github.com/andygrunwald/chef-cvsanaly
+  ref: master
+  sha: ca95fe7d6870aae9688c3d882b7998eca45f74b4
+  specs:
+    cvsanaly (0.1.0)
+
+GIT
+  remote: https://github.com/andygrunwald/chef-repositoryhandler
+  ref: master
+  sha: b46af78a964cadd3e6922db3387e98eb2ca1bb9f
+  specs:
+    repositoryhandler (0.1.0)
+
 DEPENDENCIES
   apt (>= 0)
+  cvsanaly (>= 0)
   git (>= 0)
   python (>= 0)
+  repositoryhandler (>= 0)
 
