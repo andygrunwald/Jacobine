@@ -3,3 +3,12 @@ description "The application role. Installs the required application stack"
 
 run_list "recipe[repositoryhandler]",
 		 "recipe[cvsanaly]"
+
+override_attributes(
+	:repositoryhandler => {
+		:destination => '/var/application/MetricsGrimoire/RepositoryHandler'
+	},
+	:cvsanaly => {
+		:destination => '/var/application/MetricsGrimoire/CVSAnalY'
+	}
+)
