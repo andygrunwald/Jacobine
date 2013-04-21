@@ -15,3 +15,5 @@ cookbook "cvsanaly",
 
 cookbook 'mysql'
 cookbook 'rabbitmq'
+cookbook 'php'
+cookbook 'jolicode-php'
