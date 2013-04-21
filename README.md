@@ -28,6 +28,7 @@
 ## Todos
 
 * Add a description to README.md
+* Add `typo3-analysis` chef cookbook for initial installation
 * Configure a user `typo3-analytics` for RabbitMQ and disabling the `guest` user using Chef
 
 ## Contributing
