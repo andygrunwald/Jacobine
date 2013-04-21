@@ -3,3 +3,4 @@ Chef/tmp
 Chef/cookbooks
 tmp
 .vagrant
+.idea
