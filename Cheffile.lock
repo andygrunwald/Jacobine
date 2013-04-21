@@ -11,6 +11,10 @@ SITE
       runit (~> 1.0)
       windows (>= 0.0.0)
       yum (>= 0.0.0)
+    mysql (3.0.0)
+      build-essential (>= 0.0.0)
+      openssl (>= 0.0.0)
+    openssl (1.0.2)
     python (1.2.2)
       build-essential (>= 0.0.0)
       yum (>= 0.0.0)
@@ -39,6 +43,7 @@ DEPENDENCIES
   apt (>= 0)
   cvsanaly (>= 0)
   git (>= 0)
+  mysql (>= 0)
   python (>= 0)
   repositoryhandler (>= 0)
 

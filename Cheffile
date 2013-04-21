@@ -12,3 +12,5 @@ cookbook "repositoryhandler",
 
 cookbook "cvsanaly",
 	:git => "https://github.com/andygrunwald/chef-cvsanaly"
+
+cookbook 'mysql'
