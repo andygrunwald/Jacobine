@@ -4,6 +4,8 @@ SITE
     apt (1.9.2)
     build-essential (1.3.4)
     chef_handler (1.1.4)
+    composer (0.0.3)
+      php (>= 0.0.0)
     dmg (1.1.0)
     erlang (1.2.0)
       build-essential (>= 0.0.0)
@@ -53,6 +55,7 @@ GIT
 
 DEPENDENCIES
   apt (>= 0)
+  composer (>= 0)
   cvsanaly (>= 0)
   git (>= 0)
   jolicode-php (>= 0)

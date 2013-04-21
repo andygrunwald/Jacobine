@@ -10,7 +10,8 @@ run_list "recipe[python]",
 		 "recipe[php::module_memcache]",
 		 "recipe[php::module_mysql]",
 		 "recipe[jolicode-php::ext-intl]",
-		 "recipe[jolicode-php::ext-pdo]"
+		 "recipe[jolicode-php::ext-pdo]",
+		 "recipe[composer]"
 
 override_attributes(
 	:mysql => {
