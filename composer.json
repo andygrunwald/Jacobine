@@ -1,0 +1,14 @@
+{
+    "require": {
+        "videlalvaro/php-amqplib": "dev-master",
+        "kriswallsmith/buzz": "v0.9",
+        "symfony/class-loader": "v2.2.1",
+        "symfony/yaml": "v2.2.1",
+        "symfony/console": "v2.2.1",
+        "phploc/phploc": "dev-master"
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "vendor-dir": "Application/vendor/"
+    }
+}
