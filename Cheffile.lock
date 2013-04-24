@@ -53,6 +53,13 @@ GIT
   specs:
     repositoryhandler (0.1.0)
 
+GIT
+  remote: https://github.com/andygrunwald/chef-typo3analytics
+  ref: master
+  sha: cfc3fc67aee698cf2766d20bbf3d89f4f91f92e7
+  specs:
+    typo3analytics (0.1.0)
+
 DEPENDENCIES
   apt (>= 0)
   composer (>= 0)
@@ -64,4 +71,5 @@ DEPENDENCIES
   python (>= 0)
   rabbitmq (>= 0)
   repositoryhandler (>= 0)
+  typo3analytics (>= 0)
 

@@ -8,13 +8,16 @@ cookbook 'git'
 cookbook 'python'
 
 cookbook "repositoryhandler",
-	:git => "https://github.com/andygrunwald/chef-repositoryhandler"
+	:github => "andygrunwald/chef-repositoryhandler"
 
 cookbook "cvsanaly",
-	:git => "https://github.com/andygrunwald/chef-cvsanaly"
+	:github => "andygrunwald/chef-cvsanaly"
 
 cookbook 'mysql'
 cookbook 'rabbitmq'
 cookbook 'php'
 cookbook 'jolicode-php'
 cookbook 'composer'
+
+cookbook "typo3analytics",
+	:github => "andygrunwald/chef-typo3analytics"
