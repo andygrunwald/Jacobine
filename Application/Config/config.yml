@@ -1,0 +1,21 @@
+RabbitMQ:
+  Host: localhost
+  Port: 5672
+  Username: guest
+  Password: guest
+  VHost: /
+
+MySQL:
+  Host: localhost
+  Port: 3306
+  Username: root
+  Password:
+
+  Databases:
+    typo3: typo3
+
+# currently not in use. Refactor consumer to use this block
+Projects:
+  TYPO3:
+    Database: typo3
+    DownloadPath: /var/data/TYPO3
