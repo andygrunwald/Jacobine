@@ -240,12 +240,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "4c15248eb0d2949ba7f5c1010262e3f4e70b3977"
+                "reference": "896a17dcb1ec4bab5bdaa11c5ea0d70d8eff1759"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/4c15248eb0d2949ba7f5c1010262e3f4e70b3977",
-                "reference": "4c15248eb0d2949ba7f5c1010262e3f4e70b3977",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/896a17dcb1ec4bab5bdaa11c5ea0d70d8eff1759",
+                "reference": "896a17dcb1ec4bab5bdaa11c5ea0d70d8eff1759",
                 "shasum": ""
             },
             "require": {
@@ -278,7 +278,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2013-04-22 13:01:19"
+            "time": "2013-04-25 12:12:10"
         },
         {
             "name": "symfony/yaml",
@@ -373,15 +373,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/videlalvaro/php-amqplib.git",
-                "reference": "4eba006b48d44cadb1724d14c6e0a63e26685deb"
+                "reference": "ee1eade27a9b19d8db2300559be218062a9bf908"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/4eba006b48d44cadb1724d14c6e0a63e26685deb",
-                "reference": "4eba006b48d44cadb1724d14c6e0a63e26685deb",
+                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/ee1eade27a9b19d8db2300559be218062a9bf908",
+                "reference": "ee1eade27a9b19d8db2300559be218062a9bf908",
                 "shasum": ""
             },
             "require": {
+                "ext-bcmath": "*",
                 "php": ">=5.3.0"
             },
             "type": "library",
@@ -406,7 +407,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2013-04-19 13:55:24"
+            "time": "2013-04-26 08:42:21"
         },
         {
             "name": "zetacomponents/base",

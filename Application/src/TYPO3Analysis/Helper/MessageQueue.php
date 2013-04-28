@@ -58,10 +58,11 @@ class MessageQueue {
     }
 
     protected function declareQueue($queue) {
-        if (isset($this->declared['queue'][$queue]) === false) {
+        #if (isset($this->declared['queue'][$queue]) === false) {
+            #$this->renewChannel();
             $this->getChannel()->queue_declare($queue, false, true, false, false);
             $this->declared['queue'][$queue] = true;
-        }
+        #}
     }
 
     public function sendMessage($message, $exchange = '', $queue = '', $routing = '', $exchangeType = 'topic') {
@@ -74,7 +75,7 @@ class MessageQueue {
         }
 
         $message = new AMQPMessage($message, array('content_type' => 'text/plain'));
-        $this->getChannel()->basic_publish($message, $exchange, $routing);
+        return $this->getChannel()->basic_publish($message, $exchange, $routing);
     }
 
     public function basicConsume($exchange, $queue, $routing, $consumerTag, array $callback, $exchangeType = 'topic') {
@@ -93,8 +94,8 @@ class MessageQueue {
     }
 
     public function close() {
-        $this->getChannel()->close();
-        $this->getHandle()->close();
+        #$this->getChannel()->close();
+        #$this->getHandle()->close();
     }
 
     public function __destruct() {

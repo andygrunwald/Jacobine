@@ -42,7 +42,8 @@ All consumers are started via the `message-queue:consumer`-command of the `conso
 E.g. `php console message-queue:consumer Extract\\Zip`
 
 * `Download\\HTTP`: Downloads a resource from a HTTP url
-* `Extract\\Zip`: Extracts a ZIP file
+* `Extract\\Targz`: Extracts a tar.gz file
+* `Analysis\\Filesize`: Gets the filesize of a file
 
 ## Access to services in VM
 
@@ -60,13 +61,10 @@ The login credentials for the used services
 
 ## Todos
 
-* Add recipe parts to installation cookbook to create `/var/data/TYPO3` dir
-* Add recipe parts to installation cookbook to import the database structure
-* Complete the `Extract\\Zip`-consumer
 * Create a `Analyse\\phploc`-consumer
 * Create a `Source-Code-Language-Detection`-consumer (like github)
-* Create a `File-Size`-consumer
 * Create a `CVSAnalY`-consumer
+* Create a `Download\\Git`-consumer
 * Add the Gerrit-Code-Review-Importer
 * Install `supervisord` (or something similiar) and start RabbitMQ consumer atsystem startup
 * Configure a user `analytics` for RabbitMQ and disabling the `guest` user using Chef

@@ -16,6 +16,8 @@ class HTTP extends ConsumerAbstract {
 
     public function process($message)
     {
+        var_dump(__METHOD__ . ' - START');
+
         $record = $this->getVersionFromDatabase($message->body);
 
         // If the record does not exists in the database OR the file has already been downloaded, exit here
@@ -26,10 +28,10 @@ class HTTP extends ConsumerAbstract {
 
         $targetTempDir = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         // @todo find a better way for the filename
-        $fileName = 'typo3_' . $record['version'] . '.zip';
+        $fileName = 'typo3_' . $record['version'] . '.tar.gz';
 
         // We download the file with wget, because we get a progress bar for free :)
-        $command = 'wget ' . escapeshellarg($record['url_zip']) . ' --output-document=' . escapeshellarg($targetTempDir . $fileName);
+        $command = 'wget ' . escapeshellarg($record['url_tar']) . ' --output-document=' . escapeshellarg($targetTempDir . $fileName);
         exec($command);
 
         // If there is no file after download, exit here
@@ -45,35 +47,39 @@ class HTTP extends ConsumerAbstract {
 
         // If the hashes are not equal, exit here
         $md5Hash = md5_file($targetDir . $fileName);
-        if ($record['checksum_zip_md5'] && $md5Hash !== $record['checksum_zip_md5']) {
+        if ($record['checksum_tar_md5'] && $md5Hash !== $record['checksum_tar_md5']) {
             $exceptionMessage = 'Checksums for file "' . $targetDir . $fileName . '" are not equal';
-            $exceptionMessage .= ' (Database: ' . $record['checksum_zip_md5'] . ', File hash: ' . $md5Hash . ')';
+            $exceptionMessage .= ' (Database: ' . $record['checksum_tar_md5'] . ', File hash: ' . $md5Hash . ')';
             throw new \Exception($exceptionMessage, 1366830113);
         }
 
         // Update the 'downloaded' flag in database
         $this->setVersionAsDownloadedInDatabase($record['id']);
 
-        // Add a new message to extract the file
-        $this->addZipExtractMessageToQueue($record['id'], $targetDir . $fileName);
-
         $this->acknowledgeMessage($message);
+
+        // Adds new messages to queue: extract the file, get filesize or tar.gz file
+        $this->addFurtherMessageToQueue($record['id'], $targetDir . $fileName);
+
+        var_dump(__METHOD__ . ' - END');
     }
 
     /**
-     * Adds a new message to the queue system to extract a zip file
+     * Adds new messages to queue system to extract a tar.gz file and get the filesize of this file
      *
      * @param integer   $id
      * @param string    $file
      * @return void
      */
-    private function addZipExtractMessageToQueue($id, $file) {
+    private function addFurtherMessageToQueue($id, $file) {
         $message = array(
             'id' => $id,
             'file' => $file
         );
         $message = json_encode($message);
-        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'extract.zip', 'extract.zip');
+
+        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'extract.targz', 'extract.targz');
+        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'analysis.filesize', 'analysis.filesize');
     }
 
     /**
@@ -83,7 +89,7 @@ class HTTP extends ConsumerAbstract {
      * @return bool|array
      */
     private function getVersionFromDatabase($id) {
-        $fields = array('id', 'version', 'checksum_zip_md5', 'url_zip', 'downloaded');
+        $fields = array('id', 'version', 'checksum_tar_md5', 'url_tar', 'downloaded');
         $rows = $this->getDatabase()->getRecords($fields, 'versions', array('id' => $id), '', '', 1);
 
         $row = false;

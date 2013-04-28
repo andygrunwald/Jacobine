@@ -118,7 +118,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      * @return string
      */
     public function getConsumerTag() {
-        return __CLASS__;
+        return get_class($this);
     }
 
     /**

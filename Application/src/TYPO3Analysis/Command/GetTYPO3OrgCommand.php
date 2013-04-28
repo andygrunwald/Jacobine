@@ -84,7 +84,6 @@ class GetTYPO3OrgCommand extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-
         $versions = $this->getReleaseInformation();
         foreach ($versions as $branch => $data) {
             // $data got two keys: releases + latest
