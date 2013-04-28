@@ -38,15 +38,29 @@ class Targz extends ConsumerAbstract {
         $folder = rtrim($pathInfo['dirname'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         chdir($folder);
 
-        $command = 'tar -xvzf ' . escapeshellarg($messageParts->file);
-        exec($command);
+        // Create folder first and change the target folder of tar command via -C
+        // because typo3_src-4.6.0alpha1 does not contain a parent root in tar.
+        // Version typo3_src-4.6.0alpha1 is different from other versions.
+        $targetFolder = 'typo3_src-' . $record['version'] . DIRECTORY_SEPARATOR;
+        mkdir($targetFolder);
 
-        $folder .= 'typo3_src-' . $record['version'];
-
-        if (is_dir($folder) === false) {
-            $exceptionMessage = 'Directory "' . $folder . '" does not exists after extracting tar.gz archive';
+        if (is_dir($targetFolder) === false) {
+            $exceptionMessage = 'Directory "' . $folder . '" can`t be created';
             throw new \Exception($exceptionMessage, 1367010680);
         }
+
+        $command = 'tar -xzf ' . escapeshellarg($messageParts->file) . ' -C ' . escapeshellarg($targetFolder);
+        $output = array();
+        $returnValue = 0;
+        exec($command, $output, $returnValue);
+
+        if ($returnValue > 0) {
+            $exceptionMessage = 'tar command returns an error!';
+            throw new \Exception($exceptionMessage, 1367160535);
+        }
+
+        // Set the correct access rights. 0777 is a bit to much ;)
+        chmod($targetFolder, 0755);
 
         // Store in the database, that a file is extracted ;)
         $this->setVersionAsExtractedInDatabase($messageParts->id);
