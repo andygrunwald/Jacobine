@@ -31,7 +31,6 @@ class Targz extends ConsumerAbstract {
         // If there is no file, exit here
         if (file_exists($messageParts->file) !== true) {
             throw new \Exception('File ' . $messageParts->file . ' does not exist', 1367152938);
-            return;
         }
 
         $pathInfo = pathinfo($messageParts->file);
@@ -67,6 +66,9 @@ class Targz extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
+        // Adds new messages to queue: analyze phploc
+        $this->addFurtherMessageToQueue($record['id'], $folder . $targetFolder);
+
         var_dump(__METHOD__ . ' - END');
     }
 
@@ -97,5 +99,22 @@ class Targz extends ConsumerAbstract {
      */
     private function setVersionAsExtractedInDatabase($id) {
         $this->getDatabase()->updateRecord('versions', array('extracted' => 1), array('id' => $id));
+    }
+
+    /**
+     * Adds new messages to queue system to analyze the folder
+     *
+     * @param integer   $versionId
+     * @param string    $directory
+     * @return void
+     */
+    private function addFurtherMessageToQueue($versionId, $directory) {
+        $message = array(
+            'versionId' => $versionId,
+            'directory' => $directory
+        );
+        $message = json_encode($message);
+
+        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'analysis.phploc', 'analysis.phploc');
     }
 }

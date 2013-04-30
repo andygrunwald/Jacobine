@@ -30,7 +30,6 @@ class Filesize extends ConsumerAbstract {
         // If there is no file, exit here
         if (file_exists($messageParts->file) !== true) {
             throw new \Exception('File ' . $messageParts->file . ' does not exist', 1367152522);
-            return;
         }
 
         $fileSize = filesize($messageParts->file);

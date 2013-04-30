@@ -37,7 +37,6 @@ class HTTP extends ConsumerAbstract {
         // If there is no file after download, exit here
         if (file_exists($targetTempDir . $fileName) !== true) {
             throw new \Exception('File ' . $targetTempDir . $fileName . ' does not exist after download', 1366829810);
-            return;
         }
 
         $config = $this->getConfig();

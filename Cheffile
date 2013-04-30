@@ -4,14 +4,17 @@
 site 'http://community.opscode.com/api/v1'
 
 cookbook 'apt'
+cookbook 'build-essential'
 cookbook 'git'
 cookbook 'python'
 
 cookbook "repositoryhandler",
-	:github => "andygrunwald/chef-repositoryhandler"
+	:git => "https://github.com/andygrunwald/chef-repositoryhandler",
+	:ref => "master"
 
 cookbook "cvsanaly",
-	:github => "andygrunwald/chef-cvsanaly"
+	:git => "https://github.com/andygrunwald/chef-cvsanaly",
+	:ref => "master"
 
 cookbook 'mysql'
 cookbook 'rabbitmq'
@@ -20,4 +23,9 @@ cookbook 'jolicode-php'
 cookbook 'composer'
 
 cookbook "typo3analytics",
-	:github => "andygrunwald/chef-typo3analytics"
+	:git => "https://github.com/andygrunwald/chef-typo3analytics",
+	:ref => "master"
+
+cookbook "github-linguist",
+	:git => "https://github.com/andygrunwald/chef-github-linguist",
+	:ref => "master"

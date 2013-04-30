@@ -333,12 +333,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/fDOMDocument.git",
-                "reference": "Release-1.4.0"
+                "reference": "Release-1.4.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/Release-1.4.0",
-                "reference": "Release-1.4.0",
+                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/Release-1.4.1",
+                "reference": "Release-1.4.1",
                 "shasum": ""
             },
             "require": {
@@ -365,7 +365,7 @@
             ],
             "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convinience and to simplify the usage of DOM.",
             "homepage": "https://github.com/theseer/fDOMDocument",
-            "time": "2013-04-24 15:38:10"
+            "time": "2013-04-27 20:28:00"
         },
         {
             "name": "videlalvaro/php-amqplib",

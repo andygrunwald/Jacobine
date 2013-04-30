@@ -5,7 +5,8 @@ run_list "recipe[repositoryhandler]",
 		 "recipe[cvsanaly]",
 		 "recipe[rabbitmq]",
 		 "recipe[rabbitmq::mgmt_console]",
-		 "recipe[typo3analytics]"
+		 "recipe[typo3analytics]",
+		 "recipe[github-linguist]"
 
 override_attributes(
 	:repositoryhandler => {
