@@ -61,7 +61,6 @@ The login credentials for the used services
 
 ## Todos
 
-* Create a `Analyse\\phploc`-consumer
 * Create a `Source-Code-Language-Detection`-consumer (like github)
 * Create a `CVSAnalY`-consumer
 * Create a `Download\\Git`-consumer
