@@ -3,8 +3,6 @@ SITE
   specs:
     apt (1.9.2)
     build-essential (1.4.0)
-    bundler (0.2.0)
-      rubygems (>= 0)
     chef_handler (1.1.4)
     composer (0.0.4)
       php (>= 0.0.0)
@@ -32,9 +30,8 @@ SITE
       yum (>= 0.0.0)
     rabbitmq (2.0.0)
       erlang (>= 0.9)
-    ruby (0.9.2)
     rubygems (0.2.0)
-    runit (1.1.2)
+    runit (1.1.4)
       build-essential (>= 0.0.0)
       yum (>= 0.0.0)
     windows (1.8.10)
@@ -46,36 +43,37 @@ SITE
 GIT
   remote: https://github.com/andygrunwald/chef-cvsanaly
   ref: master
-  sha: e2de105dd3142aa78d8c35bf17430d4482e4b0fd
+  sha: 9430fb50bed7e8280554b87cab0b5baf601f0026
   specs:
-    cvsanaly (0.1.0)
+    cvsanaly (1.0.1)
       repositoryhandler (>= 0.0.0)
 
 GIT
   remote: https://github.com/andygrunwald/chef-github-linguist
   ref: master
-  sha: ad8129dac726a97ae12a0ce51114689c61f36323
+  sha: 95f18b841805cc25bed2bb61604d087d7c661528
   specs:
-    github-linguist (0.1.0)
-      bundler (>= 0.0.0)
-      ruby (>= 0.0.0)
+    github-linguist (1.0.1)
+      git (>= 0.0.0)
       rubygems (>= 0.0.0)
 
 GIT
   remote: https://github.com/andygrunwald/chef-repositoryhandler
   ref: master
-  sha: 914bb2963c755b808432cde44a443fa619676fc7
+  sha: aea1430d2ee04b8e989d5b3a34c5bfd885579cc3
   specs:
-    repositoryhandler (0.1.0)
+    repositoryhandler (1.0.1)
+      git (>= 0.0.0)
       python (>= 0.0.0)
 
 GIT
   remote: https://github.com/andygrunwald/chef-typo3analytics
   ref: master
-  sha: 4ff8e507873d95358a217201ed5f2a7a25182a55
+  sha: 5c1a65e857858147216f41808dd04341f61abf5a
   specs:
-    typo3analytics (0.1.1)
+    typo3analytics (1.0.1)
       composer (>= 0.0.0)
+      mysql (>= 0.0.0)
 
 DEPENDENCIES
   apt (>= 0)

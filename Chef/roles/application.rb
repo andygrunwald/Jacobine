@@ -14,5 +14,11 @@ override_attributes(
 	},
 	:cvsanaly => {
 		:destination => '/var/application/MetricsGrimoire/CVSAnalY'
+	},
+	:github_linguist => {
+		:install_method => "source",
+		:path => "/vagrant/github-linguist",
+		:repository => "git://github.com/andygrunwald/linguist.git",
+		:branch => "decimal-places-in-output"
 	}
 )
