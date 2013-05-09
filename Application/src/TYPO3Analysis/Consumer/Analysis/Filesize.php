@@ -18,8 +18,8 @@ class Filesize extends ConsumerAbstract {
     {
         var_dump(__METHOD__ . ' - START');
 
-        $messageParts = json_decode($message->body);
-        $record = $this->getVersionFromDatabase($messageParts->id);
+        $messageData = json_decode($message->body);
+        $record = $this->getVersionFromDatabase($messageData->versionId);
 
         // If the record does not exists in the database OR the filesize is already saved, exit here
         if ($record === false || (isset($record['size_tar']) && $record['size_tar'])) {
@@ -28,11 +28,11 @@ class Filesize extends ConsumerAbstract {
         }
 
         // If there is no file, exit here
-        if (file_exists($messageParts->file) !== true) {
-            throw new \Exception('File ' . $messageParts->file . ' does not exist', 1367152522);
+        if (file_exists($messageData->filename) !== true) {
+            throw new \Exception('File ' . $messageData->filename . ' does not exist', 1367152522);
         }
 
-        $fileSize = filesize($messageParts->file);
+        $fileSize = filesize($messageData->filename);
 
         // Update the 'downloaded' flag in database
         $this->saveFileSizeOfVersionInDatabase($record['id'], $fileSize);

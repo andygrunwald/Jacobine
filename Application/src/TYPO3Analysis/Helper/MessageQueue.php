@@ -66,6 +66,10 @@ class MessageQueue {
     }
 
     public function sendMessage($message, $exchange = '', $queue = '', $routing = '', $exchangeType = 'topic') {
+        if (is_array($message) === true) {
+            $message = json_encode($message);
+        }
+
         if ($exchange) {
             $this->declareExchange($exchange, $exchangeType);
         }

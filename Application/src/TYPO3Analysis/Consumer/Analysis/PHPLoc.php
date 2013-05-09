@@ -18,20 +18,20 @@ class PHPLoc extends ConsumerAbstract {
     {
         var_dump(__METHOD__ . ' - START');
 
-        $messageParts = json_decode($message->body);
+        $messageData = json_decode($message->body);
 
         // If there is already a phploc record in database, exit here
-        if ($this->getPhpLocDataFromDatabase($messageParts->versionId) !== false) {
+        if ($this->getPhpLocDataFromDatabase($messageData->versionId) !== false) {
             $this->acknowledgeMessage($message);
             return;
         }
 
         // If there is no directory to analyse, exit here
-        if (is_dir($messageParts->directory) !== true) {
-            throw new \Exception('Directory ' . $messageParts->directory . ' does not exist', 1367168690);
+        if (is_dir($messageData->directory) !== true) {
+            throw new \Exception('Directory ' . $messageData->directory . ' does not exist', 1367168690);
         }
 
-        $dirToAnalyze = rtrim($messageParts->directory, DIRECTORY_SEPARATOR);
+        $dirToAnalyze = rtrim($messageData->directory, DIRECTORY_SEPARATOR);
         $pathParts = explode(DIRECTORY_SEPARATOR, $dirToAnalyze);
         $dirName = array_pop($pathParts);
         $xmlFile = 'phploc-' . $dirName . '.xml';
@@ -60,7 +60,7 @@ class PHPLoc extends ConsumerAbstract {
 
         // Get PHPLoc results and save them
         $phpLocResults = simplexml_load_file($xmlFile);
-        $this->storePhpLocDataInDatabase($messageParts->versionId, $phpLocResults->children());
+        $this->storePhpLocDataInDatabase($messageData->versionId, $phpLocResults->children());
 
         $this->acknowledgeMessage($message);
 

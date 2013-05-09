@@ -18,8 +18,8 @@ class Targz extends ConsumerAbstract {
     {
         var_dump(__METHOD__ . ' - START');
 
-        $messageParts = json_decode($message->body);
-        $record = $this->getVersionFromDatabase($messageParts->id);
+        $messageData = json_decode($message->body);
+        $record = $this->getVersionFromDatabase($messageData->versionId);
 
         // If the record does not exists in the database OR the file has already been extracted
         // OR the file does not exists, exit here
@@ -29,11 +29,11 @@ class Targz extends ConsumerAbstract {
         }
 
         // If there is no file, exit here
-        if (file_exists($messageParts->file) !== true) {
-            throw new \Exception('File ' . $messageParts->file . ' does not exist', 1367152938);
+        if (file_exists($messageData->filename) !== true) {
+            throw new \Exception('File ' . $messageData->filename . ' does not exist', 1367152938);
         }
 
-        $pathInfo = pathinfo($messageParts->file);
+        $pathInfo = pathinfo($messageData->filename);
         $folder = rtrim($pathInfo['dirname'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         chdir($folder);
 
@@ -48,7 +48,7 @@ class Targz extends ConsumerAbstract {
             throw new \Exception($exceptionMessage, 1367010680);
         }
 
-        $command = 'tar -xzf ' . escapeshellarg($messageParts->file) . ' -C ' . escapeshellarg($targetFolder);
+        $command = 'tar -xzf ' . escapeshellarg($messageData->filename) . ' -C ' . escapeshellarg($targetFolder);
         $output = array();
         $returnValue = 0;
         exec($command, $output, $returnValue);
@@ -62,12 +62,12 @@ class Targz extends ConsumerAbstract {
         chmod($targetFolder, 0755);
 
         // Store in the database, that a file is extracted ;)
-        $this->setVersionAsExtractedInDatabase($messageParts->id);
+        $this->setVersionAsExtractedInDatabase($messageData->versionId);
 
         $this->acknowledgeMessage($message);
 
         // Adds new messages to queue: analyze phploc
-        $this->addFurtherMessageToQueue($record['id'], $folder . $targetFolder);
+        $this->addFurtherMessageToQueue($messageData->project, $record['id'], $folder . $targetFolder);
 
         var_dump(__METHOD__ . ' - END');
     }
@@ -104,16 +104,17 @@ class Targz extends ConsumerAbstract {
     /**
      * Adds new messages to queue system to analyze the folder
      *
+     * @param string    $project
      * @param integer   $versionId
      * @param string    $directory
      * @return void
      */
-    private function addFurtherMessageToQueue($versionId, $directory) {
+    private function addFurtherMessageToQueue($project, $versionId, $directory) {
         $message = array(
+            'project' => $project,
             'versionId' => $versionId,
             'directory' => $directory
         );
-        $message = json_encode($message);
 
         $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'analysis.phploc', 'analysis.phploc');
     }

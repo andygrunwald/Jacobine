@@ -17,8 +17,9 @@ class HTTP extends ConsumerAbstract {
     public function process($message)
     {
         var_dump(__METHOD__ . ' - START');
+        $messageData = json_decode($message->body);
 
-        $record = $this->getVersionFromDatabase($message->body);
+        $record = $this->getVersionFromDatabase($messageData->versionId);
 
         // If the record does not exists in the database OR the file has already been downloaded, exit here
         if ($record === false || (isset($record['downloaded']) && $record['downloaded'])) {
@@ -27,7 +28,8 @@ class HTTP extends ConsumerAbstract {
         }
 
         $targetTempDir = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        // @todo find a better way for the filename
+        // @todo find a better way for the filename ... Download-Prefix in project config?
+        // in $messageData->Project you can find the project
         $fileName = 'typo3_' . $record['version'] . '.tar.gz';
 
         // We download the file with wget, because we get a progress bar for free :)
@@ -40,7 +42,8 @@ class HTTP extends ConsumerAbstract {
         }
 
         $config = $this->getConfig();
-        $targetDir = rtrim($config['Projects']['TYPO3']['DownloadPath'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $projectConfig = $config['Projects'][$messageData->project];
+        $targetDir = rtrim($projectConfig['DownloadPath'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         rename($targetTempDir . $fileName, $targetDir . $fileName);
 
@@ -58,7 +61,7 @@ class HTTP extends ConsumerAbstract {
         $this->acknowledgeMessage($message);
 
         // Adds new messages to queue: extract the file, get filesize or tar.gz file
-        $this->addFurtherMessageToQueue($record['id'], $targetDir . $fileName);
+        $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetDir . $fileName);
 
         var_dump(__METHOD__ . ' - END');
     }
@@ -66,16 +69,17 @@ class HTTP extends ConsumerAbstract {
     /**
      * Adds new messages to queue system to extract a tar.gz file and get the filesize of this file
      *
+     * @param string    $version
      * @param integer   $id
      * @param string    $file
      * @return void
      */
-    private function addFurtherMessageToQueue($id, $file) {
+    private function addFurtherMessageToQueue($project, $id, $file) {
         $message = array(
-            'id' => $id,
-            'file' => $file
+            'project' => $project,
+            'versionId' => $id,
+            'filename' => $file
         );
-        $message = json_encode($message);
 
         $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'extract.targz', 'extract.targz');
         $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'analysis.filesize', 'analysis.filesize');

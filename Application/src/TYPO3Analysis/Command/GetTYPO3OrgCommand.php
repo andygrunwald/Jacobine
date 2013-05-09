@@ -77,7 +77,8 @@ class GetTYPO3OrgCommand extends Command {
         $this->browser = new \Buzz\Browser($curlClient);
 
         $config = $this->config['MySQL'];
-        $this->database = new Database($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['Databases']['typo3']);
+        $projectConfig = $this->config['Projects']['TYPO3'];
+        $this->database = new Database($config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
 
         $config = $this->config['RabbitMQ'];
         $this->messageQueue = new MessageQueue($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
@@ -107,7 +108,10 @@ class GetTYPO3OrgCommand extends Command {
 
                 // If the current version is not downloaded yet, queue it
                 if (!$versionRecord['downloaded']) {
-                    $message = $versionRecord['id'];
+                    $message = array(
+                        'project' => 'TYPO3',
+                        'versionId' => $versionRecord['id']
+                    );
                     $this->messageQueue->sendMessage($message, 'TYPO3', self::QUEUE, self::ROUTING);
                 }
             }

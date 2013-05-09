@@ -11,16 +11,20 @@ MySQL:
   Username: root
   Password:
 
-  Databases:
-    typo3: typo3
-
 Application:
   PHPLoc:
     Binary: /var/application/vendor/phploc/phploc/composer/bin/phploc
     FilePattern: "*.php,*.inc"
+  CVSAnaly:
+    Binary: /var/tools/MetricsGrimoire/CVSAnalY/cvsanaly2
+  GithubLinguist:
+    WorkingDir: /var/tools/github-linguist
 
 # currently not in use. Refactor consumer to use this block
 Projects:
   TYPO3:
-    Database: typo3
+    MySQL:
+      Database: typo3
+    RabbitMQ:
+      Exchange: TYPO3
     DownloadPath: /var/data/TYPO3

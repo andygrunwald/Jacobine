@@ -39,11 +39,12 @@ This project provide different parts which are linked / works with RabbitMq as p
 ### Consumer
 
 All consumers are started via the `message-queue:consumer`-command of the `console`located in `/var/application`.
-E.g. `php console message-queue:consumer Extract\\Zip`
+E.g. `php console message-queue:consumer --project=TYPO3 Extract\\Targz`
 
+* `Analysis\\Filesize`: Gets the filesize of a file
+* `Analysis\\PHPLoc`: Saves the result of the `phploc` analysis of a directory
 * `Download\\HTTP`: Downloads a resource from a HTTP url
 * `Extract\\Targz`: Extracts a tar.gz file
-* `Analysis\\Filesize`: Gets the filesize of a file
 
 ## Access to services in VM
 
@@ -61,12 +62,16 @@ The login credentials for the used services
 
 ## Todos
 
-* Create a `Source-Code-Language-Detection`-consumer (like github)
-* Create a `CVSAnalY`-consumer
-* Create a `Download\\Git`-consumer
-* Add the Gerrit-Code-Review-Importer
-* Install `supervisord` (or something similiar) and start RabbitMQ consumer atsystem startup
+* Add a new command to list all consumers
+* Add a new command to list all available projects
+* Add a possibility to log stuff
+* Configure a `analytics` vhost for RabbitMQ
 * Configure a user `analytics` for RabbitMQ and disabling the `guest` user using Chef
+* Create a `Source-Code-Language-Detection`-consumer (like github)
+* Add the Gerrit-Code-Review-Importer
+* Create a `Download\\Git`-consumer
+* Create a `CVSAnalY`-consumer
+* Install `supervisord` (or something similiar) and start RabbitMQ consumer at system startup
 
 ## Contributing
 
