@@ -1,7 +1,10 @@
 .DS_STORE
+.idea
+
 Chef/tmp
 Chef/cookbooks
 tmp
+
 .vagrant
-.idea
-github-linguist
+
+Application/vendor

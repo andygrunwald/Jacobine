@@ -10,14 +10,14 @@ run_list "recipe[repositoryhandler]",
 
 override_attributes(
 	:repositoryhandler => {
-		:destination => '/var/application/MetricsGrimoire/RepositoryHandler'
+		:destination => '/var/tools/MetricsGrimoire/RepositoryHandler'
 	},
 	:cvsanaly => {
-		:destination => '/var/application/MetricsGrimoire/CVSAnalY'
+		:destination => '/var/tools/MetricsGrimoire/CVSAnalY'
 	},
 	:github_linguist => {
 		:install_method => "source",
-		:path => "/vagrant/github-linguist",
+		:path => "/var/tools/github-linguist",
 		:repository => "git://github.com/andygrunwald/linguist.git",
 		:branch => "decimal-places-in-output"
 	}
