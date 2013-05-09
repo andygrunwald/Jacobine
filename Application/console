@@ -13,9 +13,11 @@ require_once __DIR__ . '/Bootstrap.php';
 
 use Symfony\Component\Console\Application;
 use TYPO3Analysis\Command\GetTYPO3OrgCommand;
+use TYPO3Analysis\Command\ListConsumerCommand;
 use TYPO3Analysis\Command\ConsumerCommand;
 
 $console = new Application();
 $console->add(new GetTYPO3OrgCommand());
 $console->add(new ConsumerCommand());
+$console->add(new ListConsumerCommand());
 $console->run();

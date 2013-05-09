@@ -8,6 +8,16 @@ use TYPO3Analysis\Consumer\ConsumerAbstract;
 
 class HTTP extends ConsumerAbstract {
 
+    /**
+     * Gets a description of the consumer
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return 'Downloads a HTTP resource.';
+    }
+
     public function initialize()
     {
         $this->setQueue('download.http');

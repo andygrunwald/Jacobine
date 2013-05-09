@@ -8,6 +8,16 @@ use TYPO3Analysis\Consumer\ConsumerAbstract;
 
 class PHPLoc extends ConsumerAbstract {
 
+    /**
+     * Gets a description of the consumer
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return 'Executes the PHPLoc analysis on a given folder and stores the results in phploc database table.';
+    }
+
     public function initialize()
     {
         $this->setQueue('analysis.phploc');

@@ -8,6 +8,16 @@ use TYPO3Analysis\Consumer\ConsumerAbstract;
 
 class Filesize extends ConsumerAbstract {
 
+    /**
+     * Gets a description of the consumer
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return 'Determines the filesize in bytes and stores them in version database table.';
+    }
+
     public function initialize()
     {
         $this->setQueue('analysis.filesize');

@@ -8,6 +8,16 @@ use TYPO3Analysis\Consumer\ConsumerAbstract;
 
 class Targz extends ConsumerAbstract {
 
+    /**
+     * Gets a description of the consumer
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return 'Extracts a *.tar.gz archive.';
+    }
+
     public function initialize()
     {
         $this->setQueue('extract.targz');

@@ -41,10 +41,12 @@ This project provide different parts which are linked / works with RabbitMq as p
 All consumers are started via the `message-queue:consumer`-command of the `console`located in `/var/application`.
 E.g. `php console message-queue:consumer --project=TYPO3 Extract\\Targz`
 
-* `Analysis\\Filesize`: Gets the filesize of a file
-* `Analysis\\PHPLoc`: Saves the result of the `phploc` analysis of a directory
-* `Download\\HTTP`: Downloads a resource from a HTTP url
-* `Extract\\Targz`: Extracts a tar.gz file
+* `Analysis\\Filesize`: Determines the filesize in bytes and stores them in version database table.
+* `Analysis\\PHPLoc`: Executes the PHPLoc analysis on a given folder and stores the results in phploc database table.
+* `Download\\HTTP`: Downloads a HTTP resource.
+* `Extract\\Targz`: Extracts a *.tar.gz archive.
+
+To list all available consumers execute `php console analysis:list-consumer`.
 
 ## Access to services in VM
 
@@ -62,7 +64,6 @@ The login credentials for the used services
 
 ## Todos
 
-* Add a new command to list all consumers
 * Add a new command to list all available projects
 * Add a possibility to log stuff
 * Configure a `analytics` vhost for RabbitMQ

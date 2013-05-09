@@ -5,6 +5,7 @@
         "symfony/class-loader": "v2.2.1",
         "symfony/yaml": "v2.2.1",
         "symfony/console": "v2.2.1",
+        "symfony/finder": "v2.2.1",
         "phploc/phploc": "dev-master"
     },
     "minimum-stability": "dev",

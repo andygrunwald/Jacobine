@@ -7,6 +7,13 @@ namespace TYPO3Analysis\Consumer;
 interface ConsumerInterface {
 
     /**
+     * Gets a description of the consumer
+     *
+     * @return string
+     */
+    public function getDescription();
+
+    /**
      * Initialize the consumer.
      * E.g. sets the queue and routing key
      *
