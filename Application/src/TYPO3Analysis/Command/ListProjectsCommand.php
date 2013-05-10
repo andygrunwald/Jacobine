@@ -1,0 +1,95 @@
+<?php
+/**
+ * @todo adds a description (license text, description of this class / file, etc)
+ */
+namespace TYPO3Analysis\Command;
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
+
+class ListProjectsCommand extends Command {
+
+    /**
+     * Configuration
+     *
+     * @var array
+     */
+    protected $config = array();
+
+    protected function configure() {
+        $this->setName('analysis:list-projects')
+             ->setDescription('Lists all available and configured projects');
+    }
+
+    /**
+     * @param array $config
+     */
+    public function setConfig($config) {
+        $this->config = $config;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig() {
+        return $this->config;
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output) {
+        $this->setConfig(Yaml::parse(CONFIG_FILE));
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output) {
+        $config = $this->getConfig();
+
+        if (is_array($config['Projects']) === false) {
+            $message = '<error>There are no configured projects available! Please configure one!</error>';
+            $output->writeln($message);
+            return true;
+        }
+
+        foreach ($config['Projects'] as $projectName => $projectConfig) {
+            if ($this->isProjectConfigValid($projectConfig) === false) {
+                continue;
+            }
+
+            $message = '<comment>' . $projectName . '</comment>';
+            $output->writeln($message);
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks the configuration and necessary config parts
+     *
+     * @param mixed $config
+     * @return bool
+     */
+    private function isProjectConfigValid($config) {
+        if (is_array($config) === false) {
+            return false;
+        }
+
+        // Database settings
+        if (array_key_exists('MySQL', $config) === false
+            || array_key_exists('Database', $config['MySQL']) === false) {
+            return false;
+        }
+
+        // RabbitMQ settings
+        if (array_key_exists('RabbitMQ', $config) === false
+            || array_key_exists('Exchange', $config['RabbitMQ']) === false) {
+            return false;
+        }
+
+        // Various settings
+        if (array_key_exists('DownloadPath', $config) === false) {
+            return false;
+        }
+
+        return true;
+    }
+}
