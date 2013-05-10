@@ -44,7 +44,7 @@ class ConsumerCommand extends Command {
     protected $project = null;
 
     protected function configure() {
-        $this->setName('message-queue:consumer')
+        $this->setName('analysis:consumer')
              ->setDescription('Generic task for message queue consumer')
              ->addOption('project', null, InputOption::VALUE_OPTIONAL, 'Chose the project (for configuration, etc.).', 'TYPO3')
              ->addArgument('consumer', InputArgument::REQUIRED, 'Part namespace of consumer');

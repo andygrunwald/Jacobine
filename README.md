@@ -38,8 +38,8 @@ This project provide different parts which are linked / works with RabbitMq as p
 
 ### Consumer
 
-All consumers are started via the `message-queue:consumer`-command of the `console`located in `/var/application`.
-E.g. `php console message-queue:consumer --project=TYPO3 Extract\\Targz`
+All consumers are started via the `analysis:consumer`-command of the `console`located in `/var/application`.
+E.g. `php console analysis:consumer --project=TYPO3 Extract\\Targz`
 
 * `Analysis\\Filesize`: Determines the filesize in bytes and stores them in version database table.
 * `Analysis\\PHPLoc`: Executes the PHPLoc analysis on a given folder and stores the results in phploc database table.
