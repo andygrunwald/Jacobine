@@ -28,13 +28,6 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     private $routing = '';
 
     /**
-     * HTTP Client
-     *
-     * @var \Buzz\Browser
-     */
-    private $browser = null;
-
-    /**
      * Database connection
      *
      * @var \TYPO3Analysis\Helper\Database
@@ -138,25 +131,6 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      */
     public function setDatabase($database) {
         $this->database = $database;
-    }
-
-    /**
-     * Gets the HTTP client
-     *
-     * @return \Buzz\Browser
-     */
-    public function getHttpClient() {
-        return $this->browser;
-    }
-
-    /**
-     * Sets the HTTP client
-     *
-     * @param \Buzz\Browser $httpClient
-     * @return void
-     */
-    public function setHttpClient($httpClient) {
-        $this->browser = $httpClient;
     }
 
     /**

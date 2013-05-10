@@ -37,13 +37,6 @@ class ConsumerCommand extends Command {
     protected $config = array();
 
     /**
-     * HTTP Client
-     *
-     * @var \Buzz\Browser
-     */
-    protected $browser = null;
-
-    /**
      * Project
      *
      * @var string
@@ -53,7 +46,6 @@ class ConsumerCommand extends Command {
     protected function configure() {
         $this->setName('message-queue:consumer')
              ->setDescription('Generic task for message queue consumer')
-             // @todo create a command to list all available projects
              ->addOption('project', null, InputOption::VALUE_OPTIONAL, 'Chose the project (for configuration, etc.).', 'TYPO3')
              ->addArgument('consumer', InputArgument::REQUIRED, 'Part namespace of consumer');
     }
@@ -67,6 +59,12 @@ class ConsumerCommand extends Command {
         return $this->project;
     }
 
+    /**
+     * Sets the current project
+     *
+     * @param $project
+     * @return void
+     */
     protected function setProject($project) {
         $this->project = $project;
     }
@@ -82,9 +80,6 @@ class ConsumerCommand extends Command {
         }
         $projectConfig = $this->config['Projects'][$this->getProject()];
         $this->database = new Database($config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
-
-        $curlClient = new \Buzz\Client\Curl();
-        $this->browser = new \Buzz\Browser($curlClient);
 
         $config = $this->config['RabbitMQ'];
         $this->messageQueue = new MessageQueue($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
@@ -103,7 +98,6 @@ class ConsumerCommand extends Command {
         /* @var \TYPO3Analysis\Consumer\ConsumerAbstract $consumer  */
         $consumer->setConfig($this->config);
         $consumer->setDatabase($this->database);
-        $consumer->setHttpClient($this->browser);
         $consumer->setMessageQueue($this->messageQueue);
         $consumer->initialize();
 

@@ -97,21 +97,6 @@ interface ConsumerInterface {
     public function setDatabase($database);
 
     /**
-     * Gets the HTTP client
-     *
-     * @return \Buzz\Browser
-     */
-    public function getHttpClient();
-
-    /**
-     * Sets the HTTP client
-     *
-     * @param \Buzz\Browser $httpClient
-     * @return void
-     */
-    public function setHttpClient($httpClient);
-
-    /**
      * Gets the config
      *
      * @return array
