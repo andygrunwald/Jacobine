@@ -64,7 +64,6 @@ The login credentials for the used services
 
 ## Todos
 
-* Add a new command to list all available projects
 * Add a possibility to log stuff
 * Configure a `analytics` vhost for RabbitMQ
 * Configure a user `analytics` for RabbitMQ and disabling the `guest` user using Chef
