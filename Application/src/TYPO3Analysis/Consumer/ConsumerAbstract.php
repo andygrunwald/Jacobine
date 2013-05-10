@@ -49,6 +49,13 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     private $messageQueue = null;
 
     /**
+     * Logger
+     *
+     * @var \Monolog\Logger
+     */
+    private $logger = null;
+
+    /**
      * Gets the queue name
      *
      * @return string
@@ -169,6 +176,25 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      */
     public function setMessageQueue($messageQueue) {
         $this->messageQueue = $messageQueue;
+    }
+
+    /**
+     * Gets the logger
+     *
+     * @return \Monolog\Logger
+     */
+    public function getLogger() {
+        return $this->logger;
+    }
+
+    /**
+     * Sets the logger
+     *
+     * @param \Monolog\Logger $logger
+     * @return void
+     */
+    public function setLogger($logger) {
+        $this->logger = $logger;
     }
 
     /**

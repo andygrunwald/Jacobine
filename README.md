@@ -64,7 +64,7 @@ The login credentials for the used services
 
 ## Todos
 
-* Add a possibility to log stuff
+* Add documentation to \TYPO3Analysis source code
 * Configure a `analytics` vhost for RabbitMQ
 * Configure a user `analytics` for RabbitMQ and disabling the `guest` user using Chef
 * Create a `Source-Code-Language-Detection`-consumer (like github)

@@ -6,7 +6,8 @@
         "symfony/yaml": "v2.2.1",
         "symfony/console": "v2.2.1",
         "symfony/finder": "v2.2.1",
-        "phploc/phploc": "dev-master"
+        "phploc/phploc": "dev-master",
+        "monolog/monolog": "1.5.0"
     },
     "minimum-stability": "dev",
     "config": {

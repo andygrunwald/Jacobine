@@ -26,30 +26,37 @@ class Filesize extends ConsumerAbstract {
 
     public function process($message)
     {
-        var_dump(__METHOD__ . ' - START');
-
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
 
-        // If the record does not exists in the database OR the filesize is already saved, exit here
-        if ($record === false || (isset($record['size_tar']) && $record['size_tar'])) {
+        // If the record does not exists in the database exit here
+        if ($record === false) {
+            $this->getLogger()->info(sprintf('Record ID %s does not exist in version table', $messageData->versionId));
+            #$this->acknowledgeMessage($message);
+            return;
+        }
+
+        // If the filesize is already saved exit here
+        if (isset($record['size_tar']) === true && $record['size_tar']) {
+            $this->getLogger()->info(sprintf('Record %s marked as already analyzed', $messageData->versionId));
             $this->acknowledgeMessage($message);
             return;
         }
 
         // If there is no file, exit here
         if (file_exists($messageData->filename) !== true) {
-            throw new \Exception('File ' . $messageData->filename . ' does not exist', 1367152522);
+            $msg = sprintf('File %s does not exist', $messageData->filename);
+            $this->getLogger()->critical($msg);
+            throw new \Exception($msg, 1367152522);
         }
 
+        $this->getLogger()->info(sprintf('Getting filesize of %s', $messageData->filename));
         $fileSize = filesize($messageData->filename);
 
         // Update the 'downloaded' flag in database
         $this->saveFileSizeOfVersionInDatabase($record['id'], $fileSize);
 
         $this->acknowledgeMessage($message);
-
-        var_dump(__METHOD__ . ' - END');
     }
 
     /**
@@ -74,10 +81,12 @@ class Filesize extends ConsumerAbstract {
     /**
      * Updates a single version and sets the 'size_tar' value
      *
-     * @param integer   $id
+     * @param integer $id
+     * @param integer $fileSize
      * @return void
      */
     private function saveFileSizeOfVersionInDatabase($id, $fileSize) {
         $this->getDatabase()->updateRecord('versions', array('size_tar' => $fileSize), array('id' => $id));
+        $this->getLogger()->info(sprintf('Save filesize %s bytes for version record %s', $fileSize, $id));
     }
 }

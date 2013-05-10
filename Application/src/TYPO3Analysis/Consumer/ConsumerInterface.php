@@ -125,4 +125,19 @@ interface ConsumerInterface {
      * @return void
      */
     public function setMessageQueue($messageQueue);
+
+    /**
+     * Gets the logger
+     *
+     * @return \Monolog\Logger
+     */
+    public function getLogger();
+
+    /**
+     * Sets the logger
+     *
+     * @param \Monolog\Logger $logger
+     * @return void
+     */
+    public function setLogger($logger);
 }

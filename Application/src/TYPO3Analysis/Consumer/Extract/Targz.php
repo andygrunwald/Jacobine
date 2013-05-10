@@ -26,21 +26,28 @@ class Targz extends ConsumerAbstract {
 
     public function process($message)
     {
-        var_dump(__METHOD__ . ' - START');
-
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
 
-        // If the record does not exists in the database OR the file has already been extracted
-        // OR the file does not exists, exit here
-        if ($record === false || (isset($record['extracted']) && $record['extracted'])) {
+        // If the record does not exists in the database exit here
+        if ($record === false) {
+            $this->getLogger()->info(sprintf('Record ID %s does not exist in version table', $messageData->versionId));
+            $this->acknowledgeMessage($message);
+            return;
+        }
+
+        // If the file has already been extracted exit here
+        if (isset($record['extracted']) === true && $record['extracted']) {
+            $this->getLogger()->info(sprintf('Record %s marked as already extracted', $messageData->versionId));
             $this->acknowledgeMessage($message);
             return;
         }
 
         // If there is no file, exit here
         if (file_exists($messageData->filename) !== true) {
-            throw new \Exception('File ' . $messageData->filename . ' does not exist', 1367152938);
+            $msg = sprintf('File %s does not exist', $messageData->filename);
+            $this->getLogger()->critical($msg);
+            throw new \Exception($msg, 1367152938);
         }
 
         $pathInfo = pathinfo($messageData->filename);
@@ -54,9 +61,12 @@ class Targz extends ConsumerAbstract {
         mkdir($targetFolder);
 
         if (is_dir($targetFolder) === false) {
-            $exceptionMessage = 'Directory "' . $folder . '" can`t be created';
-            throw new \Exception($exceptionMessage, 1367010680);
+            $msg = sprintf('Directory "%s" can`t be created', $folder);
+            $this->getLogger()->critical($msg);
+            throw new \Exception($msg, 1367010680);
         }
+
+        $this->getLogger()->info(sprintf('Extracting %s to %s', $messageData->filename, $targetFolder));
 
         $command = 'tar -xzf ' . escapeshellarg($messageData->filename) . ' -C ' . escapeshellarg($targetFolder);
         $output = array();
@@ -64,8 +74,9 @@ class Targz extends ConsumerAbstract {
         exec($command, $output, $returnValue);
 
         if ($returnValue > 0) {
-            $exceptionMessage = 'tar command returns an error!';
-            throw new \Exception($exceptionMessage, 1367160535);
+            $msg = 'tar command returns an error!';
+            $this->getLogger()->critical($msg);
+            throw new \Exception($msg, 1367160535);
         }
 
         // Set the correct access rights. 0777 is a bit to much ;)
@@ -78,8 +89,6 @@ class Targz extends ConsumerAbstract {
 
         // Adds new messages to queue: analyze phploc
         $this->addFurtherMessageToQueue($messageData->project, $record['id'], $folder . $targetFolder);
-
-        var_dump(__METHOD__ . ' - END');
     }
 
     /**
@@ -109,6 +118,7 @@ class Targz extends ConsumerAbstract {
      */
     private function setVersionAsExtractedInDatabase($id) {
         $this->getDatabase()->updateRecord('versions', array('extracted' => 1), array('id' => $id));
+        $this->getLogger()->info(sprintf('Set version record %s as extracted', $id));
     }
 
     /**

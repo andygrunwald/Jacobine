@@ -26,19 +26,20 @@ class PHPLoc extends ConsumerAbstract {
 
     public function process($message)
     {
-        var_dump(__METHOD__ . ' - START');
-
         $messageData = json_decode($message->body);
 
         // If there is already a phploc record in database, exit here
         if ($this->getPhpLocDataFromDatabase($messageData->versionId) !== false) {
+            $this->getLogger()->info(sprintf('Record ID %s already analyzed with PHPLoc', $messageData->versionId));
             $this->acknowledgeMessage($message);
             return;
         }
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
-            throw new \Exception('Directory ' . $messageData->directory . ' does not exist', 1367168690);
+            $msg = sprintf('Directory %s does not exist', $messageData->directory);
+            $this->getLogger()->critical($msg);
+            throw new \Exception($msg, 1367168690);
         }
 
         $dirToAnalyze = rtrim($messageData->directory, DIRECTORY_SEPARATOR);
@@ -55,17 +56,21 @@ class PHPLoc extends ConsumerAbstract {
         $command .= ' --log-xml ' . escapeshellarg($xmlFile) . ' ' . escapeshellarg($dirToAnalyze . DIRECTORY_SEPARATOR);
         $output = array();
         $returnValue = 0;
-        var_dump($command);
+
+        $this->getLogger()->info(sprintf('Analyze %s with PHPLoc', $dirToAnalyze));
+
         exec($command, $output, $returnValue);
 
         if ($returnValue > 0) {
-            $exceptionMessage = 'phploc command returns an error!';
-            throw new \Exception($exceptionMessage, 1367169216);
+            $msg = 'phploc command returns an error!';
+            $this->getLogger()->critical($msg);
+            throw new \Exception($msg, 1367169216);
         }
 
         if (file_exists($xmlFile) === false) {
-            $exceptionMessage = 'phploc result file "' . $xmlFile . '" does not exist!';
-            throw new \Exception($exceptionMessage, 1367169297);
+            $msg = sprintf('phploc result file "%s" does not exist!', $xmlFile);
+            $this->getLogger()->critical($msg);
+            throw new \Exception($msg, 1367169297);
         }
 
         // Get PHPLoc results and save them
@@ -73,8 +78,6 @@ class PHPLoc extends ConsumerAbstract {
         $this->storePhpLocDataInDatabase($messageData->versionId, $phpLocResults->children());
 
         $this->acknowledgeMessage($message);
-
-        var_dump(__METHOD__ . ' - END');
     }
 
     private function storePhpLocDataInDatabase($versionId, $phpLocResults) {
@@ -111,7 +114,10 @@ class PHPLoc extends ConsumerAbstract {
             'ncloc_by_nom'          => (double) $phpLocResults->nclocByNom,
             'namespaces'            => (int) $phpLocResults->namespaces,
         );
-        $this->getDatabase()->insertRecord('phploc', $data);
+        $insertedId = $this->getDatabase()->insertRecord('phploc', $data);
+
+        $msg = sprintf('Stored analzye results for version record %s in PHPLoc record %s', $versionId, $insertedId);
+        $this->getLogger()->info($msg);
     }
 
     /**

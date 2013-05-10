@@ -11,6 +11,12 @@ MySQL:
   Username: root
   Password:
 
+Logging:
+  Consumer:
+    LogPath: /var/log/application/
+    Logger: [SymfonyConsoleHandler, StreamHandler]
+
+
 Application:
   PHPLoc:
     Binary: /var/application/vendor/phploc/phploc/composer/bin/phploc

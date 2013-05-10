@@ -26,13 +26,20 @@ class HTTP extends ConsumerAbstract {
 
     public function process($message)
     {
-        var_dump(__METHOD__ . ' - START');
         $messageData = json_decode($message->body);
 
         $record = $this->getVersionFromDatabase($messageData->versionId);
 
-        // If the record does not exists in the database OR the file has already been downloaded, exit here
-        if ($record === false || (isset($record['downloaded']) && $record['downloaded'])) {
+        // If the record does not exists in the database exit here
+        if ($record === false) {
+            $this->getLogger()->info(sprintf('Record ID %s does not exist in version table', $messageData->versionId));
+            $this->acknowledgeMessage($message);
+            return;
+        }
+
+        // If the file has already been downloaded exit here
+        if (isset($record['downloaded']) === true && $record['downloaded']) {
+            $this->getLogger()->info(sprintf('Record %s marked as already downloaded', $messageData->versionId));
             $this->acknowledgeMessage($message);
             return;
         }
@@ -41,28 +48,34 @@ class HTTP extends ConsumerAbstract {
         // @todo find a better way for the filename ... Download-Prefix in project config?
         // in $messageData->Project you can find the project
         $fileName = 'typo3_' . $record['version'] . '.tar.gz';
+        $targetFile = $targetTempDir . $fileName;
+
+        $this->getLogger()->info(sprintf('Download %s to %s', $record['url_tar'], $targetFile));
 
         // We download the file with wget, because we get a progress bar for free :)
-        $command = 'wget ' . escapeshellarg($record['url_tar']) . ' --output-document=' . escapeshellarg($targetTempDir . $fileName);
+        $command = 'wget ' . escapeshellarg($record['url_tar']) . ' --output-document=' . escapeshellarg($targetFile);
         exec($command);
 
         // If there is no file after download, exit here
-        if (file_exists($targetTempDir . $fileName) !== true) {
-            throw new \Exception('File ' . $targetTempDir . $fileName . ' does not exist after download', 1366829810);
+        if (file_exists($targetFile) !== true) {
+            $msg = sprintf('File %s does not exist after download', $targetFile);
+            $this->getLogger()->critical($msg);
+            throw new \Exception($msg, 1366829810);
         }
 
         $config = $this->getConfig();
         $projectConfig = $config['Projects'][$messageData->project];
         $targetDir = rtrim($projectConfig['DownloadPath'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
-        rename($targetTempDir . $fileName, $targetDir . $fileName);
+        rename($targetFile, $targetDir . $fileName);
 
         // If the hashes are not equal, exit here
         $md5Hash = md5_file($targetDir . $fileName);
         if ($record['checksum_tar_md5'] && $md5Hash !== $record['checksum_tar_md5']) {
-            $exceptionMessage = 'Checksums for file "' . $targetDir . $fileName . '" are not equal';
-            $exceptionMessage .= ' (Database: ' . $record['checksum_tar_md5'] . ', File hash: ' . $md5Hash . ')';
-            throw new \Exception($exceptionMessage, 1366830113);
+            $msg = 'Checksums for file "%s" are not equal (Database: %s, File hash: %s)';
+            $msg = sprintf($msg, $targetDir . $fileName, $record['checksum_tar_md5'], $md5Hash);
+            $this->getLogger()->critical($msg);
+            throw new \Exception($msg, 1366830113);
         }
 
         // Update the 'downloaded' flag in database
@@ -72,14 +85,12 @@ class HTTP extends ConsumerAbstract {
 
         // Adds new messages to queue: extract the file, get filesize or tar.gz file
         $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetDir . $fileName);
-
-        var_dump(__METHOD__ . ' - END');
     }
 
     /**
      * Adds new messages to queue system to extract a tar.gz file and get the filesize of this file
      *
-     * @param string    $version
+     * @param string    $project
      * @param integer   $id
      * @param string    $file
      * @return void
@@ -122,5 +133,6 @@ class HTTP extends ConsumerAbstract {
      */
     private function setVersionAsDownloadedInDatabase($id) {
         $this->getDatabase()->updateRecord('versions', array('downloaded' => 1), array('id' => $id));
+        $this->getLogger()->info(sprintf('Set version record %s as downloaded', $id));
     }
 }
