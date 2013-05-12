@@ -40,6 +40,7 @@ class MessageQueue {
 
     protected function renewChannel() {
         $this->channel = $this->handle->channel();
+        $this->channel->basic_qos(0, 1, false);
     }
 
     protected function getHandle() {
