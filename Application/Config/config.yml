@@ -1,9 +1,9 @@
 RabbitMQ:
   Host: localhost
   Port: 5672
-  Username: guest
-  Password: guest
-  VHost: /
+  Username: analysis
+  Password: analysis
+  VHost: analysis
 
 MySQL:
   Host: localhost
