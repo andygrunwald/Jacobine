@@ -28,25 +28,27 @@ class Targz extends ConsumerAbstract {
     {
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
+        $context = array('versionId' => $messageData->versionId);
 
         // If the record does not exists in the database exit here
         if ($record === false) {
-            $this->getLogger()->info(sprintf('Record ID %s does not exist in version table', $messageData->versionId));
+            $this->getLogger()->info('Record does not exist in version table', $context);
             $this->acknowledgeMessage($message);
             return;
         }
 
         // If the file has already been extracted exit here
         if (isset($record['extracted']) === true && $record['extracted']) {
-            $this->getLogger()->info(sprintf('Record %s marked as already extracted', $messageData->versionId));
+            $this->getLogger()->info('Record marked as already extracted', $context);
             $this->acknowledgeMessage($message);
             return;
         }
 
         // If there is no file, exit here
         if (file_exists($messageData->filename) !== true) {
+            $this->getLogger()->critical('File does not exist', array('filename' => $messageData->filename));
+
             $msg = sprintf('File %s does not exist', $messageData->filename);
-            $this->getLogger()->critical($msg);
             throw new \Exception($msg, 1367152938);
         }
 
@@ -61,12 +63,17 @@ class Targz extends ConsumerAbstract {
         mkdir($targetFolder);
 
         if (is_dir($targetFolder) === false) {
+            $this->getLogger()->critical('Directory can`t be created', array('folder' => $folder));
+
             $msg = sprintf('Directory "%s" can`t be created', $folder);
-            $this->getLogger()->critical($msg);
             throw new \Exception($msg, 1367010680);
         }
 
-        $this->getLogger()->info(sprintf('Extracting %s to %s', $messageData->filename, $targetFolder));
+        $context = array(
+            'filename' => $messageData->filename,
+            'targetFolder' => $targetFolder
+        );
+        $this->getLogger()->info('Extracting file', $context);
 
         $command = 'tar -xzf ' . escapeshellarg($messageData->filename) . ' -C ' . escapeshellarg($targetFolder);
         $output = array();
@@ -118,7 +125,7 @@ class Targz extends ConsumerAbstract {
      */
     private function setVersionAsExtractedInDatabase($id) {
         $this->getDatabase()->updateRecord('versions', array('extracted' => 1), array('id' => $id));
-        $this->getLogger()->info(sprintf('Set version record %s as extracted', $id));
+        $this->getLogger()->info('Set version record as extracted', array('versionId' => $id));
     }
 
     /**

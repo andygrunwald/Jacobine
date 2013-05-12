@@ -30,15 +30,15 @@ class PHPLoc extends ConsumerAbstract {
 
         // If there is already a phploc record in database, exit here
         if ($this->getPhpLocDataFromDatabase($messageData->versionId) !== false) {
-            $this->getLogger()->info(sprintf('Record ID %s already analyzed with PHPLoc', $messageData->versionId));
+            $this->getLogger()->info('Record already analyzed with PHPLoc', array('versionId' =>$messageData->versionId));
             $this->acknowledgeMessage($message);
             return;
         }
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
+            $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
             $msg = sprintf('Directory %s does not exist', $messageData->directory);
-            $this->getLogger()->critical($msg);
             throw new \Exception($msg, 1367168690);
         }
 
@@ -57,7 +57,7 @@ class PHPLoc extends ConsumerAbstract {
         $output = array();
         $returnValue = 0;
 
-        $this->getLogger()->info(sprintf('Analyze %s with PHPLoc', $dirToAnalyze));
+        $this->getLogger()->info('Analyze with PHPLoc', array('directory' => $dirToAnalyze));
 
         exec($command, $output, $returnValue);
 
@@ -68,8 +68,8 @@ class PHPLoc extends ConsumerAbstract {
         }
 
         if (file_exists($xmlFile) === false) {
+            $this->getLogger()->critical('phploc result file does not exist!', array('file' => $xmlFile));
             $msg = sprintf('phploc result file "%s" does not exist!', $xmlFile);
-            $this->getLogger()->critical($msg);
             throw new \Exception($msg, 1367169297);
         }
 
@@ -116,8 +116,9 @@ class PHPLoc extends ConsumerAbstract {
         );
         $insertedId = $this->getDatabase()->insertRecord('phploc', $data);
 
-        $msg = sprintf('Stored analzye results for version record %s in PHPLoc record %s', $versionId, $insertedId);
-        $this->getLogger()->info($msg);
+        $msg = 'Stored analzye results for version record in PHPLoc record';
+        $context = array('versionId' => $versionId, 'phpLocRecord' => $insertedId);
+        $this->getLogger()->info($msg, $context);
     }
 
     /**

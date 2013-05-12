@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use Monolog\Logger;
+use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\MemoryUsageProcessor;
 use Monolog\Processor\MemoryPeakUsageProcessor;
 use TYPO3Analysis\Helper\Database;
@@ -141,7 +142,7 @@ class ConsumerCommand extends Command {
             return $logger;
         }
 
-
+        $logger->pushProcessor(new ProcessIdProcessor());
         $logger->pushProcessor(new MemoryUsageProcessor());
         $logger->pushProcessor(new MemoryPeakUsageProcessor());
 
@@ -207,7 +208,8 @@ class ConsumerCommand extends Command {
         $projectConfig = $this->config['Projects'][$this->getProject()];
         $consumer->setExchange($projectConfig['RabbitMQ']['Exchange']);
 
-        $logger->info(sprintf('Consumer %s starts', $consumerIdent));
+        $consumerIdent = str_replace('\\', '\\\\', $consumerIdent);
+        $logger->info('Consumer starts', array('consumer' => $consumerIdent));
 
         $callback = array($consumer, 'process');
         $this->messageQueue->basicConsume($consumer->getExchange(), $consumer->getQueue(), $consumer->getRouting(), $consumer->getConsumerTag(), $callback);

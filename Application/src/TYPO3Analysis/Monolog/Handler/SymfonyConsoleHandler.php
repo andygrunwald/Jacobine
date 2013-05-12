@@ -122,6 +122,6 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
      * @{inerhitDoc}
      */
     public function getDefaultFormatter() {
-        return new LineFormatter("%message%");
+        return new LineFormatter();
     }
 }
