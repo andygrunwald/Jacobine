@@ -64,11 +64,13 @@ The login credentials for the used services
 
 ## Todos
 
-* Add documentation to \TYPO3Analysis source code
 * Create a `Source-Code-Language-Detection`-consumer (like github)
 * Add the Gerrit-Code-Review-Importer
 * Create a `Download\\Git`-consumer
 * Create a `CVSAnalY`-consumer
+* Add tools to import the TYPO3 mailing lists
+* Add tools to import the TYPO3 bugtracker
+* Add tools to import tweets about TYPO3 + ecosystem
 * Install `supervisord` (or something similiar) and start RabbitMQ consumer at system startup
 
 ## Contributing
