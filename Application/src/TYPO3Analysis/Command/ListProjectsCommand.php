@@ -18,29 +18,58 @@ class ListProjectsCommand extends Command {
      */
     protected $config = array();
 
+    /**
+     * Configures the current command.
+     *
+     * @return void
+     */
     protected function configure() {
         $this->setName('analysis:list-projects')
              ->setDescription('Lists all available and configured projects');
     }
 
     /**
-     * @param array $config
+     * Sets the configuration
+     *
+     * @param array     $config
+     * @return void
      */
     public function setConfig($config) {
         $this->config = $config;
     }
 
     /**
+     * Gets the configuration
+     *
      * @return array
      */
     public function getConfig() {
         return $this->config;
     }
 
+    /**
+     * Initializes the command just after the input has been validated.
+     *
+     * Sets up the config
+     *
+     * @param InputInterface    $input      An InputInterface instance
+     * @param OutputInterface   $output     An OutputInterface instance
+     * @return void
+     */
     protected function initialize(InputInterface $input, OutputInterface $output) {
         $this->setConfig(Yaml::parse(CONFIG_FILE));
     }
 
+    /**
+     * Executes the current command.
+     *
+     * Lists all configured projects.
+     * See Config/config.yml
+     *
+     * @param InputInterface    $input      An InputInterface instance
+     * @param OutputInterface   $output     An OutputInterface instance
+     * @return null|integer null or 0 if everything went fine, or an error code
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $config = $this->getConfig();
 
@@ -59,13 +88,13 @@ class ListProjectsCommand extends Command {
             $output->writeln($message);
         }
 
-        return true;
+        return null;
     }
 
     /**
      * Checks the configuration and necessary config parts
      *
-     * @param mixed $config
+     * @param mixed     $config
      * @return bool
      */
     private function isProjectConfigValid($config) {

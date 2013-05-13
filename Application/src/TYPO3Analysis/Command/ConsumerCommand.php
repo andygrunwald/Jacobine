@@ -48,6 +48,11 @@ class ConsumerCommand extends Command {
      */
     protected $project = null;
 
+    /**
+     * Configures the current command.
+     *
+     * @return void
+     */
     protected function configure() {
         $this->setName('analysis:consumer')
              ->setDescription('Generic task for message queue consumer')
@@ -67,13 +72,22 @@ class ConsumerCommand extends Command {
     /**
      * Sets the current project
      *
-     * @param $project
+     * @param string    $project
      * @return void
      */
     protected function setProject($project) {
         $this->project = $project;
     }
 
+    /**
+     * Initializes the command just after the input has been validated.
+     *
+     * Sets up the project, config, database and message queue
+     *
+     * @param InputInterface    $input    An InputInterface instance
+     * @param OutputInterface   $output   An OutputInterface instance
+     * @return void
+     */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->setProject($input->getOption('project'));
@@ -86,7 +100,7 @@ class ConsumerCommand extends Command {
     /**
      * Initialize the database connection
      *
-     * @param array $parsedConfig
+     * @param array     $parsedConfig
      * @return \TYPO3Analysis\Helper\Database
      * @throws \Exception
      */
@@ -106,7 +120,7 @@ class ConsumerCommand extends Command {
     /**
      * Initialize the message queue object
      *
-     * @param array $parsedConfig
+     * @param array     $parsedConfig
      * @return \TYPO3Analysis\Helper\MessageQueue
      */
     private function initializeMessageQueue($parsedConfig) {
@@ -119,9 +133,9 @@ class ConsumerCommand extends Command {
     /**
      * Initialize the configured logger for consumer
      *
-     * @param array $parsedConfig
-     * @param string $consumer
-     * @param OutputInterface $output
+     * @param array             $parsedConfig
+     * @param string            $consumer
+     * @param OutputInterface   $output
      * @return \Monolog\Logger
      */
     private function initializeLogger($parsedConfig, $consumer, OutputInterface $output) {
@@ -142,6 +156,7 @@ class ConsumerCommand extends Command {
             return $logger;
         }
 
+        // Add global logProcessors
         $logger->pushProcessor(new ProcessIdProcessor());
         $logger->pushProcessor(new MemoryUsageProcessor());
         $logger->pushProcessor(new MemoryPeakUsageProcessor());
@@ -157,10 +172,10 @@ class ConsumerCommand extends Command {
     /**
      * Creates a logger from config
      *
-     * @param $loggerClass
-     * @param $loggerConfig
-     * @param $consumer
-     * @param OutputInterface $output
+     * @param string            $loggerClass
+     * @param array             $loggerConfig
+     * @param string            $consumer
+     * @param OutputInterface   $output
      * @return \Monolog\Handler\StreamHandler|SymfonyConsoleHandler
      * @throws \Exception
      */
@@ -187,16 +202,28 @@ class ConsumerCommand extends Command {
         return $instance;
     }
 
+    /**
+     * Executes the current command.
+     *
+     * Initialize and starts a single consumer.
+     *
+     * @param InputInterface    $input      An InputInterface instance
+     * @param OutputInterface   $output     An OutputInterface instance
+     * @return null|integer null or 0 if everything went fine, or an error code
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $consumerIdent = $input->getArgument('consumer');
         $consumerToGet = '\\TYPO3Analysis\\Consumer\\' . $consumerIdent;
 
+        // If the consumer does not exists exit here
         if (class_exists($consumerToGet) === false) {
             throw new \Exception('A consumer like "' . $consumerIdent . '" does not exist', 1368100583);
         }
 
         $logger = $this->initializeLogger($this->config, $consumerIdent, $output);
 
+        // Create, initialize and start consumer
         $consumer = new $consumerToGet();
         /* @var \TYPO3Analysis\Consumer\ConsumerAbstract $consumer  */
         $consumer->setConfig($this->config);
@@ -211,9 +238,10 @@ class ConsumerCommand extends Command {
         $consumerIdent = str_replace('\\', '\\\\', $consumerIdent);
         $logger->info('Consumer starts', array('consumer' => $consumerIdent));
 
+        // Register consumer at message queue
         $callback = array($consumer, 'process');
         $this->messageQueue->basicConsume($consumer->getExchange(), $consumer->getQueue(), $consumer->getRouting(), $consumer->getConsumerTag(), $callback);
 
-        return true;
+        return null;
     }
 }

@@ -67,7 +67,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     /**
      * Sets the queue name
      *
-     * @param string $queue
+     * @param string    $queue
      * @return void
      */
     public function setQueue($queue) {
@@ -86,7 +86,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     /**
      * Sets the routing key
      *
-     * @param string $routing
+     * @param string    $routing
      * @return void
      */
     public function setRouting($routing) {
@@ -105,7 +105,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     /**
      * Sets the exchange name
      *
-     * @param string $exchange
+     * @param string    $exchange
      * @return void
      */
     public function setExchange($exchange) {
@@ -133,7 +133,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     /**
      * Sets the database
      *
-     * @param \TYPO3Analysis\Helper\Database $database
+     * @param \TYPO3Analysis\Helper\Database    $database
      * @return void
      */
     public function setDatabase($database) {
@@ -152,7 +152,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     /**
      * Sets the config
      *
-     * @param array $config
+     * @param array     $config
      * @return void
      */
     public function setConfig(array $config) {
@@ -171,7 +171,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     /**
      * Sets the message queue
      *
-     * @param \TYPO3Analysis\Helper\MessageQueue $messageQueue
+     * @param \TYPO3Analysis\Helper\MessageQueue    $messageQueue
      * @return void
      */
     public function setMessageQueue($messageQueue) {
@@ -190,7 +190,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     /**
      * Sets the logger
      *
-     * @param \Monolog\Logger $logger
+     * @param \Monolog\Logger   $logger
      * @return void
      */
     public function setLogger($logger) {
@@ -200,7 +200,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     /**
      * Acknowledges a message of a consumer to the message queue server
      *
-     * @param $message
+     * @param \stdClass  $message
      * @return void
      */
     protected function acknowledgeMessage($message) {

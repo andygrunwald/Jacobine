@@ -13,15 +13,39 @@ class Database {
      */
     protected $handle = null;
 
+    /**
+     * Constructor to initialize the database connection
+     *
+     * @param string    $host
+     * @param integer   $port
+     * @param string    $username
+     * @param string    $password
+     * @param string    $database
+     * @void
+     */
     public function __construct($host, $port, $username, $password, $database) {
         $dsn = 'mysql:host=' . $host . ';port=' . intval($port) . ';dbname=' . $database;
         $this->handle = new \PDO($dsn, $username, $password);
     }
 
+    /**
+     * Get the PDO connection
+     *
+     * @return null|\PDO
+     */
     protected function getHandle() {
         return $this->handle;
     }
 
+    /**
+     * Prepares the "prepared" parts for database queries.
+     *
+     * Identifier will be :fieldname
+     *
+     * @param array     $parts
+     * @param string    $implodeGlue
+     * @return array
+     */
     protected function buildPreparedParts(array $parts, $implodeGlue) {
         $queryParts = array();
         $prepareParts = array();
@@ -34,6 +58,18 @@ class Database {
         return array(implode($implodeGlue, $queryParts), $prepareParts);
     }
 
+    /**
+     * Gets records form the database.
+     * Executes a SELECT statement.
+     *
+     * @param array     $fields
+     * @param string    $table
+     * @param array     $where
+     * @param string    $groupBy
+     * @param string    $orderBy
+     * @param string    $limit
+     * @return array
+     */
     public function getRecords(array $fields = array('*'), $table, array $where = array(), $groupBy = '', $orderBy = '', $limit = '') {
         list($where, $prepareParts) = $this->buildPreparedParts($where, ' AND ');
         $query = '
@@ -60,6 +96,14 @@ class Database {
         return $result;
     }
 
+    /**
+     * Inserts a single record into the database.
+     * A prepared statement will be used.
+     *
+     * @param string    $table
+     * @param array     $data
+     * @return string
+     */
     public function insertRecord($table, array $data) {
         $preparedValues = array();
         foreach($data as $key => $value) {
@@ -73,6 +117,14 @@ class Database {
         return $this->getHandle()->lastInsertId();
     }
 
+    /**
+     * Update record in the database.
+     *
+     * @param string    $table
+     * @param array     $data
+     * @param array     $where
+     * @return bool
+     */
     public function updateRecord($table, array $data, array $where = array()) {
         list($where, $prepareWhereParts) = $this->buildPreparedParts($where, ' AND ');
         list($update, $prepareUpdateParts) = $this->buildPreparedParts($data, ', ');

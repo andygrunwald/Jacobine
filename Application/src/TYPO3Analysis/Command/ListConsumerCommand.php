@@ -30,7 +30,7 @@ class ListConsumerCommand extends Command {
     /**
      * Pad length for consumer name
      *
-     * @var int
+     * @var integer
      */
     const PAD_LENGTH = 30;
 
@@ -41,6 +41,11 @@ class ListConsumerCommand extends Command {
      */
     protected $consumerPath = null;
 
+    /**
+     * Configures the current command.
+     *
+     * @return void
+     */
     protected function configure() {
         $this->setName('analysis:list-consumer')
              ->setDescription('Lists all available consumer');
@@ -49,7 +54,8 @@ class ListConsumerCommand extends Command {
     /**
      * Sets the consumer path
      *
-     * @param String $consumerPath
+     * @param String    $consumerPath
+     * @return void
      */
     public function setConsumerPath($consumerPath) {
         $this->consumerPath = $consumerPath;
@@ -64,6 +70,15 @@ class ListConsumerCommand extends Command {
         return $this->consumerPath;
     }
 
+    /**
+     * Initializes the command just after the input has been validated.
+     *
+     * Sets up the consumer path
+     *
+     * @param InputInterface    $input      An InputInterface instance
+     * @param OutputInterface   $output     An OutputInterface instance
+     * @return void
+     */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $consumerPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Consumer';
@@ -71,11 +86,21 @@ class ListConsumerCommand extends Command {
         $this->setConsumerPath($consumerPath);
     }
 
+    /**
+     * Executes the current command.
+     *
+     * Lists all available consumer.
+     *
+     * @param InputInterface    $input      An InputInterface instance
+     * @param OutputInterface   $output     An OutputInterface instance
+     * @return null|integer null or 0 if everything went fine, or an error code
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
 
         $path = $this->getConsumerPath();
         $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
+        // Get all php files in given path
         $finder = new Finder();
         $finder->files()->in($path)->name('*.php')->notName('*Abstract.php')->notName('*Interface.php');
 
@@ -86,6 +111,7 @@ class ListConsumerCommand extends Command {
             $className = substr($className, 0, -4);
             $className = '\\' . str_replace(DIRECTORY_SEPARATOR, '\\', $className);
 
+            // Initialize consumer and check if the parent class is ConsumerAbstract
             $consumer = new $className();
             $reflection = new \ReflectionClass($consumer);
 
@@ -104,6 +130,6 @@ class ListConsumerCommand extends Command {
             $output->writeln($message);
         }
 
-        return true;
+        return null;
     }
 }

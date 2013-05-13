@@ -18,21 +18,21 @@ class GetTYPO3OrgCommand extends Command {
     /**
      * JSON File with all information we need
      *
-     * @string
+     * @var string
      */
     const JSON_FILE_URL = 'http://get.typo3.org/json';
 
     /**
      * Message Queue Queue
      *
-     * @string
+     * @var string
      */
     const QUEUE = 'download.http';
 
     /**
      * Message Queue routing
      *
-     * @string
+     * @var string
      */
     const ROUTING = 'download.http';
 
@@ -64,11 +64,25 @@ class GetTYPO3OrgCommand extends Command {
      */
     protected $messageQueue = null;
 
+    /**
+     * Configures the current command.
+     *
+     * @return void
+     */
     protected function configure() {
         $this->setName('typo3:get.typo3.org')
              ->setDescription('Queues tasks for TYPO3 CMS releases');
     }
 
+    /**
+     * Initializes the command just after the input has been validated.
+     *
+     * Sets up the config, HTTP client, database and message queue
+     *
+     * @param InputInterface    $input      An InputInterface instance
+     * @param OutputInterface   $output     An OutputInterface instance
+     * @return void
+     */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->config = Yaml::parse(CONFIG_FILE);
@@ -84,11 +98,20 @@ class GetTYPO3OrgCommand extends Command {
         $this->messageQueue = new MessageQueue($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
     }
 
+    /**
+     * Executes the current command.
+     *
+     * Reads all versions from get.typo3.org/json, store them into a database
+     * and add new messages to message queue to download this versions.
+     *
+     * @param InputInterface    $input      An InputInterface instance
+     * @param OutputInterface   $output     An OutputInterface instance
+     * @return null|integer null or 0 if everything went fine, or an error code
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $versions = $this->getReleaseInformation();
         foreach ($versions as $branch => $data) {
             // $data got two keys: releases + latest
-
             // Sometimes, the releases key does not exists.
             // This is the case where $branch is latest_stable, latest_lts or latest_deprecated
             // We can skip this here
@@ -117,7 +140,7 @@ class GetTYPO3OrgCommand extends Command {
             }
         }
 
-        return true;
+        return null;
     }
 
     /**

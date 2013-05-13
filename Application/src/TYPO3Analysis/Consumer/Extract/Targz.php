@@ -13,19 +13,28 @@ class Targz extends ConsumerAbstract {
      *
      * @return string
      */
-    public function getDescription()
-    {
+    public function getDescription() {
         return 'Extracts a *.tar.gz archive.';
     }
 
-    public function initialize()
-    {
+    /**
+     * Initialize the consumer.
+     * Sets the queue and routing key
+     *
+     * @return void
+     */
+    public function initialize() {
         $this->setQueue('extract.targz');
         $this->setRouting('extract.targz');
     }
 
-    public function process($message)
-    {
+    /**
+     * The logic of the consumer
+     *
+     * @param \stdClass     $message
+     * @throws \Exception
+     */
+    public function process($message) {
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
         $context = array('versionId' => $messageData->versionId);

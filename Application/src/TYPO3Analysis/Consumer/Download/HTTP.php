@@ -13,19 +13,28 @@ class HTTP extends ConsumerAbstract {
      *
      * @return string
      */
-    public function getDescription()
-    {
+    public function getDescription() {
         return 'Downloads a HTTP resource.';
     }
 
-    public function initialize()
-    {
+    /**
+     * Initialize the consumer.
+     * Sets the queue and routing key
+     *
+     * @return void
+     */
+    public function initialize() {
         $this->setQueue('download.http');
         $this->setRouting('download.http');
     }
 
-    public function process($message)
-    {
+    /**
+     * The logic of the consumer
+     *
+     * @param \stdClass     $message
+     * @throws \Exception
+     */
+    public function process($message) {
         $messageData = json_decode($message->body);
 
         $record = $this->getVersionFromDatabase($messageData->versionId);

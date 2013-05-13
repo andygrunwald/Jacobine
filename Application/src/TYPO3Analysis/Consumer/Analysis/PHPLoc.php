@@ -13,19 +13,28 @@ class PHPLoc extends ConsumerAbstract {
      *
      * @return string
      */
-    public function getDescription()
-    {
+    public function getDescription() {
         return 'Executes the PHPLoc analysis on a given folder and stores the results in phploc database table.';
     }
 
-    public function initialize()
-    {
+    /**
+     * Initialize the consumer.
+     * Sets the queue and routing key
+     *
+     * @return void
+     */
+    public function initialize() {
         $this->setQueue('analysis.phploc');
         $this->setRouting('analysis.phploc');
     }
 
-    public function process($message)
-    {
+    /**
+     * The logic of the consumer
+     *
+     * @param \stdClass     $message
+     * @throws \Exception
+     */
+    public function process($message) {
         $messageData = json_decode($message->body);
 
         // If there is already a phploc record in database, exit here
@@ -80,6 +89,13 @@ class PHPLoc extends ConsumerAbstract {
         $this->acknowledgeMessage($message);
     }
 
+    /**
+     * Stores the result of phploc command to database
+     *
+     * @param integer               $versionId
+     * @param SimpleXMLElement      $phpLocResults
+     * @return void
+     */
     private function storePhpLocDataInDatabase($versionId, $phpLocResults) {
         $data = array(
             'version'               => (int) $versionId,

@@ -33,24 +33,56 @@ class MessageQueue {
         'queue' => array(),
     );
 
+    /**
+     * Constructor to set up a connection to the RabbitMQ server
+     *
+     * @param string    $host
+     * @param integer   $port
+     * @param string    $username
+     * @param string    $password
+     * @param string    $vHost
+     * @return void
+     */
     public function __construct($host, $port, $username, $password, $vHost) {
         $this->handle = new AMQPConnection($host, $port, $username, $password, $vHost);
         $this->renewChannel();
     }
 
+    /**
+     * Creates a new channel with QoS!
+     *
+     * @return void
+     */
     protected function renewChannel() {
         $this->channel = $this->handle->channel();
         $this->channel->basic_qos(0, 1, false);
     }
 
+    /**
+     * Gets the AMQPConnection
+     *
+     * @return null|AMQPConnection
+     */
     protected function getHandle() {
         return $this->handle;
     }
 
+    /**
+     * Gets the channel for AMQPConnection
+     *
+     * @return null|\PhpAmqpLib\Channel\AMQPChannel
+     */
     protected function getChannel() {
         return $this->channel;
     }
 
+    /**
+     * Declares a new exchange at the message queue server
+     *
+     * @param string    $exchange
+     * @param string    $exchangeType
+     * @return void
+     */
     protected function declareExchange($exchange, $exchangeType) {
         if (isset($this->declared['exchange'][$exchange]) === false) {
             $this->getChannel()->exchange_declare($exchange, $exchangeType, false, true, true);
@@ -58,14 +90,26 @@ class MessageQueue {
         }
     }
 
+    /**
+     * Declares a new queue at the message queue server
+     *
+     * @param string    $queue
+     * @return void
+     */
     protected function declareQueue($queue) {
-        #if (isset($this->declared['queue'][$queue]) === false) {
-            #$this->renewChannel();
-            $this->getChannel()->queue_declare($queue, false, true, false, false);
-            $this->declared['queue'][$queue] = true;
-        #}
+        $this->getChannel()->queue_declare($queue, false, true, false, false);
+        $this->declared['queue'][$queue] = true;
     }
 
+    /**
+     * Sends a new message to message queue server
+     *
+     * @param mixed     $message
+     * @param string    $exchange
+     * @param string    $queue
+     * @param string    $routing
+     * @param string    $exchangeType
+     */
     public function sendMessage($message, $exchange = '', $queue = '', $routing = '', $exchangeType = 'topic') {
         if (is_array($message) === true) {
             $message = json_encode($message);
@@ -80,9 +124,21 @@ class MessageQueue {
         }
 
         $message = new AMQPMessage($message, array('content_type' => 'text/plain'));
-        return $this->getChannel()->basic_publish($message, $exchange, $routing);
+        $this->getChannel()->basic_publish($message, $exchange, $routing);
     }
 
+    /**
+     * Consumer registration.
+     * Registered a new consumer at message queue server to consume messages
+     *
+     * @param string    $exchange
+     * @param string    $queue
+     * @param string    $routing
+     * @param string    $consumerTag
+     * @param array     $callback
+     * @param string    $exchangeType
+     * @return void
+     */
     public function basicConsume($exchange, $queue, $routing, $consumerTag, array $callback, $exchangeType = 'topic') {
         $this->declareQueue($queue);
 
@@ -98,12 +154,13 @@ class MessageQueue {
         }
     }
 
+    /**
+     * Closes the message queue connection
+     *
+     * @return void
+     */
     public function close() {
         #$this->getChannel()->close();
         #$this->getHandle()->close();
-    }
-
-    public function __destruct() {
-        $this->close();
     }
 }

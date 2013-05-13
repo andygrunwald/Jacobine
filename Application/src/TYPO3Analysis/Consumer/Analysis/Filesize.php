@@ -13,19 +13,28 @@ class Filesize extends ConsumerAbstract {
      *
      * @return string
      */
-    public function getDescription()
-    {
+    public function getDescription() {
         return 'Determines the filesize in bytes and stores them in version database table.';
     }
 
-    public function initialize()
-    {
+    /**
+     * Initialize the consumer.
+     * Sets the queue and routing key
+     *
+     * @return void
+     */
+    public function initialize() {
         $this->setQueue('analysis.filesize');
         $this->setRouting('analysis.filesize');
     }
 
-    public function process($message)
-    {
+    /**
+     * The logic of the consumer
+     *
+     * @param \stdClass     $message
+     * @throws \Exception
+     */
+    public function process($message) {
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
 
@@ -83,8 +92,8 @@ class Filesize extends ConsumerAbstract {
     /**
      * Updates a single version and sets the 'size_tar' value
      *
-     * @param integer $id
-     * @param integer $fileSize
+     * @param integer   $id
+     * @param integer   $fileSize
      * @return void
      */
     private function saveFileSizeOfVersionInDatabase($id, $fileSize) {

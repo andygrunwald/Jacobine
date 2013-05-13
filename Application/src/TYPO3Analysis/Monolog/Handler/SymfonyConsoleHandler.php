@@ -21,8 +21,8 @@ use Monolog\Formatter\LineFormatter;
  *
  * @author Vitaliy Zhukv <zhuk2205@gmail.com>
  */
-class SymfonyConsoleHandler extends AbstractProcessingHandler
-{
+class SymfonyConsoleHandler extends AbstractProcessingHandler {
+
     /**
      * @var \Symfony\Component\Console\Output\OutputInterface
      */
@@ -45,8 +45,9 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
     /**
      * Construct
      *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param integer $level
+     * @param OutputInterface   $output
+     * @param bool|int          $level
+     * @return void
      */
     public function __construct(OutputInterface $output, $level = Logger::DEBUG) {
         $this->consoleOutput = $output;
@@ -56,8 +57,10 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
     /**
      * Set level style
      *
-     * @param integer $level
-     * @param string|array $style
+     * @param integer       $level
+     * @param string|array  $style
+     * @return $this
+     * @throws \InvalidArgumentException
      */
     public function setLevelStyle($level, $style) {
         try {
@@ -78,8 +81,9 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
     /**
      * Get level style
      *
-     * @param integer $level
+     * @param integer   $level
      * @return string|array
+     * @throws \InvalidArgumentException
      */
     public function getLevelStyle($level) {
         if (!isset($this->levelStyles[$level])) {
@@ -90,7 +94,7 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @{inerhitDoc}
+     * {@inheritdoc}
      */
     public function write(array $record) {
         $writeText = $record['formatted'];
@@ -119,7 +123,7 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @{inerhitDoc}
+     * {@inheritdoc}
      */
     public function getDefaultFormatter() {
         return new LineFormatter();
