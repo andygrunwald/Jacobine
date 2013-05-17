@@ -138,7 +138,7 @@ class Targz extends ConsumerAbstract {
     }
 
     /**
-     * Adds new messages to queue system to analyze the folder
+     * Adds new messages to queue system to analyze the folder and start github linguist analysis
      *
      * @param string    $project
      * @param integer   $versionId
@@ -153,5 +153,6 @@ class Targz extends ConsumerAbstract {
         );
 
         $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'analysis.phploc', 'analysis.phploc');
+        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'analysis.linguist', 'analysis.linguist');
     }
 }

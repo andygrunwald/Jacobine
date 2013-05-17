@@ -140,4 +140,24 @@ class Database {
 
         return $result;
     }
+
+    /**
+     * Delete record(s) from database
+     *
+     * @param string    $table
+     * @param array     $where
+     * @return bool
+     */
+    public function deleteRecords($table, array $where = array()) {
+        list($where, $prepareWhereParts) = $this->buildPreparedParts($where, ' AND ');
+
+        $query = '
+            DELETE FROM ' . $table . '
+            WHERE ' . $where;
+
+        $statement = $this->getHandle()->prepare($query);
+        $result = $statement->execute($prepareWhereParts);
+
+        return $result;
+    }
 }
