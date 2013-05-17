@@ -72,7 +72,7 @@ GIT
 GIT
   remote: https://github.com/andygrunwald/chef-typo3analytics
   ref: master
-  sha: 3b38c48c00ea5ec2b528f3f361244dd62826eca1
+  sha: 7343d47ee01814043e021cc84aae1ee7927ac0e7
   specs:
     typo3analytics (1.0.1)
       composer (>= 0.0.0)
