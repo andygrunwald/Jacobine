@@ -41,7 +41,7 @@ SITE
       chef_handler (>= 0.0.0)
     xml (1.1.2)
       build-essential (>= 0.0.0)
-    yum (2.2.0)
+    yum (2.2.2)
 
 GIT
   remote: https://github.com/andygrunwald/chef-cvsanaly
@@ -72,7 +72,7 @@ GIT
 GIT
   remote: https://github.com/andygrunwald/chef-typo3analytics
   ref: master
-  sha: d9fe58f7cfb89f1eadecb67d82221d1551c5868e
+  sha: 3b38c48c00ea5ec2b528f3f361244dd62826eca1
   specs:
     typo3analytics (1.0.1)
       composer (>= 0.0.0)
