@@ -16,7 +16,6 @@ Logging:
     LogPath: /var/log/application/
     Logger: [SymfonyConsoleHandler, StreamHandler]
 
-
 Application:
   PHPLoc:
     Binary: /var/application/vendor/phploc/phploc/composer/bin/phploc
@@ -26,7 +25,6 @@ Application:
   GithubLinguist:
     WorkingDir: /var/tools/github-linguist
 
-# currently not in use. Refactor consumer to use this block
 Projects:
   TYPO3:
     MySQL:
