@@ -3,8 +3,56 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ea39be80e38ab26a7f3d3999875cfb32",
+    "hash": "8db1b689832f11abacc6afe3d084e74e",
     "packages": [
+        {
+            "name": "andygrunwald/Gerrie",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/andygrunwald/Gerrie.git",
+                "reference": "0e93959bf57603680feef00b59d4916ea9b04351"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/0e93959bf57603680feef00b59d4916ea9b04351",
+                "reference": "0e93959bf57603680feef00b59d4916ea9b04351",
+                "shasum": ""
+            },
+            "require": {
+                "kriswallsmith/buzz": "v0.9",
+                "php": ">=5.3.0",
+                "symfony/class-loader": "v2.2.1",
+                "symfony/console": "v2.2.1",
+                "symfony/yaml": "v2.2.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Gerrie": "src/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Andy Grunwald",
+                    "email": "andygrunwald@gmail.com",
+                    "homepage": "http://andygrunwald.com"
+                }
+            ],
+            "description": "An data exporter for Google`s review system 'Gerrit'",
+            "homepage": "http://github.com/andygrunwald/Gerrie",
+            "keywords": [
+                "Gerrit",
+                "Git",
+                "Google",
+                "Review"
+            ],
+            "support": {
+                "source": "https://github.com/andygrunwald/Gerrie/tree/master",
+                "issues": "https://github.com/andygrunwald/Gerrie/issues"
+            },
+            "time": "2013-05-17 18:40:54"
+        },
         {
             "name": "kriswallsmith/buzz",
             "version": "v0.9",
@@ -648,7 +696,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "videlalvaro/php-amqplib": 20,
-        "phploc/phploc": 20
+        "phploc/phploc": 20,
+        "andygrunwald/gerrie": 20
     },
     "platform": [
 

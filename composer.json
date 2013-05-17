@@ -1,4 +1,10 @@
 {
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/andygrunwald/Gerrie"
+        }
+    ],
     "require": {
         "videlalvaro/php-amqplib": "dev-master",
         "kriswallsmith/buzz": "v0.9",
@@ -7,7 +13,8 @@
         "symfony/console": "v2.2.1",
         "symfony/finder": "v2.2.1",
         "phploc/phploc": "dev-master",
-        "monolog/monolog": "1.5.0"
+        "monolog/monolog": "1.5.0",
+        "andygrunwald/Gerrie": "dev-master"
     },
     "minimum-stability": "dev",
     "config": {
