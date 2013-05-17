@@ -68,9 +68,12 @@ The login credentials for the used services
 * Add the Gerrit-Code-Review-Importer
 * Create a `Download\\Git`-consumer
 * Create a `CVSAnalY`-consumer
-* Add tools to import the TYPO3 mailing lists
-* Add tools to import the TYPO3 bugtracker
-* Add tools to import tweets about TYPO3 + ecosystem
+* Add tools to import / analyze the TYPO3 mailing lists
+* Add tools to import / analyze the TYPO3 bugtracker
+* Add tools to import / analyze tweets about TYPO3 + ecosystem
+* Add tools to import / analyze irc logs
+* Add tools to import / analyze jenkins activity
+* Setup a TYPO3 instance to create graphs about the data
 * Install `supervisord` (or something similiar) and start RabbitMQ consumer at system startup
 
 ## Contributing
