@@ -36,3 +36,5 @@ Projects:
     ReleasesPath: /var/data/TYPO3/releases
     GitCheckoutPath: /var/data/TYPO3/git
     Gitweb: https://git.typo3.org/
+    Gerrit:
+      ConfigFile: gerrit-review.typo3.org.yml

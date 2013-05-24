@@ -17,7 +17,7 @@ use TYPO3Analysis\Command\ListConsumerCommand;
 use TYPO3Analysis\Command\ListProjectsCommand;
 use TYPO3Analysis\Command\ConsumerCommand;
 use TYPO3Analysis\Command\GitwebCommand;
-use TYPO3Analysis\Command\ReviewTYPO3OrgCommand;
+use TYPO3Analysis\Command\GerritCommand;
 
 $console = new Application();
 $console->add(new GetTYPO3OrgCommand());
@@ -25,5 +25,5 @@ $console->add(new ConsumerCommand());
 $console->add(new ListConsumerCommand());
 $console->add(new ListProjectsCommand());
 $console->add(new GitwebCommand());
-$console->add(new ReviewTYPO3OrgCommand());
+$console->add(new GerritCommand());
 $console->run();
