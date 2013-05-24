@@ -79,7 +79,11 @@ class HTTP extends ConsumerAbstract {
 
         $config = $this->getConfig();
         $projectConfig = $config['Projects'][$messageData->project];
-        $targetDir = rtrim($projectConfig['DownloadPath'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $targetDir = rtrim($projectConfig['ReleasesPath'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+        if (is_dir($targetDir) === false) {
+            mkdir($targetDir, 0777, true);
+        }
 
         rename($targetFile, $targetDir . $fileName);
 

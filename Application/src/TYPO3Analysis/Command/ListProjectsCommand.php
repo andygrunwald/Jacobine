@@ -115,7 +115,7 @@ class ListProjectsCommand extends Command {
         }
 
         // Various settings
-        if (array_key_exists('DownloadPath', $config) === false) {
+        if (array_key_exists('ReleasesPath', $config) === false) {
             return false;
         }
 

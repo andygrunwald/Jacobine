@@ -33,6 +33,6 @@ Projects:
       Database: typo3
     RabbitMQ:
       Exchange: TYPO3
-    DownloadPath: /var/data/TYPO3
+    ReleasesPath: /var/data/TYPO3/releases
     GitCheckoutPath: /var/data/TYPO3/git
     Gitweb: https://git.typo3.org/
