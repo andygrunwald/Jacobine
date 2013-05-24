@@ -56,7 +56,7 @@ class GitwebCommand extends Command {
      */
     protected function configure() {
         $this->setName('crawler:gitweb')
-             ->setDescription('Generic task for message queue consumer')
+             ->setDescription('Adds a Gitweb page to message queue to crawl this.')
              ->addOption('project', null, InputOption::VALUE_OPTIONAL, 'Chose the project (for configuration, etc.).', 'TYPO3');
     }
 
