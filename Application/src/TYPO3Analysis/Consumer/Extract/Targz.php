@@ -85,15 +85,8 @@ class Targz extends ConsumerAbstract {
         $this->getLogger()->info('Extracting file', $context);
 
         $command = 'tar -xzf ' . escapeshellarg($messageData->filename) . ' -C ' . escapeshellarg($targetFolder);
-        $output = array();
-        $returnValue = 0;
-        exec($command, $output, $returnValue);
 
-        if ($returnValue > 0) {
-            $msg = 'tar command returns an error!';
-            $this->getLogger()->critical($msg);
-            throw new \Exception($msg, 1367160535);
-        }
+        $this->executeCommand($command);
 
         // Set the correct access rights. 0777 is a bit to much ;)
         chmod($targetFolder, 0755);

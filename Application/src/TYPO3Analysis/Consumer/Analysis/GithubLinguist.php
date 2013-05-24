@@ -53,17 +53,10 @@ class GithubLinguist extends ConsumerAbstract {
         // Execute github-linguist
         $dirToAnalyze = rtrim($messageData->directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $command = 'bundle exec linguist ' . escapeshellarg($dirToAnalyze);
-        $output = array();
-        $returnValue = 0;
 
         $this->getLogger()->info('Analyze with github-linguist', array('directory' => $dirToAnalyze));
-        exec($command, $output, $returnValue);
 
-        if ($returnValue > 0) {
-            $msg = 'github-linguist command returns an error!';
-            $this->getLogger()->critical($msg);
-            throw new \Exception($msg, 1367169216);
-        }
+        $output = $this->executeCommand($command);
 
         if ($output === array()) {
             $msg = 'github-linguist returns no result';

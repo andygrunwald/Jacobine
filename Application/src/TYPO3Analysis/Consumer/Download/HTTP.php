@@ -68,7 +68,7 @@ class HTTP extends ConsumerAbstract {
 
         // We download the file with wget, because we get a progress bar for free :)
         $command = 'wget ' . escapeshellarg($record['url_tar']) . ' --output-document=' . escapeshellarg($targetFile);
-        exec($command);
+        $this->executeCommand($command);
 
         // If there is no file after download, exit here
         if (file_exists($targetFile) !== true) {

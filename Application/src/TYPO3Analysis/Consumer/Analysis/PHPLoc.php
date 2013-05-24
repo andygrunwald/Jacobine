@@ -63,18 +63,10 @@ class PHPLoc extends ConsumerAbstract {
         $command = $config['Application']['PHPLoc']['Binary'];
         $command .= ' --count-tests --names ' . escapeshellarg($filePattern);
         $command .= ' --log-xml ' . escapeshellarg($xmlFile) . ' ' . escapeshellarg($dirToAnalyze . DIRECTORY_SEPARATOR);
-        $output = array();
-        $returnValue = 0;
 
         $this->getLogger()->info('Analyze with PHPLoc', array('directory' => $dirToAnalyze));
 
-        exec($command, $output, $returnValue);
-
-        if ($returnValue > 0) {
-            $msg = 'phploc command returns an error!';
-            $this->getLogger()->critical($msg);
-            throw new \Exception($msg, 1367169216);
-        }
+        $this->executeCommand($command);
 
         if (file_exists($xmlFile) === false) {
             $this->getLogger()->critical('phploc result file does not exist!', array('file' => $xmlFile));
