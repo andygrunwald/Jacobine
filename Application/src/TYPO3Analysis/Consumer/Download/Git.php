@@ -47,6 +47,9 @@ class Git extends ConsumerAbstract {
             return;
         }
 
+        // @todo can`t clone ever TYPO3 repo.
+        // @see https://twitter.com/andygrunwald/status/338017474916270080
+        // @see https://twitter.com/andygrunwald/status/338017618604736512
         if (strstr($record['git'], 'SingleSignOn')) {
             $this->acknowledgeMessage($message);
             return;
