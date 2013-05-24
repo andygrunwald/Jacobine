@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8db1b689832f11abacc6afe3d084e74e",
+    "hash": "12f5fac94786b9288223138196e829eb",
     "packages": [
         {
             "name": "andygrunwald/Gerrie",
@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/andygrunwald/Gerrie.git",
-                "reference": "0e93959bf57603680feef00b59d4916ea9b04351"
+                "reference": "71870a6913e9e183554452295f1b31971adb71e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/0e93959bf57603680feef00b59d4916ea9b04351",
-                "reference": "0e93959bf57603680feef00b59d4916ea9b04351",
+                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/71870a6913e9e183554452295f1b31971adb71e4",
+                "reference": "71870a6913e9e183554452295f1b31971adb71e4",
                 "shasum": ""
             },
             "require": {
@@ -51,7 +51,7 @@
                 "source": "https://github.com/andygrunwald/Gerrie/tree/master",
                 "issues": "https://github.com/andygrunwald/Gerrie/issues"
             },
-            "time": "2013-05-17 18:40:54"
+            "time": "2013-05-17 19:13:33"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -169,17 +169,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phploc.git",
-                "reference": "3cf6e2032ecaabdd122fb0e987f6fdef09b2eacf"
+                "reference": "f1e39eeaa3e0ab84a2f3fac653cf2efe0159bad9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/3cf6e2032ecaabdd122fb0e987f6fdef09b2eacf",
-                "reference": "3cf6e2032ecaabdd122fb0e987f6fdef09b2eacf",
+                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/f1e39eeaa3e0ab84a2f3fac653cf2efe0159bad9",
+                "reference": "f1e39eeaa3e0ab84a2f3fac653cf2efe0159bad9",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "sebastian/finder-facade": ">=1.0.5",
+                "sebastian/git": ">=1.0.0@dev",
+                "sebastian/version": ">=1.0.0",
                 "symfony/finder": ">=2.1.2",
                 "zetacomponents/console-tools": "dev-master"
             },
@@ -205,7 +207,7 @@
             ],
             "description": "A tool for quickly measuring the size of a PHP project.",
             "homepage": "https://github.com/sebastianbergmann/phploc",
-            "time": "2013-04-22 21:23:30"
+            "time": "2013-05-24 05:27:38"
         },
         {
             "name": "psr/log",
@@ -283,6 +285,87 @@
             "description": "FinderFacade is a convenience wrapper for Symfony's Finder component.",
             "homepage": "https://github.com/sebastianbergmann/finder-facade",
             "time": "2013-03-01 11:49:09"
+        },
+        {
+            "name": "sebastian/git",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/git.git",
+                "reference": "c5d8eaa11fb32df00ea26303cea4b6a3ae2ab810"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/git/zipball/c5d8eaa11fb32df00ea26303cea4b6a3ae2ab810",
+                "reference": "c5d8eaa11fb32df00ea26303cea4b6a3ae2ab810",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Simple wrapper for Git",
+            "homepage": "http://www.github.com/sebastianbergmann/git",
+            "keywords": [
+                "git"
+            ],
+            "time": "2013-05-22 17:14:39"
+        },
+        {
+            "name": "sebastian/version",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/version.git",
+                "reference": "1d2f0e9bc9bc771244550106d4de029948182303"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/version/zipball/1d2f0e9bc9bc771244550106d4de029948182303",
+                "reference": "1d2f0e9bc9bc771244550106d4de029948182303",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sebastian@phpunit.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Library that helps with managing the version number of Git-hosted PHP projects",
+            "homepage": "https://github.com/sebastianbergmann/version",
+            "time": "2013-04-17 10:55:54"
         },
         {
             "name": "symfony/class-loader",
@@ -380,6 +463,59 @@
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
             "time": "2013-03-19 20:48:08"
+        },
+        {
+            "name": "symfony/dom-crawler",
+            "version": "v2.2.1",
+            "target-dir": "Symfony/Component/DomCrawler",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/DomCrawler.git",
+                "reference": "v2.2.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/v2.2.1",
+                "reference": "v2.2.1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "symfony/css-selector": ">=2.0,<3.0"
+            },
+            "suggest": {
+                "symfony/css-selector": "2.2.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\DomCrawler\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony DomCrawler Component",
+            "homepage": "http://symfony.com",
+            "time": "2013-04-01 08:05:23"
         },
         {
             "name": "symfony/finder",
@@ -508,7 +644,7 @@
                 {
                     "name": "Arne Blankerts",
                     "email": "arne@blankerts.de",
-                    "role": "Developer"
+                    "role": "lead"
                 }
             ],
             "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convinience and to simplify the usage of DOM.",
@@ -521,12 +657,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/videlalvaro/php-amqplib.git",
-                "reference": "ee1eade27a9b19d8db2300559be218062a9bf908"
+                "reference": "3b819524fbded73c97b1014c80d522e2e3f7de06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/ee1eade27a9b19d8db2300559be218062a9bf908",
-                "reference": "ee1eade27a9b19d8db2300559be218062a9bf908",
+                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/3b819524fbded73c97b1014c80d522e2e3f7de06",
+                "reference": "3b819524fbded73c97b1014c80d522e2e3f7de06",
                 "shasum": ""
             },
             "require": {
@@ -555,7 +691,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2013-04-26 08:42:21"
+            "time": "2013-05-23 14:26:02"
         },
         {
             "name": "zetacomponents/base",

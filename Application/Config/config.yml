@@ -32,3 +32,4 @@ Projects:
     RabbitMQ:
       Exchange: TYPO3
     DownloadPath: /var/data/TYPO3
+    Gitweb: https://git.typo3.org/
