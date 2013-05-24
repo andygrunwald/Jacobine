@@ -206,4 +206,29 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     protected function acknowledgeMessage($message) {
         $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
     }
+
+    /**
+     * Executes a single command to the system
+     *
+     * @param string    $command
+     * @return array
+     * @throws \Exception
+     */
+    protected function executeCommand($command) {
+        $output = array();
+        $returnValue = 0;
+
+        exec($command, $output, $returnValue);
+
+        if ($returnValue > 0) {
+            $msg = 'Command returns an error!';
+            $this->getLogger()->critical($msg, array('command' => $command, 'output' => $output));
+
+            $msg = 'Command "%s" returns an error!';
+            $msg = sprintf($msg, $command);
+            throw new \Exception($msg, 1367169216);
+        }
+
+        return $output;
+    }
 }

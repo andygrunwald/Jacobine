@@ -148,31 +148,6 @@ class Git extends ConsumerAbstract {
     }
 
     /**
-     * Executes a single command to the system
-     *
-     * @param string    $command
-     * @return array
-     * @throws \Exception
-     */
-    private function executeCommand($command) {
-        $output = array();
-        $returnValue = 0;
-
-        exec($command, $output, $returnValue);
-
-        if ($returnValue > 0) {
-            $msg = 'Command returns an error!';
-            $this->getLogger()->critical($msg, array('command' => $command));
-
-            $msg = 'Command "%s" returns an error!';
-            $msg = sprintf($msg, $command);
-            throw new \Exception($msg, 1367169216);
-        }
-
-        return $output;
-    }
-
-    /**
      * Receives a single gitweb record of the database
      *
      * @param integer   $id
