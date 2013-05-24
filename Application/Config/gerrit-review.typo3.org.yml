@@ -1,0 +1,71 @@
+#
+# Database credentials
+#
+Database:
+  # Host of your database server
+  # Required
+  Host: localhost
+  # User of your database server
+  # Required
+  Username: root
+  # Password of your database server
+  # Required
+  Password:
+  # Port of your database server
+  # Optional
+  Port: 3306
+  # Database name
+  # Required
+  Name: typo3
+
+#
+# Configuration of executables
+#
+Executable:
+  # Path of your ssh executable
+  # Required
+  SSH: /usr/bin/ssh
+
+#
+# Gerrit server
+# n server can be configured
+# Required
+#
+Gerrit:
+
+  # Name of the Gerrit server. Only internal use (database)
+  # Required
+  TYPO3:
+
+    # Kind of connection / API. Which api should be used?
+    # Valid options: SSH, HTTP
+    # Notice: At the moment, only SSH is fully supported
+    # Required
+    DataService: SSH
+
+    # Usage of SSH API
+    # Required
+    SSH:
+      # Host of the Gerrit server
+      # Required
+      Host: review.typo3.org
+      # Port of the Gerrit server
+      # Required
+      Port: 29418
+      # SSH-Key which will be used for the SSH-API
+      # Optional
+      Private-Key:
+
+    # Usage of the REST API (currently not fully implemented)
+    # Only to reveive the API query limit
+    # Required
+    HTTP:
+      # Host of the Gerrit server
+      # Required
+      Host: https://review.typo3.org/
+      # Username of your account at Gerrit server
+      # Optional
+      Username:
+      # Password of your account at Gerrit server
+      # Optional
+      Password:
