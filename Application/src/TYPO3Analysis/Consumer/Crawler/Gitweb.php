@@ -69,12 +69,13 @@ class Gitweb extends ConsumerAbstract {
 
             $gitwebRecord = $this->getGitwebFromDatabase($gitUrl);
             if ($gitwebRecord === false) {
-                $this->insertGitwebRecord($name, $gitUrl);
+                $id = $this->insertGitwebRecord($name, $gitUrl);
             } else {
+                $id = $gitwebRecord['id'];
                 $this->getLogger()->info('Gitweb record already exists', array('git' => $gitUrl));
             }
 
-            $this->addFurtherMessageToQueue($messageData->project, $gitUrl);
+            $this->addFurtherMessageToQueue($messageData->project, $id);
         }
 
         $this->acknowledgeMessage($message);
@@ -110,13 +111,13 @@ class Gitweb extends ConsumerAbstract {
      * Adds new messages to queue system to download the git repository
      *
      * @param string    $project
-     * @param string    $repository
+     * @param integer   $id
      * @return void
      */
-    private function addFurtherMessageToQueue($project, $repository) {
+    private function addFurtherMessageToQueue($project, $id) {
         $message = array(
             'project' => $project,
-            'git' => $repository,
+            'id' => $id
         );
 
         $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'download.git', 'download.git');
@@ -153,7 +154,8 @@ class Gitweb extends ConsumerAbstract {
             'name' => $name,
             'git' => $repository
         );
-        $this->getDatabase()->insertRecord('gitweb', $data);
+
         $this->getLogger()->info('Inserted new gitweb record', $data);
+        return $this->getDatabase()->insertRecord('gitweb', $data);
     }
 }

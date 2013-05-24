@@ -17,6 +17,8 @@ Logging:
     Logger: [SymfonyConsoleHandler, StreamHandler]
 
 Application:
+  Git:
+    Binary: /usr/bin/git
   PHPLoc:
     Binary: /var/application/vendor/phploc/phploc/composer/bin/phploc
     FilePattern: "*.php,*.inc"
@@ -32,4 +34,5 @@ Projects:
     RabbitMQ:
       Exchange: TYPO3
     DownloadPath: /var/data/TYPO3
+    GitCheckoutPath: /var/data/TYPO3/git
     Gitweb: https://git.typo3.org/
