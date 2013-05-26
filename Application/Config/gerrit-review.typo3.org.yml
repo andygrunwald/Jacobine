@@ -52,9 +52,12 @@ Gerrit:
       # Port of the Gerrit server
       # Required
       Port: 29418
+      # Username of the Gerrit account
+      # Required
+      Username:
       # SSH-Key which will be used for the SSH-API
       # Optional
-      Private-Key:
+      KeyFile: /home/vagrant/.ssh/id_rsa.pub
 
     # Usage of the REST API (currently not fully implemented)
     # Only to reveive the API query limit
