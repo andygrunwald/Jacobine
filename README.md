@@ -34,6 +34,7 @@ This project provide different parts which are linked / works with RabbitMq as p
 
 ### Producer
 
+* `php console crawler:gerrit`: Adds a Gerrit review system to message queue to crawl this.
 * `php console crawler:gitweb`: Adds a Gitweb page to message queue to crawl this.
 * `php console typo3:get.typo3.org`: Recieves all versions of get.typo3.org and stores them into a database
 
@@ -46,7 +47,9 @@ E.g. `php console analysis:consumer --project=TYPO3 Extract\\Targz`
 * `Analysis\\Filesize`: Determines the filesize in bytes and stores them in version database table.
 * `Analysis\\GithubLinguist`: Executes the Github Linguist analysis on a given folder and stores the results in linguist database table.
 * `Analysis\\PHPLoc`: Executes the PHPLoc analysis on a given folder and stores the results in phploc database table.
-* `Crawler\\Gitweb`: Crawls a Gitweb-Index page for Git-repositories
+* `Crawler\\Gerrit`: Prepares the message queues for a single Gerrit review system.
+* `Crawler\\GerritProject`: Imports a single project of a Gerrit review system.
+* `Crawler\\Gitweb`: Crawls a Gitweb-Index page for Git-repositories.
 * `Download\\Git`: Downloads a Git repository.
 * `Download\\HTTP`: Downloads a HTTP resource.
 * `Extract\\Targz`: Extracts a *.tar.gz archive.
@@ -69,7 +72,8 @@ The login credentials for the used services
 
 ## Todos
 
-* Add the Gerrit-Code-Review-Importer
+* Add more information about installation of this setup
+* Add installation command sequence with ssh-add, private / public key and known_hosts entry for review.typo3.org
 * Add tools to import / analyze the TYPO3 mailing lists
 * Add tools to import / analyze the TYPO3 bugtracker
 * Add tools to import / analyze tweets about TYPO3 + ecosystem

@@ -6,7 +6,7 @@ namespace TYPO3Analysis\Consumer\Crawler;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class Gerrit extends ConsumerAbstract {
+class GerritProject extends ConsumerAbstract {
 
     /**
      * Gets a description of the consumer
@@ -14,7 +14,7 @@ class Gerrit extends ConsumerAbstract {
      * @return string
      */
     public function getDescription() {
-        return 'Prepares the message queues for a single Gerrit review system';
+        return 'Imports a single project of a Gerrit review system';
     }
 
     /**
@@ -24,8 +24,8 @@ class Gerrit extends ConsumerAbstract {
      * @return void
      */
     public function initialize() {
-        $this->setQueue('crawler.gerrit');
-        $this->setRouting('crawler.gerrit');
+        $this->setQueue('crawler.gerritproject');
+        $this->setRouting('crawler.gerritproject');
     }
 
     /**
@@ -44,7 +44,7 @@ class Gerrit extends ConsumerAbstract {
 
             $msg = 'Gerrit config file "%s" does not exist.';
             $msg = sprintf($msg, $messageData->configFile);
-            throw new \Exception($msg, 1369437363);
+            throw new \Exception($msg, 1369592629);
         }
 
         $project = $messageData->project;
@@ -58,58 +58,32 @@ class Gerrit extends ConsumerAbstract {
         $gerrieDataService = \Gerrie\Helper\Factory::getDataService($gerrieConfig, $project);
 
         $gerrie = new \Gerrie\Gerrie($gerrieDatabase, $gerrieDataService, $projectConfig);
+        $gerrie->setOutput($this->getLogger());
+
         $gerritHost = $gerrieDataService->getHost();
-        $gerritServerId = $gerrie->proceedServer($project, $gerritHost);
+        $gerritProject = $gerrie->getGerritProjectById($messageData->serverId, $messageData->projectId);
 
-        $this->getLogger()->info('Requesting projects', array('host' => $gerritHost));
+        $context = array(
+            'serverId' => $messageData->serverId,
+            'projectId' => $messageData->projectId
+        );
+        if ($gerritProject === false) {
+            $this->getLogger()->critical('Gerrit project does not exists in database', $context);
 
-        $projects = $gerrieDataService->getProjects();
-
-        if ($projects === null) {
-            $this->getLogger()->info('No projects available');
-            return;
+            $msg = 'Gerrit project "%s" does not exists on server "%s" in database.';
+            $msg = sprintf($msg, $messageData->projectId, $messageData->serverId);
+            throw new \Exception($msg, 1369593942);
         }
 
-        $parentMapping = array();
-        foreach($projects as $name => $info) {
-            $projectId = $gerrie->importProject($name, $info, $parentMapping);
+        $this->getLogger()->info('Start importing of changesets for Gerrit project', $context);
 
-            $context = array(
-                'projectName' => $name,
-                'projectId' => $projectId
-            );
-            $this->getLogger()->info('Add project to message queue "crawler"', $context);
+        $gerrie->proceedChangesetsOfProject($gerritHost, $gerritProject);
 
-            $this->addFurtherMessageToQueue($project, $gerritServerId, $projectId, $messageData->configFile);
-        }
-
-        $this->getLogger()->info('Set correct project parent child relation');
-
-        $gerrie->proceedProjectParentChildRelations($parentMapping);
+        $this->getLogger()->info('Import of changesets for Gerrit project successful', $context);
 
         $this->acknowledgeMessage($message);
 
         return null;
-    }
-
-    /**
-     * Adds new messages to queue system to import a single gerrit project
-     *
-     * @param string    $project
-     * @param integer   $serverId
-     * @param integer   $projectId
-     * @param string    $configFile
-     * @return void
-     */
-    private function addFurtherMessageToQueue($project, $serverId, $projectId, $configFile) {
-        $message = array(
-            'project' => $project,
-            'projectId' => $projectId,
-            'serverId' => $serverId,
-            'configFile' => $configFile
-        );
-
-        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'crawler.gerritproject', 'crawler.gerritproject');
     }
 
     /**
