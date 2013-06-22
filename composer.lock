@@ -169,20 +169,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phploc.git",
-                "reference": "f1e39eeaa3e0ab84a2f3fac653cf2efe0159bad9"
+                "reference": "1cf26347dfd58c9350b3f045f986db99b6fcae35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/f1e39eeaa3e0ab84a2f3fac653cf2efe0159bad9",
-                "reference": "f1e39eeaa3e0ab84a2f3fac653cf2efe0159bad9",
+                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/1cf26347dfd58c9350b3f045f986db99b6fcae35",
+                "reference": "1cf26347dfd58c9350b3f045f986db99b6fcae35",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "sebastian/finder-facade": ">=1.0.5",
-                "sebastian/git": ">=1.0.0@dev",
+                "sebastian/finder-facade": ">=1.1.0",
+                "sebastian/git": ">=1.0.0",
                 "sebastian/version": ">=1.0.0",
-                "symfony/finder": ">=2.1.2",
                 "zetacomponents/console-tools": "dev-master"
             },
             "bin": [
@@ -207,7 +206,7 @@
             ],
             "description": "A tool for quickly measuring the size of a PHP project.",
             "homepage": "https://github.com/sebastianbergmann/phploc",
-            "time": "2013-05-24 05:27:38"
+            "time": "2013-06-20 14:18:01"
         },
         {
             "name": "psr/log",
@@ -253,12 +252,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/finder-facade.git",
-                "reference": "3b8387d64a6653414b9afbf0e23f421ae010c6bf"
+                "reference": "1.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/finder-facade/zipball/3b8387d64a6653414b9afbf0e23f421ae010c6bf",
-                "reference": "3b8387d64a6653414b9afbf0e23f421ae010c6bf",
+                "url": "https://api.github.com/repos/sebastianbergmann/finder-facade/zipball/1.1.0",
+                "reference": "1.1.0",
                 "shasum": ""
             },
             "require": {
@@ -284,7 +283,7 @@
             ],
             "description": "FinderFacade is a convenience wrapper for Symfony's Finder component.",
             "homepage": "https://github.com/sebastianbergmann/finder-facade",
-            "time": "2013-03-01 11:49:09"
+            "time": "2013-05-28 06:10:03"
         },
         {
             "name": "sebastian/git",
@@ -292,12 +291,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/git.git",
-                "reference": "c5d8eaa11fb32df00ea26303cea4b6a3ae2ab810"
+                "reference": "1.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/git/zipball/c5d8eaa11fb32df00ea26303cea4b6a3ae2ab810",
-                "reference": "c5d8eaa11fb32df00ea26303cea4b6a3ae2ab810",
+                "url": "https://api.github.com/repos/sebastianbergmann/git/zipball/1.0.0",
+                "reference": "1.0.0",
                 "shasum": ""
             },
             "require": {
@@ -330,7 +329,7 @@
             "keywords": [
                 "git"
             ],
-            "time": "2013-05-22 17:14:39"
+            "time": "2013-05-29 10:07:56"
         },
         {
             "name": "sebastian/version",
@@ -338,12 +337,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/version.git",
-                "reference": "1d2f0e9bc9bc771244550106d4de029948182303"
+                "reference": "1.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/version/zipball/1d2f0e9bc9bc771244550106d4de029948182303",
-                "reference": "1d2f0e9bc9bc771244550106d4de029948182303",
+                "url": "https://api.github.com/repos/sebastianbergmann/version/zipball/1.0.1",
+                "reference": "1.0.1",
                 "shasum": ""
             },
             "type": "library",
@@ -365,7 +364,7 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
-            "time": "2013-04-17 10:55:54"
+            "time": "2013-05-29 10:02:00"
         },
         {
             "name": "symfony/class-loader",
@@ -657,12 +656,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/videlalvaro/php-amqplib.git",
-                "reference": "3b819524fbded73c97b1014c80d522e2e3f7de06"
+                "reference": "v2.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/3b819524fbded73c97b1014c80d522e2e3f7de06",
-                "reference": "3b819524fbded73c97b1014c80d522e2e3f7de06",
+                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/v2.1.0",
+                "reference": "v2.1.0",
                 "shasum": ""
             },
             "require": {
@@ -691,7 +690,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2013-05-23 14:26:02"
+            "time": "2013-06-17 19:25:27"
         },
         {
             "name": "zetacomponents/base",
