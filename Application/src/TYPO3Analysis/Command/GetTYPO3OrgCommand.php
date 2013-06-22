@@ -121,6 +121,12 @@ class GetTYPO3OrgCommand extends Command {
             }
 
             foreach ($data['releases'] as $releaseVersion => $releaseData) {
+
+                // Temp. fix for http://forge.typo3.org/issues/49337
+                if (strpos($releaseData['url']['tar'], 'snapshot')) {
+                    continue;
+                }
+
                 // If the current version already in database, skip it
                 $versionRecord = $this->getVersionFromDatabase($releaseVersion);
 
