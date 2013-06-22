@@ -3,28 +3,28 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "12f5fac94786b9288223138196e829eb",
+    "hash": "490c9f65cca43ce2052c216f5525de24",
     "packages": [
         {
-            "name": "andygrunwald/Gerrie",
+            "name": "andygrunwald/gerrie",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/andygrunwald/Gerrie.git",
-                "reference": "6644e2aaaa0525e249e6c7cd4af2453bb836aaf6"
+                "reference": "963e0c8ccd59c1809fbbcb84c02beb6ae301b828"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/6644e2aaaa0525e249e6c7cd4af2453bb836aaf6",
-                "reference": "6644e2aaaa0525e249e6c7cd4af2453bb836aaf6",
+                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/963e0c8ccd59c1809fbbcb84c02beb6ae301b828",
+                "reference": "963e0c8ccd59c1809fbbcb84c02beb6ae301b828",
                 "shasum": ""
             },
             "require": {
-                "kriswallsmith/buzz": "v0.9",
+                "kriswallsmith/buzz": "v0.10",
                 "php": ">=5.3.0",
-                "symfony/class-loader": "v2.2.1",
-                "symfony/console": "v2.2.1",
-                "symfony/yaml": "v2.2.1"
+                "symfony/class-loader": "2.3.*",
+                "symfony/console": "2.3.*",
+                "symfony/yaml": "2.3.*"
             },
             "type": "library",
             "autoload": {
@@ -32,6 +32,9 @@
                     "Gerrie": "src/"
                 }
             },
+            "license": [
+                "MIT"
+            ],
             "authors": [
                 {
                     "name": "Andy Grunwald",
@@ -48,23 +51,23 @@
                 "Review"
             ],
             "support": {
-                "source": "https://github.com/andygrunwald/Gerrie/tree/master",
-                "issues": "https://github.com/andygrunwald/Gerrie/issues"
+                "issues": "https://github.com/andygrunwald/Gerrie/issues",
+                "source": "https://github.com/andygrunwald/Gerrie/tree/master"
             },
-            "time": "2013-05-26 20:05:36"
+            "time": "2013-06-22 16:40:38"
         },
         {
             "name": "kriswallsmith/buzz",
-            "version": "v0.9",
+            "version": "v0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/Buzz.git",
-                "reference": "v0.9"
+                "reference": "v0.10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/Buzz/zipball/v0.9",
-                "reference": "v0.9",
+                "url": "https://api.github.com/repos/kriswallsmith/Buzz/zipball/v0.10",
+                "reference": "v0.10",
                 "shasum": ""
             },
             "require": {
@@ -99,7 +102,7 @@
                 "curl",
                 "http client"
             ],
-            "time": "2013-02-19 00:26:38"
+            "time": "2013-05-19 03:41:15"
         },
         {
             "name": "monolog/monolog",
@@ -169,12 +172,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phploc.git",
-                "reference": "1cf26347dfd58c9350b3f045f986db99b6fcae35"
+                "reference": "dc7a6729cac148123b5c44f6e747441196a6b752"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/1cf26347dfd58c9350b3f045f986db99b6fcae35",
-                "reference": "1cf26347dfd58c9350b3f045f986db99b6fcae35",
+                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/dc7a6729cac148123b5c44f6e747441196a6b752",
+                "reference": "dc7a6729cac148123b5c44f6e747441196a6b752",
                 "shasum": ""
             },
             "require": {
@@ -206,7 +209,7 @@
             ],
             "description": "A tool for quickly measuring the size of a PHP project.",
             "homepage": "https://github.com/sebastianbergmann/phploc",
-            "time": "2013-06-20 14:18:01"
+            "time": "2013-06-22 11:19:07"
         },
         {
             "name": "psr/log",
@@ -368,17 +371,17 @@
         },
         {
             "name": "symfony/class-loader",
-            "version": "v2.2.1",
+            "version": "v2.3.1",
             "target-dir": "Symfony/Component/ClassLoader",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ClassLoader.git",
-                "reference": "v2.2.1"
+                "reference": "v2.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ClassLoader/zipball/v2.2.1",
-                "reference": "v2.2.1",
+                "url": "https://api.github.com/repos/symfony/ClassLoader/zipball/v2.3.1",
+                "reference": "v2.3.1",
                 "shasum": ""
             },
             "require": {
@@ -390,7 +393,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -414,30 +417,36 @@
             ],
             "description": "Symfony ClassLoader Component",
             "homepage": "http://symfony.com",
-            "time": "2013-03-19 08:32:26"
+            "time": "2013-05-24 17:54:44"
         },
         {
             "name": "symfony/console",
-            "version": "v2.2.1",
+            "version": "v2.3.1",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "v2.2.1"
+                "reference": "v2.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/v2.2.1",
-                "reference": "v2.2.1",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/v2.3.1",
+                "reference": "v2.3.1",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
+            "require-dev": {
+                "symfony/event-dispatcher": ">=2.1,<3.0"
+            },
+            "suggest": {
+                "symfony/event-dispatcher": ""
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -461,21 +470,21 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-03-19 20:48:08"
+            "time": "2013-06-11 07:15:14"
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v2.2.1",
+            "version": "v2.3.1",
             "target-dir": "Symfony/Component/DomCrawler",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler.git",
-                "reference": "v2.2.1"
+                "reference": "v2.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/v2.2.1",
-                "reference": "v2.2.1",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/v2.3.1",
+                "reference": "v2.3.1",
                 "shasum": ""
             },
             "require": {
@@ -485,12 +494,12 @@
                 "symfony/css-selector": ">=2.0,<3.0"
             },
             "suggest": {
-                "symfony/css-selector": "2.2.*"
+                "symfony/css-selector": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -514,21 +523,21 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "http://symfony.com",
-            "time": "2013-04-01 08:05:23"
+            "time": "2013-06-11 07:15:14"
         },
         {
             "name": "symfony/finder",
-            "version": "v2.2.1",
+            "version": "v2.3.1",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "v2.2.1"
+                "reference": "v2.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/v2.2.1",
-                "reference": "v2.2.1",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/v2.3.1",
+                "reference": "v2.3.1",
                 "shasum": ""
             },
             "require": {
@@ -537,7 +546,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -561,21 +570,21 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2013-04-01 07:51:50"
+            "time": "2013-06-02 12:05:51"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.2.1",
+            "version": "v2.3.1",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "v2.2.1"
+                "reference": "v2.3.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/v2.2.1",
-                "reference": "v2.2.1",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/v2.3.1",
+                "reference": "v2.3.1",
                 "shasum": ""
             },
             "require": {
@@ -584,7 +593,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -608,7 +617,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2013-03-23 07:49:54"
+            "time": "2013-05-10 18:12:13"
         },
         {
             "name": "theseer/fdomdocument",
@@ -652,7 +661,7 @@
         },
         {
             "name": "videlalvaro/php-amqplib",
-            "version": "dev-master",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/videlalvaro/php-amqplib.git",
@@ -830,7 +839,6 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
-        "videlalvaro/php-amqplib": 20,
         "phploc/phploc": 20,
         "andygrunwald/gerrie": 20
     },

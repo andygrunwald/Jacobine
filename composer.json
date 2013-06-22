@@ -6,16 +6,16 @@
         }
     ],
     "require": {
-        "videlalvaro/php-amqplib": "dev-master",
-        "kriswallsmith/buzz": "v0.9",
-        "symfony/class-loader": "v2.2.1",
-        "symfony/yaml": "v2.2.1",
-        "symfony/console": "v2.2.1",
-        "symfony/finder": "v2.2.1",
-        "symfony/dom-crawler": "v2.2.1",
+        "videlalvaro/php-amqplib": "v2.1.0",
+        "kriswallsmith/buzz": "v0.10",
+        "symfony/class-loader": "v2.3.1",
+        "symfony/yaml": "v2.3.1",
+        "symfony/console": "v2.3.1",
+        "symfony/finder": "v2.3.1",
+        "symfony/dom-crawler": "v2.3.1",
         "phploc/phploc": "dev-master",
         "monolog/monolog": "1.5.0",
-        "andygrunwald/Gerrie": "dev-master"
+        "andygrunwald/gerrie": "dev-master"
     },
     "minimum-stability": "dev",
     "config": {
