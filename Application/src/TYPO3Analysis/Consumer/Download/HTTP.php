@@ -66,7 +66,7 @@ class HTTP extends ConsumerAbstract {
         $targetFile = $targetDir . $fileName;
 
         // If the file already there do not download it again
-        if (file_exists($targetTempFile) === true && $record['checksum_tar_md5'] && md5_file($targetFile) === $record['checksum_tar_md5']) {
+        if (file_exists($targetFile) === true && $record['checksum_tar_md5'] && md5_file($targetFile) === $record['checksum_tar_md5']) {
             $this->setVersionAsDownloadedInDatabase($record['id']);
             $this->acknowledgeMessage($message);
             $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetFile);
