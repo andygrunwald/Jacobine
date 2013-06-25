@@ -5,8 +5,8 @@ run_list "recipe[python]",
 		 "recipe[mysql::server]",
 		 "recipe[mysql::client]",
 		 "recipe[php]",
-		 "recipe[php::module_curl]",
-		 "recipe[php::module_mysql]",
+		 "recipe[jolicode-php::ext-curl]",
+		 "recipe[jolicode-php::ext-mysql]",
 		 "recipe[jolicode-php::ext-pdo]",
 		 "recipe[composer]"
 

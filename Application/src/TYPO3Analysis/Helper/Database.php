@@ -14,6 +14,24 @@ class Database {
     protected $handle = null;
 
     /**
+     * Last used statement
+     *
+     * @var \PDOStatement
+     */
+    protected $lastStatement = null;
+
+    /**
+     * Credentials for connecting with the database
+     *
+     * @var array
+     */
+    protected $credentials = array(
+        'dsn' => null,
+        'username' => null,
+        'password' => null
+    );
+
+    /**
      * Constructor to initialize the database connection
      *
      * @param string    $host
@@ -21,11 +39,77 @@ class Database {
      * @param string    $username
      * @param string    $password
      * @param string    $database
-     * @void
+     * @return void
      */
     public function __construct($host, $port, $username, $password, $database) {
+        $this->connect($host, $port, $username, $password, $database);
+    }
+
+    /**
+     * Connects to the database
+     *
+     * @param string    $host
+     * @param integer   $port
+     * @param string    $username
+     * @param string    $password
+     * @param string    $database
+     * @return void
+     */
+    public function connect($host, $port, $username, $password, $database) {
         $dsn = 'mysql:host=' . $host . ';port=' . intval($port) . ';dbname=' . $database;
+        $this->reconnect($dsn, $username, $password);
+        $this->setCredentials($dsn, $username, $password);
+    }
+
+    /**
+     * Reconnects to the database
+     *
+     * @param string   $dsn
+     * @param string   $username
+     * @param string   $password
+     * @return void
+     */
+    protected function reconnect($dsn, $username, $password) {
         $this->handle = new \PDO($dsn, $username, $password);
+    }
+
+    /**
+     * Sets the database connection credentials
+     *
+     * @param string   $dsn
+     * @param string   $username
+     * @param string   $password
+     * @return void
+     */
+    private function setCredentials($dsn, $username, $password) {
+        $this->credentials['dsn'] = $dsn;
+        $this->credentials['username'] = $username;
+        $this->credentials['password'] = $password;
+    }
+
+    /**
+     * Sets the last used PDOStatement
+     *
+     * @param \PDOStatement $statement
+     * @return void
+     */
+    protected function setLastStatement(\PDOStatement $statement) {
+        $this->lastStatement = $statement;
+        $errorInfo = $statement->errorInfo();
+        if ($errorInfo[1]) {
+            $message = 'Database error: %s (%d)';
+            $message = sprintf($message, $errorInfo[2], $errorInfo[1]);
+            throw new \Exception($message, 1372191636);
+        }
+    }
+
+    /**
+     * Gets the last statement
+     *
+     * @return null|\PDOStatement
+     */
+    protected function getLastStatement() {
+        return $this->lastStatement;
     }
 
     /**
@@ -35,6 +119,26 @@ class Database {
      */
     protected function getHandle() {
         return $this->handle;
+    }
+
+    /**
+     * Reconnects to the MySQL server.
+     * The connection can be lost if the mysql.connection_timeout or default_socket_timeout is to low.
+     * This is a RabbitMQ consumer library, this means this are long running processes.
+     * In the long time the connection can be lost.
+     *
+     * This can be the case if the download of a HTTP package is to slow (e.g. due to a slow bandwith).
+     *
+     * @return void
+     */
+    protected function checkIfReconnectIsNecessary() {
+        $statement = $this->getHandle()->query('SELECT 1');
+        $errorInfo = $statement->errorInfo();
+
+        // MySQL server has gone away ... automatic reconnect
+        if ($errorInfo[1] == 2006) {
+            $this->reconnect($this->credentials['dsn'], $this->credentials['username'], $this->credentials['password']);
+        }
     }
 
     /**
@@ -89,9 +193,8 @@ class Database {
             $query .= ' LIMIT ' . $limit;
         }
 
-        $statement = $this->getHandle()->prepare($query);
-        $statement->execute($prepareParts);
-        $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $this->executeStatement($query, $prepareParts);
+        $result = $this->getLastStatement()->fetchAll(\PDO::FETCH_ASSOC);
 
         return $result;
     }
@@ -111,8 +214,7 @@ class Database {
         }
 
         $query = 'INSERT INTO ' . $table . ' (' . implode(',', array_keys($data)) . ') VALUES (' . implode(',', array_keys($preparedValues)) . ')';
-        $statement = $this->getHandle()->prepare($query);
-        $statement->execute($preparedValues);
+        $this->executeStatement($query, $preparedValues);
 
         return $this->getHandle()->lastInsertId();
     }
@@ -134,9 +236,7 @@ class Database {
             UPDATE ' . $table . '
             SET ' . $update . '
             WHERE ' . $where;
-
-        $statement = $this->getHandle()->prepare($query);
-        $result = $statement->execute($prepareParts);
+        $result = $this->executeStatement($query, $prepareParts);
 
         return $result;
     }
@@ -154,9 +254,23 @@ class Database {
         $query = '
             DELETE FROM ' . $table . '
             WHERE ' . $where;
+        $result = $this->executeStatement($query, $prepareWhereParts);
 
+        return $result;
+    }
+
+    /**
+     * Executes a single database statement
+     *
+     * @param string    $query
+     * @param array     $preparedParts
+     * @return bool
+     */
+    private function executeStatement($query, array $preparedParts) {
+        $this->checkIfReconnectIsNecessary();
         $statement = $this->getHandle()->prepare($query);
-        $result = $statement->execute($prepareWhereParts);
+        $result = $statement->execute($preparedParts);
+        $this->setLastStatement($statement);
 
         return $result;
     }
