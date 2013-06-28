@@ -89,18 +89,34 @@ class Database {
 
     /**
      * Sets the last used PDOStatement
+     * Returns if the database connection was reconnected or not.
+     * True = reconnected
+     * False = not reconnected
      *
      * @param \PDOStatement $statement
-     * @return void
+     * @return bool
+     * @throws \Exception
      */
     protected function setLastStatement(\PDOStatement $statement) {
         $this->lastStatement = $statement;
         $errorInfo = $statement->errorInfo();
-        if ($errorInfo[1]) {
+
+        // MySQL server has gone away ... automatic reconnect
+        // The connection can be lost if the mysql.connection_timeout or default_socket_timeout is to low.
+        // This is a RabbitMQ consumer library, this means this are long running processes.
+        // In the long time the connection can be lost.
+        // This can be the case if the download of a HTTP package is to slow (e.g. due to a slow bandwith).
+        if ($errorInfo[1] && $errorInfo[1] == 2006) {
+            $this->reconnect($this->credentials['dsn'], $this->credentials['username'], $this->credentials['password']);
+            return true;
+
+        } elseif ($errorInfo[1]) {
             $message = 'Database error: %s (%d)';
             $message = sprintf($message, $errorInfo[2], $errorInfo[1]);
             throw new \Exception($message, 1372191636);
         }
+
+        return false;
     }
 
     /**
@@ -119,26 +135,6 @@ class Database {
      */
     protected function getHandle() {
         return $this->handle;
-    }
-
-    /**
-     * Reconnects to the MySQL server.
-     * The connection can be lost if the mysql.connection_timeout or default_socket_timeout is to low.
-     * This is a RabbitMQ consumer library, this means this are long running processes.
-     * In the long time the connection can be lost.
-     *
-     * This can be the case if the download of a HTTP package is to slow (e.g. due to a slow bandwith).
-     *
-     * @return void
-     */
-    protected function checkIfReconnectIsNecessary() {
-        $statement = $this->getHandle()->query('SELECT 1');
-        $errorInfo = $statement->errorInfo();
-
-        // MySQL server has gone away ... automatic reconnect
-        if ($errorInfo[1] == 2006) {
-            $this->reconnect($this->credentials['dsn'], $this->credentials['username'], $this->credentials['password']);
-        }
     }
 
     /**
@@ -267,10 +263,13 @@ class Database {
      * @return bool
      */
     private function executeStatement($query, array $preparedParts) {
-        $this->checkIfReconnectIsNecessary();
         $statement = $this->getHandle()->prepare($query);
         $result = $statement->execute($preparedParts);
-        $this->setLastStatement($statement);
+
+        $reconnected = $this->setLastStatement($statement);
+        if ($reconnected === true) {
+            $result = $this->executeStatement($query, $preparedParts);
+        }
 
         return $result;
     }
