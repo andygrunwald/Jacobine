@@ -172,12 +172,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phploc.git",
-                "reference": "dc7a6729cac148123b5c44f6e747441196a6b752"
+                "reference": "ccf4221911a336869b84ecc6b8e16d072fae9ec3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/dc7a6729cac148123b5c44f6e747441196a6b752",
-                "reference": "dc7a6729cac148123b5c44f6e747441196a6b752",
+                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/ccf4221911a336869b84ecc6b8e16d072fae9ec3",
+                "reference": "ccf4221911a336869b84ecc6b8e16d072fae9ec3",
                 "shasum": ""
             },
             "require": {
@@ -209,7 +209,7 @@
             ],
             "description": "A tool for quickly measuring the size of a PHP project.",
             "homepage": "https://github.com/sebastianbergmann/phploc",
-            "time": "2013-06-22 11:19:07"
+            "time": "2013-07-03 06:35:21"
         },
         {
             "name": "psr/log",
@@ -625,12 +625,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/fDOMDocument.git",
-                "reference": "Release-1.4.1"
+                "reference": "Release-1.4.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/Release-1.4.1",
-                "reference": "Release-1.4.1",
+                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/Release-1.4.2",
+                "reference": "Release-1.4.2",
                 "shasum": ""
             },
             "require": {
@@ -657,7 +657,7 @@
             ],
             "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convinience and to simplify the usage of DOM.",
             "homepage": "https://github.com/theseer/fDOMDocument",
-            "time": "2013-04-27 20:28:00"
+            "time": "2013-06-30 12:26:39"
         },
         {
             "name": "videlalvaro/php-amqplib",
