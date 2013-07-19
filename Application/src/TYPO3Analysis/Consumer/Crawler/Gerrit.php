@@ -33,18 +33,16 @@ class Gerrit extends ConsumerAbstract {
      *
      * @param \stdClass $message
      * @return null|void
-     * @throws \Exception
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
 
         if (file_exists($messageData->configFile) === false) {
             $context = array('file' => $messageData->configFile);
             $this->getLogger()->critical('Gerrit config file does not exist', $context);
-
-            $msg = 'Gerrit config file "%s" does not exist.';
-            $msg = sprintf($msg, $messageData->configFile);
-            throw new \Exception($msg, 1369437363);
+            $this->acknowledgeMessage($message);
+            return;
         }
 
         $project = $messageData->project;

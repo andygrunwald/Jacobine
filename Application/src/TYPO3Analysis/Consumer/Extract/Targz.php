@@ -32,9 +32,10 @@ class Targz extends ConsumerAbstract {
      * The logic of the consumer
      *
      * @param \stdClass     $message
-     * @throws \Exception
+     * @return void
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
         $context = array('versionId' => $messageData->versionId);
@@ -56,9 +57,8 @@ class Targz extends ConsumerAbstract {
         // If there is no file, exit here
         if (file_exists($messageData->filename) !== true) {
             $this->getLogger()->critical('File does not exist', array('filename' => $messageData->filename));
-
-            $msg = sprintf('File %s does not exist', $messageData->filename);
-            throw new \Exception($msg, 1367152938);
+            $this->acknowledgeMessage($this->getMessage());
+            return;
         }
 
         $pathInfo = pathinfo($messageData->filename);
@@ -73,9 +73,8 @@ class Targz extends ConsumerAbstract {
 
         if (is_dir($targetFolder) === false) {
             $this->getLogger()->critical('Directory can`t be created', array('folder' => $folder));
-
-            $msg = sprintf('Directory "%s" can`t be created', $folder);
-            throw new \Exception($msg, 1367010680);
+            $this->acknowledgeMessage($this->getMessage());
+            return;
         }
 
         $context = array(
@@ -86,7 +85,12 @@ class Targz extends ConsumerAbstract {
 
         $command = 'tar -xzf ' . escapeshellarg($messageData->filename) . ' -C ' . escapeshellarg($targetFolder);
 
-        $this->executeCommand($command);
+        try {
+            $this->executeCommand($command);
+        } catch (\Exception $e) {
+            $this->acknowledgeMessage($this->getMessage());
+            return;
+        }
 
         // Set the correct access rights. 0777 is a bit to much ;)
         chmod($targetFolder, 0755);

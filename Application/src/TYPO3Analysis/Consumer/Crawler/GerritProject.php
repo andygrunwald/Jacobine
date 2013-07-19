@@ -33,18 +33,16 @@ class GerritProject extends ConsumerAbstract {
      *
      * @param \stdClass $message
      * @return null|void
-     * @throws \Exception
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
 
         if (file_exists($messageData->configFile) === false) {
             $context = array('file' => $messageData->configFile);
             $this->getLogger()->critical('Gerrit config file does not exist', $context);
-
-            $msg = 'Gerrit config file "%s" does not exist.';
-            $msg = sprintf($msg, $messageData->configFile);
-            throw new \Exception($msg, 1369592629);
+            $this->acknowledgeMessage($message);
+            return;
         }
 
         $project = $messageData->project;
@@ -69,10 +67,8 @@ class GerritProject extends ConsumerAbstract {
         );
         if ($gerritProject === false) {
             $this->getLogger()->critical('Gerrit project does not exists in database', $context);
-
-            $msg = 'Gerrit project "%s" does not exists on server "%s" in database.';
-            $msg = sprintf($msg, $messageData->projectId, $messageData->serverId);
-            throw new \Exception($msg, 1369593942);
+            $this->acknowledgeMessage($message);
+            return;
         }
 
         $this->getLogger()->info('Start importing of changesets for Gerrit project', $context);

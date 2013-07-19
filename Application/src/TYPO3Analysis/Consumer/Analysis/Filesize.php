@@ -32,9 +32,10 @@ class Filesize extends ConsumerAbstract {
      * The logic of the consumer
      *
      * @param \stdClass     $message
-     * @throws \Exception
+     * @return void
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
 
@@ -58,7 +59,8 @@ class Filesize extends ConsumerAbstract {
         if (file_exists($messageData->filename) !== true) {
             $context = array('filename' => $messageData->filename);
             $this->getLogger()->critical('File does not exist', $context);
-            throw new \Exception(sprintf('File %s does not exist', $messageData->filename), 1367152522);
+            $this->acknowledgeMessage($this->getMessage());
+            return;
         }
 
         $this->getLogger()->info('Getting filesize', array('filename' => $messageData->filename));

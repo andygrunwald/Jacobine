@@ -32,22 +32,28 @@ class CVSAnaly extends ConsumerAbstract {
      * The logic of the consumer
      *
      * @param \stdClass     $message
-     * @throws \Exception
+     * @return void
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->checkoutDir) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->checkoutDir));
-            $msg = sprintf('Directory %s does not exist', $messageData->checkoutDir);
-            throw new \Exception($msg, 1369435176);
+            $this->acknowledgeMessage($message);
+            return;
         }
 
         $this->getLogger()->info('Analyze directory with CVSAnaly', array('directory' => $messageData->checkoutDir));
 
         $command = $this->buildCVSAnalyCommand($this->getConfig(), $messageData->project, $messageData->checkoutDir);
-        $this->executeCommand($command);
+        try {
+            $this->executeCommand($command);
+        } catch (\Exception $e) {
+            $this->acknowledgeMessage($this->getMessage());
+            return;
+        }
 
         $this->acknowledgeMessage($message);
     }

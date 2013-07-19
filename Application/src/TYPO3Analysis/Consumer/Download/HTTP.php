@@ -32,9 +32,10 @@ class HTTP extends ConsumerAbstract {
      * The logic of the consumer
      *
      * @param \stdClass     $message
-     * @throws \Exception
+     * @return void
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
 
         $record = $this->getVersionFromDatabase($messageData->versionId);
@@ -81,10 +82,20 @@ class HTTP extends ConsumerAbstract {
 
         // We download the file with wget, because we get a progress bar for free :)
         $command = 'wget ' . escapeshellarg($record['url_tar']) . ' --output-document=' . escapeshellarg($targetTempFile);
-        $this->executeCommand($command);
+
+        try {
+            $this->executeCommand($command);
+        } catch (\Exception $e) {
+            $this->acknowledgeMessage($this->getMessage());
+            return;
+        }
 
         // If there is no file after download, exit here
-        $this->checkIfFileExistsAfterDownload($targetTempFile);
+        if (file_exists($targetTempFile) !== true) {
+            $this->getLogger()->critical('File does not exist after download', array('targetFile' => $targetTempFile));
+            $this->acknowledgeMessage($this->getMessage());
+            return;
+        }
 
         if (is_dir($targetDir) === false) {
             mkdir($targetDir, 0777, true);
@@ -103,10 +114,8 @@ class HTTP extends ConsumerAbstract {
                 'fileHash' => $md5Hash
             );
             $this->getLogger()->critical($msg, $context);
-
-            $msg = 'Checksums for file "%s" are not equal (Database: %s, File hash: %s)';
-            $msg = sprintf($msg, $targetFile, $record['checksum_tar_md5'], $md5Hash);
-            throw new \Exception($msg, 1366830113);
+            $this->acknowledgeMessage($this->getMessage());
+            return;
         }
 
         // Update the 'downloaded' flag in database
@@ -165,13 +174,5 @@ class HTTP extends ConsumerAbstract {
     private function setVersionAsDownloadedInDatabase($id) {
         $this->getDatabase()->updateRecord('versions', array('downloaded' => 1), array('id' => $id));
         $this->getLogger()->info('Set version as downloaded', array('versionId' => $id));
-    }
-
-    private function checkIfFileExistsAfterDownload($targetFile) {
-        if (file_exists($targetFile) !== true) {
-            $this->getLogger()->critical('File does not exist after download', array('targetFile' => $targetFile));
-            $msg = sprintf('File %s does not exist after download', $targetFile);
-            throw new \Exception($msg, 1366829810);
-        }
     }
 }

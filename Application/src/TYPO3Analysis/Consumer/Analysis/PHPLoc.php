@@ -32,9 +32,10 @@ class PHPLoc extends ConsumerAbstract {
      * The logic of the consumer
      *
      * @param \stdClass     $message
-     * @throws \Exception
+     * @return void
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
 
         // If there is already a phploc record in database, exit here
@@ -47,8 +48,8 @@ class PHPLoc extends ConsumerAbstract {
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
-            $msg = sprintf('Directory %s does not exist', $messageData->directory);
-            throw new \Exception($msg, 1367168690);
+            $this->acknowledgeMessage($message);
+            return;
         }
 
         $dirToAnalyze = rtrim($messageData->directory, DIRECTORY_SEPARATOR);
@@ -66,12 +67,17 @@ class PHPLoc extends ConsumerAbstract {
 
         $this->getLogger()->info('Analyze with PHPLoc', array('directory' => $dirToAnalyze));
 
-        $this->executeCommand($command);
+        try {
+            $this->executeCommand($command);
+        } catch (\Exception $e) {
+            $this->acknowledgeMessage($this->getMessage());
+            return;
+        }
 
         if (file_exists($xmlFile) === false) {
             $this->getLogger()->critical('phploc result file does not exist!', array('file' => $xmlFile));
-            $msg = sprintf('phploc result file "%s" does not exist!', $xmlFile);
-            throw new \Exception($msg, 1367169297);
+            $this->acknowledgeMessage($message);
+            return;
         }
 
         // Get PHPLoc results and save them

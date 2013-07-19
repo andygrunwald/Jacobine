@@ -45,12 +45,18 @@ class Gitweb extends ConsumerAbstract {
      * The logic of the consumer
      *
      * @param \stdClass     $message
-     * @throws \Exception
+     * @return void
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $content = $this->getContent($this->browser, $messageData->url);
+        try {
+            $content = $this->getContent($this->browser, $messageData->url);
+        } catch(\Exception $e) {
+            $this->acknowledgeMessage($message);
+            return;
+        }
 
         $crawler = new Crawler($content);
         /* @var $crawler \Symfony\Component\DomCrawler\Crawler */

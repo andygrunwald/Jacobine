@@ -32,9 +32,10 @@ class Git extends ConsumerAbstract {
      * The logic of the consumer
      *
      * @param \stdClass     $message
-     * @throws \Exception
+     * @return void
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
 
         $record = $this->getGitwebFromDatabase($messageData->id);
@@ -43,14 +44,6 @@ class Git extends ConsumerAbstract {
         // If the record does not exists in the database exit here
         if ($record === false) {
             $this->getLogger()->info('Record does not exist in gitweb table', $context);
-            $this->acknowledgeMessage($message);
-            return;
-        }
-
-        // @todo can`t clone ever TYPO3 repo.
-        // @see https://twitter.com/andygrunwald/status/338017474916270080
-        // @see https://twitter.com/andygrunwald/status/338017618604736512
-        if (strstr($record['git'], 'SingleSignOn')) {
             $this->acknowledgeMessage($message);
             return;
         }
@@ -65,10 +58,16 @@ class Git extends ConsumerAbstract {
         $checkoutPath .= str_replace($search, $replace, $record['name']);
 
         $gitDirInCheckoutPath = $checkoutPath . DIRECTORY_SEPARATOR . '.git';
-        if (is_dir($checkoutPath) === true && is_dir($gitDirInCheckoutPath) === true) {
-            $this->gitUpdate($config['Application']['Git']['Binary'], $checkoutPath);
-        } else {
-            $this->gitClone($config['Application']['Git']['Binary'], $record['git'], $checkoutPath);
+
+        try {
+            if (is_dir($checkoutPath) === true && is_dir($gitDirInCheckoutPath) === true) {
+                $this->gitUpdate($config['Application']['Git']['Binary'], $checkoutPath);
+            } else {
+                $this->gitClone($config['Application']['Git']['Binary'], $record['git'], $checkoutPath);
+            }
+        } catch (\Exception $e) {
+            $this->acknowledgeMessage($this->getMessage());
+            return;
         }
 
         $this->acknowledgeMessage($message);

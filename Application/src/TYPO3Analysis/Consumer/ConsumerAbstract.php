@@ -56,6 +56,32 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     private $logger = null;
 
     /**
+     * Message of consumer
+     *
+     * @var \stdClass
+     */
+    private $message = null;
+
+    /**
+     * Sets the message
+     *
+     * @param \stdClass $message
+     * @return void
+     */
+    public function setMessage($message) {
+        $this->message = $message;
+    }
+
+    /**
+     * Gets the message
+     *
+     * @return \stdClass
+     */
+    public function getMessage() {
+        return $this->message;
+    }
+
+    /**
      * Gets the queue name
      *
      * @return string

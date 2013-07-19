@@ -32,19 +32,25 @@ class GithubLinguist extends ConsumerAbstract {
      * The logic of the consumer
      *
      * @param \stdClass     $message
-     * @throws \Exception
+     * @return void
      */
     public function process($message) {
+        $this->setMessage($message);
         $messageData = json_decode($message->body);
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
-            $msg = sprintf('Directory %s does not exist', $messageData->directory);
-            throw new \Exception($msg, 1368805591);
+            $this->acknowledgeMessage($this->getMessage());
+            return;
         }
 
-        $this->clearLinguistRecordsFromDatabase($messageData->versionId);
+        try {
+            $this->clearLinguistRecordsFromDatabase($messageData->versionId);
+        } catch(\Exception $e) {
+            $this->acknowledgeMessage($message);
+            return;
+        }
 
         $config = $this->getConfig();
         $workingDir = $config['Application']['GithubLinguist']['WorkingDir'];
@@ -56,18 +62,29 @@ class GithubLinguist extends ConsumerAbstract {
 
         $this->getLogger()->info('Analyze with github-linguist', array('directory' => $dirToAnalyze));
 
-        $output = $this->executeCommand($command);
+        try {
+            $output = $this->executeCommand($command);
+        } catch (\Exception $e) {
+            $this->acknowledgeMessage($this->getMessage());
+            return;
+        }
 
         if ($output === array()) {
             $msg = 'github-linguist returns no result';
             $this->getLogger()->critical($msg);
-            throw new \Exception($msg, 1367169297);
+            $this->acknowledgeMessage($this->getMessage());
+            return;
         }
 
         $parsedResults = $this->parseGithubLinguistResults($output);
 
         // Store the github linguist results
-        $this->storeLinguistDataInDatabase($messageData->versionId, $parsedResults);
+        try {
+            $this->storeLinguistDataInDatabase($messageData->versionId, $parsedResults);
+        } catch (\Exception $e) {
+            $this->acknowledgeMessage($message);
+            return;
+        }
 
         $this->acknowledgeMessage($message);
     }
