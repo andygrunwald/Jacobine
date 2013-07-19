@@ -14,7 +14,16 @@ MySQL:
 Logging:
   Consumer:
     LogPath: /var/log/application/
-    Logger: [SymfonyConsoleHandler, StreamHandler]
+    Logger:
+      Console:
+        Class: SymfonyConsoleHandler
+      Stream:
+        Class: StreamHandler
+        Path: /var/log/application/
+      ErrorStream:
+        Class: StreamHandler
+        Path: /var/log/application/
+        MinLogLevel: Error
 
 Application:
   Git:

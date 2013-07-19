@@ -161,8 +161,9 @@ class ConsumerCommand extends Command {
         $logger->pushProcessor(new MemoryUsageProcessor());
         $logger->pushProcessor(new MemoryPeakUsageProcessor());
 
-        foreach ($loggerConfig['Logger'] as $loggerClass) {
-            $loggerInstance = $this->getLoggerInstance($loggerClass, $loggerConfig, $channelName, $output);
+        foreach ($loggerConfig['Logger'] as $loggerName => $singleLoggerConfig) {
+            $logFileName = $channelName . '-' . strtolower($loggerName);
+            $loggerInstance = $this->getLoggerInstance($singleLoggerConfig['Class'], $singleLoggerConfig, $logFileName, $output);
             $logger->pushHandler($loggerInstance);
         }
 
@@ -174,19 +175,28 @@ class ConsumerCommand extends Command {
      *
      * @param string            $loggerClass
      * @param array             $loggerConfig
-     * @param string            $consumer
+     * @param string            $logFileName
      * @param OutputInterface   $output
      * @return \Monolog\Handler\StreamHandler|SymfonyConsoleHandler
      * @throws \Exception
      */
-    private function getLoggerInstance($loggerClass, $loggerConfig, $consumer, OutputInterface $output) {
+    private function getLoggerInstance($loggerClass, $loggerConfig, $logFileName, OutputInterface $output) {
         switch ($loggerClass) {
 
             // Monolog StreamHandler
             case 'StreamHandler':
-                $stream = rtrim($loggerConfig['LogPath'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-                $stream .= $consumer . '.log';
-                $instance = new \Monolog\Handler\StreamHandler($stream);
+                $stream = rtrim($loggerConfig['Path'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+                $stream .= $logFileName . '.log';
+
+                // Determine LogLevel
+                $minLogLevel = Logger::DEBUG;
+                $configuredLogLevel = (array_key_exists('MinLogLevel', $loggerConfig)) ? $loggerConfig['MinLogLevel']: null;
+                $configuredLogLevel = strtoupper($configuredLogLevel);
+                if ($configuredLogLevel && constant('Monolog\Logger::' . $configuredLogLevel)) {
+                    $minLogLevel = constant('Monolog\Logger::' . $configuredLogLevel);
+                }
+
+                $instance = new \Monolog\Handler\StreamHandler($stream, $minLogLevel);
                 break;
 
             // Custom SymfonyConsoleHandler
