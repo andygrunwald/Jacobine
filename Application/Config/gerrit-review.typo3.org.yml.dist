@@ -57,7 +57,7 @@ Gerrit:
       Username:
       # SSH-Key which will be used for the SSH-API
       # Optional
-      KeyFile: /home/vagrant/.ssh/id_rsa.pub
+      KeyFile: /home/vagrant/.ssh/id_rsa
 
     # Usage of the REST API (currently not fully implemented)
     # Only to reveive the API query limit

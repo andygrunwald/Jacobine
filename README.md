@@ -18,10 +18,17 @@ To use this project you have to install the listed requirements:
 
 ## Installation
 
-* Fork it (`git clone git://github.com/andygrunwald/TYPO3-Analytics.git`)
-* Switch to forked directory (`cd TYPO3-Analytics`)
-* Install Chef cookboos via librarian (`librarian-chef install`)
+Short note: The SSH-Steps are necessary to use Gerrit as data source
+
+* Clone it (`git clone git://github.com/andygrunwald/TYPO3-Analytics.git`)
+* Switch to cloned directory (`cd TYPO3-Analytics`)
+* Install Chef cookbooks via librarian-chef (`librarian-chef install`)
+* Copy `Application/Config/gerrit-review.typo3.org.yml.dist` to `Application/Config/gerrit-review.typo3.org.yml` and add your settings (`cp Application/Config/gerrit-review.typo3.org.yml.dist Application/Config/gerrit-review.typo3.org.yml`)
+* Copy your SSH public and private key to `Application/Config/` for Gerrit SSH API
 * Start the application (`vagrant up`)
+* Login into the virtual machine (`vagrant ssh`)
+* Enter `ssh-add` and enter the passphrase for your SSH key
+* Execute `/usr/bin/ssh -i /home/vagrant/.ssh/id_rsa -p 29418 {CONFIGURED USERNAME}@review.typo3.org gerrit` to add server finger print to known ssh server
 * Enjoy
 
 ## The concept / workflow
@@ -30,7 +37,7 @@ To reach the mentioned goal above many tasks are to do like collect, save, cross
 Some tasks of this may take some time. The concept of a message queue system is a good solution for this.
 This is one of the main reasons why this project use [RabbitMQ](http://www.rabbitmq.com/) as a main service.
 
-This project provide different parts which are linked / works with RabbitMq as producer or customer.
+This project provide different parts which are linked / works with RabbitMQ as producer or customer.
 
 ### Producer
 
@@ -72,19 +79,16 @@ The login credentials for the used services
 
 ## Todos
 
-* Add more information about installation of this setup
-* Add installation command sequence with ssh-add, private / public key and known_hosts entry for review.typo3.org
 * Add tools to import / analyze the TYPO3 mailing lists
 * Add tools to import / analyze the TYPO3 bugtracker
 * Add tools to import / analyze tweets about TYPO3 + ecosystem
 * Add tools to import / analyze irc logs
 * Add tools to import / analyze jenkins activity
-* Setup a TYPO3 instance to create graphs about the data
 * Install `supervisord` (or something similiar) and start RabbitMQ consumer at system startup
 
 ## Contributing
 
-* Fork it (`git clone git://github.com/andygrunwald/TYPO3-Analytics.git`)
+* Fork and clone it (`git clone git://github.com/andygrunwald/TYPO3-Analytics.git`)
 * Create your feature branch (`git checkout -b my-new-feature`)
 * Make your changes (hack hack hack)
 * Commit your changes (`git commit -am 'Add some feature'`)
