@@ -27,9 +27,13 @@ override_attributes(
 		:disabled_users => ['guest']
 	},
 	:repositoryhandler => {
+		:repository => "git://github.com/andygrunwald/RepositoryHandler.git",
+		:version => "analysis",
 		:destination => '/var/tools/MetricsGrimoire/RepositoryHandler'
 	},
 	:cvsanaly => {
+		:repository => "git://github.com/andygrunwald/CVSAnalY.git",
+		:version => "analysis",
 		:destination => '/var/tools/MetricsGrimoire/CVSAnalY'
 	},
 	:github_linguist => {
