@@ -47,7 +47,14 @@ class CVSAnaly extends ConsumerAbstract {
 
         $this->getLogger()->info('Analyze directory with CVSAnaly', array('directory' => $messageData->checkoutDir));
 
-        $command = $this->buildCVSAnalyCommand($this->getConfig(), $messageData->project, $messageData->checkoutDir);
+        try {
+            $extensions = $this->getCVSAnalyExtensions($this->getConfig());
+        } catch (\Exception $e) {
+            $this->acknowledgeMessage($this->getMessage());
+            return;
+        }
+
+        $command = $this->buildCVSAnalyCommand($this->getConfig(), $messageData->project, $messageData->checkoutDir, $extensions);
         try {
             $this->executeCommand($command);
         } catch (\Exception $e) {
@@ -64,9 +71,10 @@ class CVSAnaly extends ConsumerAbstract {
      * @param array     $config
      * @param string    $project
      * @param string    $directory
+     * @param string    $extensions
      * @return string
      */
-    private function buildCVSAnalyCommand($config, $project, $directory) {
+    private function buildCVSAnalyCommand($config, $project, $directory, $extensions) {
         $projectConfig = $config['Projects'][$project];
 
         $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
@@ -75,9 +83,30 @@ class CVSAnaly extends ConsumerAbstract {
         $command .= ' --db-user ' . escapeshellarg($config['MySQL']['Username']);
         $command .= ' --db-password ' . escapeshellarg($config['MySQL']['Password']);
         $command .= ' --db-database ' . escapeshellarg($projectConfig['MySQL']['Database']);
+        $command .= ' --extensions ' . escapeshellarg($extensions);
         $command .= ' --metrics-all';
         $command .= ' ' . escapeshellarg($directory);
 
         return $command;
+    }
+
+    /**
+     * Returns all active and usable extensions of CVSAnaly
+     *
+     * @param array $config
+     * @return string
+     */
+    private function getCVSAnalyExtensions($config) {
+        $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
+        $command .= ' --list-extensions';
+
+        $extensions = $this->executeCommand($command);
+        $extensions = implode('', $extensions);
+
+        if ($extensions) {
+            $extensions = str_replace(' ', '', $extensions);
+        }
+
+        return $extensions;
     }
 }
