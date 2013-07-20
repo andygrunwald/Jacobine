@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/andygrunwald/Gerrie.git",
-                "reference": "963e0c8ccd59c1809fbbcb84c02beb6ae301b828"
+                "reference": "d9feca176c2b907c98e05265841da83f8bb56e75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/963e0c8ccd59c1809fbbcb84c02beb6ae301b828",
-                "reference": "963e0c8ccd59c1809fbbcb84c02beb6ae301b828",
+                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/d9feca176c2b907c98e05265841da83f8bb56e75",
+                "reference": "d9feca176c2b907c98e05265841da83f8bb56e75",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "issues": "https://github.com/andygrunwald/Gerrie/issues",
                 "source": "https://github.com/andygrunwald/Gerrie/tree/master"
             },
-            "time": "2013-06-22 16:40:38"
+            "time": "2013-07-19 18:09:07"
         },
         {
             "name": "kriswallsmith/buzz",
