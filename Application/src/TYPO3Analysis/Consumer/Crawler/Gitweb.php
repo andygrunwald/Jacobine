@@ -67,7 +67,11 @@ class Gitweb extends ConsumerAbstract {
 
             $href = $node->getAttribute('href');
             $detailUrl = rtrim($messageData->url, '/') . $href;
-            $content = $this->getContent($this->browser, $detailUrl);
+            try {
+                $content = $this->getContent($this->browser, $detailUrl);
+            } catch (\Exception $e) {
+                continue;
+            }
 
             $detailCrawler = new Crawler($content);
             /* @var $detailCrawler \Symfony\Component\DomCrawler\Crawler */
