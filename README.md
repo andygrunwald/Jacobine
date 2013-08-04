@@ -84,6 +84,7 @@ The login credentials for the used services
 * Add tools to import / analyze tweets about TYPO3 + ecosystem
 * Add tools to import / analyze irc logs
 * Add tools to import / analyze jenkins activity
+* Refactor logging with the usage of rabbitmq
 * Install `supervisord` (or something similiar) and start RabbitMQ consumer at system startup
 
 ## Contributing
