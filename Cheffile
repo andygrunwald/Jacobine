@@ -19,7 +19,6 @@ cookbook "cvsanaly",
 cookbook 'mysql'
 cookbook 'rabbitmq'
 cookbook 'php'
-cookbook 'jolicode-php'
 cookbook 'composer'
 
 cookbook "typo3analytics",
