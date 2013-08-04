@@ -83,7 +83,7 @@ class CVSAnaly extends ConsumerAbstract {
         $command .= ' --db-user ' . escapeshellarg($config['MySQL']['Username']);
         $command .= ' --db-password ' . escapeshellarg($config['MySQL']['Password']);
         $command .= ' --db-database ' . escapeshellarg($projectConfig['MySQL']['Database']);
-        $command .= ' --extensions ' . escapeshellarg($extensions);
+        //$command .= ' --extensions ' . escapeshellarg($extensions);
         $command .= ' --metrics-all';
         $command .= ' ' . escapeshellarg($directory);
 
