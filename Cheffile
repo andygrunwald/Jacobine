@@ -19,7 +19,9 @@ cookbook "cvsanaly",
 cookbook 'mysql'
 cookbook 'rabbitmq'
 cookbook 'php'
-cookbook 'composer'
+cookbook 'composer',
+	:git => "https://github.com/andygrunwald/chef-composer",
+	:ref => "develop"
 
 cookbook "typo3analytics",
 	:git => "https://github.com/andygrunwald/chef-typo3analytics",
