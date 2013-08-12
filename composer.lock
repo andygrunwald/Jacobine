@@ -299,12 +299,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/git.git",
-                "reference": "63ab73f5d63c77e29249962a2a6ee68d01999b5a"
+                "reference": "9df628c8c27522ba122f85d4ca8f13bd6fe8b9aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/git/zipball/63ab73f5d63c77e29249962a2a6ee68d01999b5a",
-                "reference": "63ab73f5d63c77e29249962a2a6ee68d01999b5a",
+                "url": "https://api.github.com/repos/sebastianbergmann/git/zipball/9df628c8c27522ba122f85d4ca8f13bd6fe8b9aa",
+                "reference": "9df628c8c27522ba122f85d4ca8f13bd6fe8b9aa",
                 "shasum": ""
             },
             "require": {
@@ -337,7 +337,7 @@
             "keywords": [
                 "git"
             ],
-            "time": "2013-08-04 12:02:16"
+            "time": "2013-08-09 07:12:19"
         },
         {
             "name": "sebastian/version",
