@@ -11,6 +11,9 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder "Application", "/var/application"
 
+  # Fix for immediate updating the apt-get ressources
+  config.vm.provision :shell, :inline => 'apt-get update'
+
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = "Chef/cookbooks"
     chef.roles_path = "Chef/roles"
