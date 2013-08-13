@@ -172,12 +172,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phploc.git",
-                "reference": "e6d12df502f5cbadfa9a2b826cb64b6e32f6bec2"
+                "reference": "188c14edcd72b2aa48ba39a1ad14931b427d305e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/e6d12df502f5cbadfa9a2b826cb64b6e32f6bec2",
-                "reference": "e6d12df502f5cbadfa9a2b826cb64b6e32f6bec2",
+                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/188c14edcd72b2aa48ba39a1ad14931b427d305e",
+                "reference": "188c14edcd72b2aa48ba39a1ad14931b427d305e",
                 "shasum": ""
             },
             "require": {
@@ -214,7 +214,7 @@
             ],
             "description": "A tool for quickly measuring the size of a PHP project.",
             "homepage": "https://github.com/sebastianbergmann/phploc",
-            "time": "2013-08-05 15:17:09"
+            "time": "2013-08-13 06:25:33"
         },
         {
             "name": "psr/log",
