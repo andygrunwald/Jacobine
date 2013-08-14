@@ -50,6 +50,11 @@ class CVSAnaly extends ConsumerAbstract {
         try {
             $extensions = $this->getCVSAnalyExtensions($this->getConfig());
         } catch (\Exception $e) {
+            $context = array(
+                'dir' => $messageData->checkoutDir
+            );
+            $this->getLogger()->error('CVSAnaly extensions can not be received', $context);
+
             $this->acknowledgeMessage($this->getMessage());
             return;
         }
@@ -58,6 +63,12 @@ class CVSAnaly extends ConsumerAbstract {
         try {
             $this->executeCommand($command);
         } catch (\Exception $e) {
+            $context = array(
+                'dir' => $messageData->checkoutDir,
+                'message' => $e->getMessage()
+            );
+            $this->getLogger()->error('CVSAnaly command failed', $context);
+
             $this->acknowledgeMessage($this->getMessage());
             return;
         }
@@ -83,7 +94,7 @@ class CVSAnaly extends ConsumerAbstract {
         $command .= ' --db-user ' . escapeshellarg($config['MySQL']['Username']);
         $command .= ' --db-password ' . escapeshellarg($config['MySQL']['Password']);
         $command .= ' --db-database ' . escapeshellarg($projectConfig['MySQL']['Database']);
-        //$command .= ' --extensions ' . escapeshellarg($extensions);
+        $command .= ' --extensions ' . escapeshellarg($extensions);
         $command .= ' --metrics-all';
         $command .= ' ' . escapeshellarg($directory);
 
@@ -100,8 +111,13 @@ class CVSAnaly extends ConsumerAbstract {
         $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
         $command .= ' --list-extensions';
 
-        $extensions = $this->executeCommand($command);
-        $extensions = implode('', $extensions);
+        // Hardcoded extensions, because some extensions may not work correct
+        // With this way we can enable / disable various extensions
+        // and know that all works fine :)
+        // Later on we try to fix all extensions in CVSAnaly to work with all repositories
+        // $extensions = $this->executeCommand($command);
+        //$extensions = implode('', $extensions);
+        $extensions = 'FileTypes, MessageWords, Metrics, Months, Weeks';
 
         if ($extensions) {
             $extensions = str_replace(' ', '', $extensions);
