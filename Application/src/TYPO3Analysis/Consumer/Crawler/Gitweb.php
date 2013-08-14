@@ -54,6 +54,12 @@ class Gitweb extends ConsumerAbstract {
         try {
             $content = $this->getContent($this->browser, $messageData->url);
         } catch(\Exception $e) {
+            $context = array(
+                'url' => $messageData->url,
+                'message' => $e->getMessage()
+            );
+            $this->getLogger()->error('Reading gitweb frontend failed', $context);
+
             $this->acknowledgeMessage($message);
             return;
         }
