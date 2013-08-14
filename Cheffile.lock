@@ -44,6 +44,7 @@ SITE
     runit (1.1.6)
       build-essential (>= 0.0.0)
       yum (>= 0.0.0)
+    vim (1.0.2)
     windows (1.10.0)
       chef_handler (>= 0.0.0)
     xfs (1.1.0)
@@ -110,4 +111,5 @@ DEPENDENCIES
   repositoryhandler (>= 0)
   supervisor (>= 0)
   typo3analytics (>= 0)
+  vim (>= 0)
 
