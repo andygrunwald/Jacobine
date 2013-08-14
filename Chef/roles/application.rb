@@ -3,6 +3,7 @@ description "The application role. Installs the required application stack"
 
 run_list "recipe[repositoryhandler]",
 		 "recipe[cvsanaly]",
+		 "recipe[supervisor]",
 		 "recipe[rabbitmq]",
 		 "recipe[rabbitmq::mgmt_console]",
 		 "recipe[rabbitmq::virtualhost_management]",
@@ -11,6 +12,11 @@ run_list "recipe[repositoryhandler]",
 		 "recipe[github-linguist]"
 
 override_attributes(
+	:supervisor => {
+		:inet_port => "*:9001",
+		:inet_username => "analysis",
+		:inet_password => "analysis"
+	},
 	:rabbitmq => {
 		:virtualhosts => ['analysis'],
 		:enabled_users => [{

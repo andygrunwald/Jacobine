@@ -28,3 +28,11 @@ cookbook "typo3analytics",
 cookbook "github-linguist",
 	:git => "https://github.com/andygrunwald/chef-github-linguist",
 	:ref => "master"
+
+cookbook "supervisor",
+	:git => "https://github.com/andygrunwald/supervisor",
+	:ref => "develop"
+	# Activate the original repository if the bug was fixed
+	# https://github.com/opscode-cookbooks/supervisor/pull/19
+	#:git => "https://github.com/opscode-cookbooks/supervisor",
+	#:ref => "master"

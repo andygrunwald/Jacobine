@@ -69,11 +69,24 @@ The login credentials for the used services
 
 ### MySQL
 
+* Port: 3306
 * Username: root
 * Password:
 
+* Port: 3306
+* Username: analysis
+* Passwort: analysis
+* Database: typo3
+
 ### RabbitMQ
 
+* Port: 15672
+* Username: analysis
+* Password: analysis
+
+### Supervisord
+
+* Port: 9001
 * Username: analysis
 * Password: analysis
 
@@ -85,7 +98,6 @@ The login credentials for the used services
 * Add tools to import / analyze irc logs
 * Add tools to import / analyze jenkins activity
 * Refactor logging with the usage of rabbitmq
-* Install `supervisord` (or something similiar) and start RabbitMQ consumer at system startup
 
 ## Contributing
 
