@@ -66,6 +66,12 @@ class Git extends ConsumerAbstract {
                 $this->gitClone($config['Application']['Git']['Binary'], $record['git'], $checkoutPath);
             }
         } catch (\Exception $e) {
+            $context = array(
+                'dir' => $checkoutPath,
+                'message' => $e->getMessage()
+            );
+            $this->getLogger()->error('Git clone / pull failed', $context);
+
             $this->acknowledgeMessage($this->getMessage());
             return;
         }
@@ -102,6 +108,7 @@ class Git extends ConsumerAbstract {
      * @return array
      */
     private function gitUpdate($git, $checkoutPath) {
+        $pullOutput = array();
         chdir($checkoutPath);
 
         $context = array(
@@ -109,14 +116,46 @@ class Git extends ConsumerAbstract {
         );
         $this->getLogger()->info('Updating git repository', $context);
 
-        $command = escapeshellcmd($git);
-        $command .= ' checkout master';
-        $this->executeCommand($command);
+        // Empty repositories must not have a master branch
+        if ($this->hasRepositoryAMasterBranch($git) === true) {
+            $this->getLogger()->info('"master" branch detected', $context);
+
+            $command = escapeshellcmd($git);
+            $command .= ' checkout master';
+            $this->executeCommand($command);
+
+            $command = escapeshellcmd($git);
+            $command .= ' pull';
+            $pullOutput = $this->executeCommand($command);
+        }
+
+        return $pullOutput;
+    }
+
+    /**
+     * Checks if the git repository got a master branch
+     *
+     * @param string    $git
+     * @return bool
+     */
+    private function hasRepositoryAMasterBranch($git) {
+        $result = false;
 
         $command = escapeshellcmd($git);
-        $command .= ' pull';
+        $command .= ' branch';
+        $output = $this->executeCommand($command);
 
-        return $this->executeCommand($command);
+        foreach ($output as $branchName) {
+            // Remove the "*" which means that the current branch is chosen
+            $branchName = str_replace('*', '', $branchName);
+            $branchName = trim($branchName);
+            if ($branchName == 'master') {
+                $result = true;
+                break;
+            }
+        }
+
+        return $result;
     }
 
     /**
