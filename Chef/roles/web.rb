@@ -17,7 +17,7 @@ override_attributes(
 		:server_debian_password => '',
 		:server_repl_password => '',
 		:tunable => {
-			:max_allowed_packet => "50M"
+			:max_allowed_packet => "100M"
 		}
 	},
 	:php => {
