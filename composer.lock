@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ef6f451ba5717da27716aa170407732b",
+    "hash": "da69765eba402d9f758d532a94932abe",
     "packages": [
         {
             "name": "andygrunwald/gerrie",
@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/andygrunwald/Gerrie.git",
-                "reference": "e0d48862e69ff7373f845eef6f41c6487bfc22fd"
+                "reference": "e0066d6d0fa692ffd6b7a0072420e1724fe96249"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/e0d48862e69ff7373f845eef6f41c6487bfc22fd",
-                "reference": "e0d48862e69ff7373f845eef6f41c6487bfc22fd",
+                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/e0066d6d0fa692ffd6b7a0072420e1724fe96249",
+                "reference": "e0066d6d0fa692ffd6b7a0072420e1724fe96249",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "issues": "https://github.com/andygrunwald/Gerrie/issues",
                 "source": "https://github.com/andygrunwald/Gerrie/tree/master"
             },
-            "time": "2013-08-14 16:43:23"
+            "time": "2013-08-15 17:40:42"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -165,6 +165,31 @@
                 "psr-3"
             ],
             "time": "2013-07-28 22:38:30"
+        },
+        {
+            "name": "pdepend/pdepend",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pdepend/pdepend.git",
+                "reference": "1.1.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/1.1.1",
+                "reference": "1.1.1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.3"
+            },
+            "bin": [
+                "src/bin/pdepend"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Official version of pdepend to be handled with Composer",
+            "time": "2013-07-25 19:23:48"
         },
         {
             "name": "phploc/phploc",

@@ -150,6 +150,7 @@ class Targz extends ConsumerAbstract {
         );
 
         $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'analysis.phploc', 'analysis.phploc');
+        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'analysis.pdepend', 'analysis.pdepend');
         $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'analysis.linguist', 'analysis.linguist');
     }
 }

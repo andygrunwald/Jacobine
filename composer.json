@@ -14,6 +14,7 @@
         "symfony/finder": "v2.3.2",
         "symfony/dom-crawler": "v2.3.2",
         "phploc/phploc": "dev-master",
+        "pdepend/pdepend": "1.1.1",
         "monolog/monolog": "1.6.0",
         "andygrunwald/gerrie": "dev-master"
     },

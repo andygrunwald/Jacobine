@@ -31,6 +31,9 @@ Application:
   PHPLoc:
     Binary: /var/application/vendor/phploc/phploc/composer/bin/phploc
     FilePattern: "*.php,*.inc"
+  PDepend:
+    Binary: /var/application/vendor/pdepend/pdepend/src/bin/pdepend
+    FilePattern: "*.php,*.inc"
   CVSAnaly:
     Binary: /var/tools/MetricsGrimoire/CVSAnalY/cvsanaly2
   GithubLinguist:
