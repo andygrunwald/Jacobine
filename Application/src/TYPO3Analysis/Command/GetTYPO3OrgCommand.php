@@ -116,7 +116,9 @@ class GetTYPO3OrgCommand extends Command {
             // This is the case where $branch is latest_stable, latest_lts or latest_deprecated
             // We can skip this here
             // @todo update database with this information!
-            if (array_key_exists('releases', $data) === false || is_array($data['releases']) === false) {
+            if (is_array($data) === false
+                || array_key_exists('releases', $data) === false
+                || is_array($data['releases']) === false) {
                 continue;
             }
 
