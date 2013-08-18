@@ -14,13 +14,6 @@ use Symfony\Component\Finder\Finder;
 class ListConsumerCommand extends Command {
 
     /**
-     * Base path of library
-     *
-     * @var String
-     */
-    const BASE_PATH = '/var/application/src/';
-
-    /**
      * Base namespace of consumer
      *
      * @var String
@@ -104,10 +97,13 @@ class ListConsumerCommand extends Command {
         $finder = new Finder();
         $finder->files()->in($path)->name('*.php')->notName('*Abstract.php')->notName('*Interface.php');
 
+        $basePath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+        $basePath = realpath($basePath) . DIRECTORY_SEPARATOR;
+
         foreach ($finder as $file) {
             /* @var $file SplFileInfo */
             $className = $file->getRealpath();
-            $className = str_replace(self::BASE_PATH, '', $className);
+            $className = str_replace($basePath, '', $className);
             $className = substr($className, 0, -4);
             $className = '\\' . str_replace(DIRECTORY_SEPARATOR, '\\', $className);
 
