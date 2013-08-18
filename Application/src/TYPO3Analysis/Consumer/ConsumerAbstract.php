@@ -244,6 +244,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
         $output = array();
         $returnValue = 0;
 
+        $command .= ' 2>&1';
         exec($command, $output, $returnValue);
 
         if ($returnValue > 0) {
