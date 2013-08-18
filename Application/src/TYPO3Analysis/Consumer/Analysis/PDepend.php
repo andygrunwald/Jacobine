@@ -103,5 +103,7 @@ class PDepend extends ConsumerAbstract {
         // @todo add further consumer to parse and store the jDependXml- and summaryXml-file
 
         $this->acknowledgeMessage($message);
+
+        $this->getLogger()->info('Analyze with pDepend ... finished', $context);
     }
 }
