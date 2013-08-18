@@ -85,6 +85,8 @@ class PHPLoc extends ConsumerAbstract {
         $this->storePhpLocDataInDatabase($messageData->versionId, $phpLocResults->children());
 
         $this->acknowledgeMessage($message);
+
+        $this->getLogger()->info('Analyze with PHPLoc ... finished', array('directory' => $dirToAnalyze));
     }
 
     /**
