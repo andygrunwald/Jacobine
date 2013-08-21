@@ -88,6 +88,7 @@ class GetTYPO3OrgCommand extends Command {
         $this->config = Yaml::parse(CONFIG_FILE);
 
         $curlClient = new \Buzz\Client\Curl();
+        $curlClient->setTimeout(intval($this->config['Various']['Requests']['Timeout']));
         $this->browser = new \Buzz\Browser($curlClient);
 
         $config = $this->config['MySQL'];

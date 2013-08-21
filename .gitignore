@@ -10,4 +10,5 @@ tmp
 Application/Config/gerrit-review.typo3.org.yml
 Application/Config/id_rsa
 Application/Config/id_rsa.pub
+Application/tools
 Application/vendor

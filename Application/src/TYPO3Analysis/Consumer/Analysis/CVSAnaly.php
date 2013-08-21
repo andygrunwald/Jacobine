@@ -61,7 +61,7 @@ class CVSAnaly extends ConsumerAbstract {
 
         $command = $this->buildCVSAnalyCommand($this->getConfig(), $messageData->project, $messageData->checkoutDir, $extensions);
         try {
-            $this->executeCommand($command);
+            $this->executeCommand($command, true, array('PYTHONPATH'));
         } catch (\Exception $e) {
             $context = array(
                 'dir' => $messageData->checkoutDir,
@@ -88,7 +88,11 @@ class CVSAnaly extends ConsumerAbstract {
     private function buildCVSAnalyCommand($config, $project, $directory, $extensions) {
         $projectConfig = $config['Projects'][$project];
 
+        $configFile = rtrim(dirname(CONFIG_FILE), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $configFile .= $projectConfig['CVSAnaly']['ConfigFile'];
+
         $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
+        $command .= ' --config-file ' . escapeshellarg($configFile);
         $command .= ' --db-driver ' . escapeshellarg('mysql');
         $command .= ' --db-hostname ' . escapeshellarg($config['MySQL']['Host']);
         $command .= ' --db-user ' . escapeshellarg($config['MySQL']['Username']);

@@ -35,9 +35,12 @@ class Gitweb extends ConsumerAbstract {
         $this->setQueue('crawler.gitweb');
         $this->setRouting('crawler.gitweb');
 
+        $config = $this->getConfig();
+
         $curlClient = new \Buzz\Client\Curl();
         $curlClient->setVerifyPeer(false);
         $curlClient->setIgnoreErrors(true);
+        $curlClient->setTimeout(intval($config['Various']['Requests']['Timeout']));
         $this->browser = new \Buzz\Browser($curlClient);
     }
 

@@ -47,7 +47,7 @@ This project provide different parts which are linked / works with RabbitMQ as p
 
 ### Consumer
 
-All consumers are started via the `analysis:consumer`-command of the `console`located in `/var/application`.
+All consumers are started via the `analysis:consumer`-command of the `console`located in `/var/www/analysis/application`.
 E.g. `php console analysis:consumer --project=TYPO3 Extract\\Targz`
 
 * `Analysis\\CVSAnaly`: Executes the CVSAnaly analysis on a given folder and stores the results in database.

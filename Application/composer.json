@@ -20,6 +20,6 @@
     },
     "minimum-stability": "dev",
     "config": {
-        "vendor-dir": "Application/vendor/"
+        "vendor-dir": "vendor/"
     }
 }

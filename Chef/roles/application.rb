@@ -18,6 +18,7 @@ override_attributes(
 		:inet_password => "analysis"
 	},
 	:rabbitmq => {
+		:version => '3.1.5',
 		:virtualhosts => ['analysis'],
 		:enabled_users => [{
 			:name => "analysis",
@@ -35,16 +36,16 @@ override_attributes(
 	:repositoryhandler => {
 		:repository => "git://github.com/andygrunwald/RepositoryHandler.git",
 		:version => "analysis",
-		:destination => '/var/tools/MetricsGrimoire/RepositoryHandler'
+		:destination => '/var/www/analysis/tools/MetricsGrimoire/RepositoryHandler'
 	},
 	:cvsanaly => {
 		:repository => "git://github.com/andygrunwald/CVSAnalY.git",
 		:version => "analysis",
-		:destination => '/var/tools/MetricsGrimoire/CVSAnalY'
+		:destination => '/var/www/analysis/tools/MetricsGrimoire/CVSAnalY'
 	},
 	:github_linguist => {
 		:install_method => "source",
-		:path => "/var/tools/github-linguist",
+		:path => "/var/www/analysis/tools/github-linguist",
 		:repository => "git://github.com/andygrunwald/linguist.git",
 		:branch => "decimal-places-in-output"
 	}

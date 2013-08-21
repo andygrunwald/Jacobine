@@ -236,13 +236,21 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     /**
      * Executes a single command to the system
      *
-     * @param string    $command
-     * @return array
+     * @param string $command
+     * @param bool $withUser
+     * @param array $environmentVarsToAdd
      * @throws \Exception
+     * @return array
      */
-    protected function executeCommand($command) {
+    protected function executeCommand($command, $withUser = true, $environmentVarsToAdd = array()) {
         $output = array();
         $returnValue = 0;
+
+        if ($withUser === true) {
+            $envCommandPart = $this->getEnvironmentVarsCommandPart($environmentVarsToAdd);
+            $userCommandPart = $this->getUserCommandPart();
+            $command = $userCommandPart . ' ' . $envCommandPart . ' ' . $command;
+        }
 
         $command .= ' 2>&1';
         exec($command, $output, $returnValue);
@@ -257,5 +265,40 @@ abstract class ConsumerAbstract implements ConsumerInterface {
         }
 
         return $output;
+    }
+
+    /**
+     * Builds the command part to add environment var settings to sudo command
+     *
+     * @param array $environmentVars
+     * @return string
+     */
+    private function getEnvironmentVarsCommandPart($environmentVars = array()) {
+        $commandPart = array();
+
+        foreach ($environmentVars as $envVar) {
+            $envValue = getenv($envVar);
+
+            if ($envValue) {
+                $commandPart[] = $envVar . '=' . escapeshellarg($envValue);
+            }
+        }
+
+        return implode(',', $commandPart);
+    }
+
+    /**
+     * Builds the command part to execute the command with the same user
+     * as this script
+     *
+     * @return string
+     */
+    private function getUserCommandPart() {
+        $userInformation = posix_getpwuid(posix_geteuid());
+        $username = $userInformation['name'];
+
+        $commandPart = 'sudo -u ' . escapeshellarg($username);
+
+        return $commandPart;
     }
 }

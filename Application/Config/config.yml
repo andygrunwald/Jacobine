@@ -13,31 +13,35 @@ MySQL:
 
 Logging:
   Consumer:
-    LogPath: /var/log/application/
+    LogPath: /var/log/analysis/
     Logger:
       Console:
         Class: SymfonyConsoleHandler
       Stream:
         Class: StreamHandler
-        Path: /var/log/application/
+        Path: /var/log/analysis/
       ErrorStream:
         Class: StreamHandler
-        Path: /var/log/application/
+        Path: /var/log/analysis/
         MinLogLevel: Error
 
 Application:
   Git:
     Binary: /usr/bin/git
   PHPLoc:
-    Binary: /var/application/vendor/phploc/phploc/composer/bin/phploc
+    Binary: /var/www/analysis/vendor/phploc/phploc/composer/bin/phploc
     FilePattern: "*.php,*.inc"
   PDepend:
-    Binary: /var/application/vendor/pdepend/pdepend/src/bin/pdepend
+    Binary: /var/www/analysis/vendor/pdepend/pdepend/src/bin/pdepend
     FilePattern: "*.php,*.inc"
   CVSAnaly:
-    Binary: /var/tools/MetricsGrimoire/CVSAnalY/cvsanaly2
+    Binary: /var/www/analysis/tools/MetricsGrimoire/CVSAnalY/cvsanaly2
   GithubLinguist:
-    WorkingDir: /var/tools/github-linguist
+    WorkingDir: /var/www/analysis/tools/github-linguist
+
+Various:
+  Requests:
+    Timeout: 20
 
 Projects:
   TYPO3:
@@ -45,8 +49,10 @@ Projects:
       Database: typo3
     RabbitMQ:
       Exchange: TYPO3
-    ReleasesPath: /var/data/TYPO3/releases
-    GitCheckoutPath: /var/data/TYPO3/git
+    ReleasesPath: /var/www/analysis-data/TYPO3/releases
+    GitCheckoutPath: /var/www/analysis-data/TYPO3/git
     Gitweb: https://git.typo3.org/
     Gerrit:
       ConfigFile: gerrit-review.typo3.org.yml
+    CVSAnaly:
+      ConfigFile: cvsanaly-config
