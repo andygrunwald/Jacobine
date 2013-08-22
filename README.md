@@ -23,6 +23,7 @@ Short note: The SSH-Steps are necessary to use Gerrit as data source
 * Clone it (`git clone git://github.com/andygrunwald/TYPO3-Analytics.git`)
 * Switch to cloned directory (`cd TYPO3-Analytics`)
 * Install Chef cookbooks via librarian-chef (`librarian-chef install`)
+* Copy `Application/Config/config.yml.dist` to `Application/Config/config.yml` and add your settings (`cp Application/Config/config.yml.dist Application/Config/config.yml`)
 * Copy `Application/Config/gerrit-review.typo3.org.yml.dist` to `Application/Config/gerrit-review.typo3.org.yml` and add your settings (`cp Application/Config/gerrit-review.typo3.org.yml.dist Application/Config/gerrit-review.typo3.org.yml`)
 * Copy your SSH public and private key to `Application/Config/` for Gerrit SSH API
 * Start the application (`vagrant up`)
