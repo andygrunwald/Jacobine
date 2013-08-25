@@ -1,9 +1,9 @@
 .DS_STORE
 .idea
 
-Application/Config/config.yml
-Application/Config/gerrit-review.typo3.org.yml
-Application/Config/id_rsa
-Application/Config/id_rsa.pub
-Application/tools
-Application/vendor
+Config/config.yml
+Config/gerrit-review.typo3.org.yml
+Config/id_rsa
+Config/id_rsa.pub
+tools
+vendor
