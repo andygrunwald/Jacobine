@@ -247,9 +247,10 @@ abstract class ConsumerAbstract implements ConsumerInterface {
         $returnValue = 0;
 
         if ($withUser === true) {
-            $envCommandPart = $this->getEnvironmentVarsCommandPart($environmentVarsToAdd);
+            //$envCommandPart = $this->getEnvironmentVarsCommandPart($environmentVarsToAdd);
             $userCommandPart = $this->getUserCommandPart();
-            $command = $userCommandPart . ' ' . $envCommandPart . ' ' . $command;
+            //$command = $userCommandPart . ' ' . $envCommandPart . ' ' . $command;
+            $command = $userCommandPart . ' -c "' . $command . '"';
         }
 
         $command .= ' 2>&1';
@@ -296,8 +297,7 @@ abstract class ConsumerAbstract implements ConsumerInterface {
     private function getUserCommandPart() {
         $userInformation = posix_getpwuid(posix_geteuid());
         $username = $userInformation['name'];
-
-        $commandPart = 'sudo -u ' . escapeshellarg($username);
+        $commandPart = 'su ' . escapeshellarg($username);
 
         return $commandPart;
     }
