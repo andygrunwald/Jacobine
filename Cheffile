@@ -3,31 +3,25 @@
 
 site 'http://community.opscode.com/api/v1'
 
+# Role: base
 cookbook 'apt'
 cookbook 'build-essential'
-cookbook 'vim'
 cookbook 'git'
-cookbook 'python'
+cookbook 'vim'
 
+# Role: web
+cookbook 'python'
+cookbook 'mysql'
+cookbook 'php'
+cookbook 'composer'
+
+# Role: application
 cookbook "repositoryhandler",
 	:git => "https://github.com/andygrunwald/chef-repositoryhandler",
 	:ref => "master"
 
 cookbook "cvsanaly",
 	:git => "https://github.com/andygrunwald/chef-cvsanaly",
-	:ref => "master"
-
-cookbook 'mysql'
-cookbook 'rabbitmq'
-cookbook 'php'
-cookbook 'composer'
-
-cookbook "typo3analytics",
-	:git => "https://github.com/andygrunwald/chef-typo3analytics",
-	:ref => "master"
-
-cookbook "github-linguist",
-	:git => "https://github.com/andygrunwald/chef-github-linguist",
 	:ref => "master"
 
 cookbook "supervisor",
@@ -37,3 +31,13 @@ cookbook "supervisor",
 	# https://github.com/opscode-cookbooks/supervisor/pull/19
 	#:git => "https://github.com/opscode-cookbooks/supervisor",
 	#:ref => "master"
+
+cookbook 'rabbitmq'
+
+cookbook "typo3analytics",
+	:git => "https://github.com/andygrunwald/chef-typo3analytics",
+	:ref => "master"
+
+cookbook "github-linguist",
+	:git => "https://github.com/andygrunwald/chef-github-linguist",
+	:ref => "master"
