@@ -1,12 +1,6 @@
 .DS_STORE
 .idea
 
-Chef/tmp
-Chef/cookbooks
-tmp
-
-.vagrant
-
 Application/Config/config.yml
 Application/Config/gerrit-review.typo3.org.yml
 Application/Config/id_rsa
