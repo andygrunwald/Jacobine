@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "b59e009257bf3abf5b3300a49d624140",
+    "hash": "b5b43a7ccae00edd17f1c1430e1b0d92",
     "packages": [
         {
             "name": "andygrunwald/gerrie",
@@ -193,16 +193,16 @@
         },
         {
             "name": "phploc/phploc",
-            "version": "dev-master",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phploc.git",
-                "reference": "188c14edcd72b2aa48ba39a1ad14931b427d305e"
+                "reference": "2d81bba7621b5b2c0644525f489fbee3e64ca03d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/188c14edcd72b2aa48ba39a1ad14931b427d305e",
-                "reference": "188c14edcd72b2aa48ba39a1ad14931b427d305e",
+                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/2d81bba7621b5b2c0644525f489fbee3e64ca03d",
+                "reference": "2d81bba7621b5b2c0644525f489fbee3e64ca03d",
                 "shasum": ""
             },
             "require": {
@@ -239,7 +239,7 @@
             ],
             "description": "A tool for quickly measuring the size of a PHP project.",
             "homepage": "https://github.com/sebastianbergmann/phploc",
-            "time": "2013-08-13 06:25:33"
+            "time": "2013-09-04 08:30:10"
         },
         {
             "name": "psr/log",
@@ -401,17 +401,17 @@
         },
         {
             "name": "symfony/class-loader",
-            "version": "v2.3.2",
+            "version": "v2.3.4",
             "target-dir": "Symfony/Component/ClassLoader",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ClassLoader.git",
-                "reference": "fa3394c6fd7e14172c4e54ddf9477f350a2976a8"
+                "reference": "622d370a07321329f5259c6f96d5c636104ad46b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ClassLoader/zipball/fa3394c6fd7e14172c4e54ddf9477f350a2976a8",
-                "reference": "fa3394c6fd7e14172c4e54ddf9477f350a2976a8",
+                "url": "https://api.github.com/repos/symfony/ClassLoader/zipball/622d370a07321329f5259c6f96d5c636104ad46b",
+                "reference": "622d370a07321329f5259c6f96d5c636104ad46b",
                 "shasum": ""
             },
             "require": {
@@ -447,21 +447,21 @@
             ],
             "description": "Symfony ClassLoader Component",
             "homepage": "http://symfony.com",
-            "time": "2013-05-24 17:54:44"
+            "time": "2013-08-13 20:18:00"
         },
         {
             "name": "symfony/console",
-            "version": "v2.3.2",
+            "version": "v2.3.4",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "251dd20d2f8acaf2f7832300eec9a20e9951393c"
+                "reference": "db78f8ff7fc9e28d25ff9a0bf6ddf9f0e35fbbe3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/251dd20d2f8acaf2f7832300eec9a20e9951393c",
-                "reference": "251dd20d2f8acaf2f7832300eec9a20e9951393c",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/db78f8ff7fc9e28d25ff9a0bf6ddf9f0e35fbbe3",
+                "reference": "db78f8ff7fc9e28d25ff9a0bf6ddf9f0e35fbbe3",
                 "shasum": ""
             },
             "require": {
@@ -500,21 +500,21 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-07-11 19:36:36"
+            "time": "2013-08-17 16:34:49"
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v2.3.2",
+            "version": "v2.3.4",
             "target-dir": "Symfony/Component/DomCrawler",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler.git",
-                "reference": "c8f8f06933cff3559bbd8c8833c5224e18d1df8a"
+                "reference": "e05e07fe8958a304b5e135f8e65d4ae6148cf59b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/c8f8f06933cff3559bbd8c8833c5224e18d1df8a",
-                "reference": "c8f8f06933cff3559bbd8c8833c5224e18d1df8a",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/e05e07fe8958a304b5e135f8e65d4ae6148cf59b",
+                "reference": "e05e07fe8958a304b5e135f8e65d4ae6148cf59b",
                 "shasum": ""
             },
             "require": {
@@ -553,21 +553,21 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "http://symfony.com",
-            "time": "2013-07-01 12:24:43"
+            "time": "2013-07-21 12:12:18"
         },
         {
             "name": "symfony/finder",
-            "version": "v2.3.2",
+            "version": "v2.3.4",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "71ced0f8fa27461da26c245ddf6b0e49a6a6c2c4"
+                "reference": "4a0fee5b86f5bbd9dfdc11ec124eba2915737ce1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/71ced0f8fa27461da26c245ddf6b0e49a6a6c2c4",
-                "reference": "71ced0f8fa27461da26c245ddf6b0e49a6a6c2c4",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/4a0fee5b86f5bbd9dfdc11ec124eba2915737ce1",
+                "reference": "4a0fee5b86f5bbd9dfdc11ec124eba2915737ce1",
                 "shasum": ""
             },
             "require": {
@@ -600,21 +600,21 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2013-07-01 12:17:23"
+            "time": "2013-08-13 20:18:00"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.2",
+            "version": "v2.3.4",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "d7e5b5a1e98c37f5cf4dd35fbaa2bfb03f524477"
+                "reference": "5a279f1b5f5e1045a6c432354d9ea727ff3a9847"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/d7e5b5a1e98c37f5cf4dd35fbaa2bfb03f524477",
-                "reference": "d7e5b5a1e98c37f5cf4dd35fbaa2bfb03f524477",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/5a279f1b5f5e1045a6c432354d9ea727ff3a9847",
+                "reference": "5a279f1b5f5e1045a6c432354d9ea727ff3a9847",
                 "shasum": ""
             },
             "require": {
@@ -647,7 +647,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2013-07-11 19:36:36"
+            "time": "2013-08-24 15:26:22"
         },
         {
             "name": "theseer/fdomdocument",
@@ -655,12 +655,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/fDOMDocument.git",
-                "reference": "Release-1.4.2"
+                "reference": "871515e1a48aa216627ad7cbfc3516d0838578e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/Release-1.4.2",
-                "reference": "Release-1.4.2",
+                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/871515e1a48aa216627ad7cbfc3516d0838578e1",
+                "reference": "871515e1a48aa216627ad7cbfc3516d0838578e1",
                 "shasum": ""
             },
             "require": {
@@ -740,7 +740,6 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
-        "phploc/phploc": 20,
         "andygrunwald/gerrie": 20
     },
     "platform": [
