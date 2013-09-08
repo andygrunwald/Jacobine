@@ -8,12 +8,12 @@
     "require": {
         "videlalvaro/php-amqplib": "v2.1.0",
         "kriswallsmith/buzz": "v0.10",
-        "symfony/class-loader": "v2.3.2",
-        "symfony/yaml": "v2.3.2",
-        "symfony/console": "v2.3.2",
-        "symfony/finder": "v2.3.2",
-        "symfony/dom-crawler": "v2.3.2",
-        "phploc/phploc": "dev-master",
+        "symfony/class-loader": "v2.3.4",
+        "symfony/yaml": "v2.3.4",
+        "symfony/console": "v2.3.4",
+        "symfony/finder": "v2.3.4",
+        "symfony/dom-crawler": "v2.3.4",
+        "phploc/phploc": "v2.0.2",
         "pdepend/pdepend": "1.1.1",
         "monolog/monolog": "1.6.0",
         "andygrunwald/gerrie": "dev-master"
