@@ -38,6 +38,8 @@ class PHPLoc extends ConsumerAbstract {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         // If there is already a phploc record in database, exit here
         if ($this->getPhpLocDataFromDatabase($messageData->versionId) !== false) {
             $this->getLogger()->info('Record already analyzed with PHPLoc', array('versionId' =>$messageData->versionId));
@@ -65,7 +67,7 @@ class PHPLoc extends ConsumerAbstract {
         $command .= ' --count-tests --names ' . escapeshellarg($filePattern);
         $command .= ' --log-xml ' . escapeshellarg($xmlFile) . ' ' . escapeshellarg($dirToAnalyze . DIRECTORY_SEPARATOR);
 
-        $this->getLogger()->info('Analyze with PHPLoc', array('directory' => $dirToAnalyze));
+        $this->getLogger()->info('Start analyzing with PHPLoc', array('directory' => $dirToAnalyze));
 
         try {
             $this->executeCommand($command);
@@ -86,7 +88,7 @@ class PHPLoc extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Analyze with PHPLoc ... finished', array('directory' => $dirToAnalyze));
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**

@@ -39,6 +39,8 @@ class Filesize extends ConsumerAbstract {
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
 
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         // If the record does not exists in the database exit here
         if ($record === false) {
             $context = array('versionId' => $messageData->versionId);
@@ -70,6 +72,8 @@ class Filesize extends ConsumerAbstract {
         $this->saveFileSizeOfVersionInDatabase($record['id'], $fileSize);
 
         $this->acknowledgeMessage($message);
+
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**

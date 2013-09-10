@@ -38,6 +38,8 @@ class PDepend extends ConsumerAbstract {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
@@ -79,7 +81,7 @@ class PDepend extends ConsumerAbstract {
         $command .= ' --coderank-mode=inheritance,property,method ' . escapeshellarg($dirToAnalyze . DIRECTORY_SEPARATOR);
 
         $context = array('directory' => $dirToAnalyze);
-        $this->getLogger()->info('Analyze with pDepend', $context);
+        $this->getLogger()->info('Start analyzing with pDepend', $context);
 
         try {
             $this->executeCommand($command);
@@ -104,6 +106,6 @@ class PDepend extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Analyze with pDepend ... finished', $context);
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 }

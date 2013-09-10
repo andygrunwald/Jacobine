@@ -38,6 +38,8 @@ class GithubLinguist extends ConsumerAbstract {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
@@ -87,6 +89,7 @@ class GithubLinguist extends ConsumerAbstract {
         }
 
         $this->acknowledgeMessage($message);
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**

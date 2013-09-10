@@ -38,6 +38,8 @@ class CVSAnaly extends ConsumerAbstract {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->checkoutDir) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->checkoutDir));
@@ -45,7 +47,7 @@ class CVSAnaly extends ConsumerAbstract {
             return;
         }
 
-        $this->getLogger()->info('Analyze directory with CVSAnaly', array('directory' => $messageData->checkoutDir));
+        $this->getLogger()->info('Start analyzing directory with CVSAnaly', array('directory' => $messageData->checkoutDir));
 
         try {
             $extensions = $this->getCVSAnalyExtensions($this->getConfig());
@@ -74,6 +76,8 @@ class CVSAnaly extends ConsumerAbstract {
         }
 
         $this->acknowledgeMessage($message);
+
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**
