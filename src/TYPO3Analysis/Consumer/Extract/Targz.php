@@ -37,6 +37,9 @@ class Targz extends ConsumerAbstract {
     public function process($message) {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
+
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         $record = $this->getVersionFromDatabase($messageData->versionId);
         $context = array('versionId' => $messageData->versionId);
 
@@ -88,6 +91,11 @@ class Targz extends ConsumerAbstract {
         try {
             $this->executeCommand($command);
         } catch (\Exception $e) {
+            $context = array(
+                'command' => $command,
+                'message' => $e->getMessage()
+            );
+            $this->getLogger()->critical('Extract command failed', $context);
             $this->acknowledgeMessage($this->getMessage());
             return;
         }
@@ -102,6 +110,8 @@ class Targz extends ConsumerAbstract {
 
         // Adds new messages to queue: analyze phploc
         $this->addFurtherMessageToQueue($messageData->project, $record['id'], $folder . $targetFolder);
+
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**
