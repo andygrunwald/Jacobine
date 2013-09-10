@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/andygrunwald/Gerrie.git",
-                "reference": "e0066d6d0fa692ffd6b7a0072420e1724fe96249"
+                "reference": "550c117c366c76a99476dae5f722a8ca72f3c780"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/e0066d6d0fa692ffd6b7a0072420e1724fe96249",
-                "reference": "e0066d6d0fa692ffd6b7a0072420e1724fe96249",
+                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/550c117c366c76a99476dae5f722a8ca72f3c780",
+                "reference": "550c117c366c76a99476dae5f722a8ca72f3c780",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "issues": "https://github.com/andygrunwald/Gerrie/issues",
                 "source": "https://github.com/andygrunwald/Gerrie/tree/master"
             },
-            "time": "2013-08-15 17:40:42"
+            "time": "2013-09-10 16:25:03"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -682,7 +682,7 @@
                 {
                     "name": "Arne Blankerts",
                     "email": "arne@blankerts.de",
-                    "role": "lead"
+                    "role": "Developer"
                 }
             ],
             "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convinience and to simplify the usage of DOM.",
