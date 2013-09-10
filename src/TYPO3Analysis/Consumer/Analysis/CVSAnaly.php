@@ -120,8 +120,8 @@ class CVSAnaly extends ConsumerAbstract {
         // and know that all works fine :)
         // Later on we try to fix all extensions in CVSAnaly to work with all repositories
         // $extensions = $this->executeCommand($command);
-        //$extensions = implode('', $extensions);
-        $extensions = 'FileTypes, MessageWords, Months, Weeks';
+        // $extensions = implode('', $extensions);
+        $extensions = 'Months, Weeks';
 
         if ($extensions) {
             $extensions = str_replace(' ', '', $extensions);
