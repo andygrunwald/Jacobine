@@ -54,6 +54,8 @@ class Gitweb extends ConsumerAbstract {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         try {
             $content = $this->getContent($this->browser, $messageData->url);
         } catch(\Exception $e) {
@@ -62,7 +64,6 @@ class Gitweb extends ConsumerAbstract {
                 'message' => $e->getMessage()
             );
             $this->getLogger()->error('Reading gitweb frontend failed', $context);
-
             $this->acknowledgeMessage($message);
             return;
         }
@@ -98,6 +99,8 @@ class Gitweb extends ConsumerAbstract {
         }
 
         $this->acknowledgeMessage($message);
+
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**

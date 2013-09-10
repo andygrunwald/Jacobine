@@ -38,6 +38,8 @@ class GerritProject extends ConsumerAbstract {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         if (file_exists($messageData->configFile) === false) {
             $context = array('file' => $messageData->configFile);
             $this->getLogger()->critical('Gerrit config file does not exist', $context);
@@ -79,7 +81,7 @@ class GerritProject extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        return null;
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**
