@@ -38,6 +38,8 @@ class HTTP extends ConsumerAbstract {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         $record = $this->getVersionFromDatabase($messageData->versionId);
         $context = array('versionId' => $messageData->versionId);
 
@@ -68,9 +70,14 @@ class HTTP extends ConsumerAbstract {
 
         // If the file already there do not download it again
         if (file_exists($targetFile) === true && $record['checksum_tar_md5'] && md5_file($targetFile) === $record['checksum_tar_md5']) {
+            $context = array(
+                'targetFile' => $targetFile
+            );
+            $this->getLogger()->info('File already exists', $context);
             $this->setVersionAsDownloadedInDatabase($record['id']);
             $this->acknowledgeMessage($message);
             $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetFile);
+            $this->getLogger()->info('Finish processing message', (array) $messageData);
             return;
         }
 
@@ -78,7 +85,7 @@ class HTTP extends ConsumerAbstract {
             'downloadUrl' => $record['url_tar'],
             'targetFile' => $targetTempFile
         );
-        $this->getLogger()->info('Start download', $context);
+        $this->getLogger()->info('Starting download', $context);
 
         // We download the file with wget, because we get a progress bar for free :)
         $command = 'wget ' . escapeshellarg($record['url_tar']) . ' --output-document=' . escapeshellarg($targetTempFile);
@@ -86,6 +93,11 @@ class HTTP extends ConsumerAbstract {
         try {
             $this->executeCommand($command);
         } catch (\Exception $e) {
+            $context = array(
+                'command' => $command,
+                'message' => $e->getMessage()
+            );
+            $this->getLogger()->critical('Download command failed', $context);
             $this->acknowledgeMessage($this->getMessage());
             return;
         }
@@ -106,14 +118,12 @@ class HTTP extends ConsumerAbstract {
         // If the hashes are not equal, exit here
         $md5Hash = md5_file($targetFile);
         if ($record['checksum_tar_md5'] && $md5Hash !== $record['checksum_tar_md5']) {
-
-            $msg = 'Checksums for file are not equal';
             $context = array(
                 'targetFile' => $targetFile,
                 'databaseHash' => $record['checksum_tar_md5'],
                 'fileHash' => $md5Hash
             );
-            $this->getLogger()->critical($msg, $context);
+            $this->getLogger()->critical('Checksums for file are not equal', $context);
             $this->acknowledgeMessage($this->getMessage());
             return;
         }
@@ -125,6 +135,8 @@ class HTTP extends ConsumerAbstract {
 
         // Adds new messages to queue: extract the file, get filesize or tar.gz file
         $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetFile);
+
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**

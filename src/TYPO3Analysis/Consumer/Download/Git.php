@@ -38,6 +38,8 @@ class Git extends ConsumerAbstract {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
         $record = $this->getGitwebFromDatabase($messageData->id);
         $context = array('id' => $messageData->id);
 
@@ -80,6 +82,8 @@ class Git extends ConsumerAbstract {
 
         // Adds new messages to queue: Analyze this via CVSAnalY
         $this->addFurtherMessageToQueue($messageData->project, $record['id'], $checkoutPath);
+
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**
@@ -127,6 +131,9 @@ class Git extends ConsumerAbstract {
             $command = escapeshellcmd($git);
             $command .= ' pull';
             $pullOutput = $this->executeCommand($command);
+
+        } else {
+            $this->getLogger()->info('No "master" branch detected', $context);
         }
 
         return $pullOutput;
