@@ -52,6 +52,7 @@ To list all available consumers execute `php console analysis:list-consumer`.
 * Add tools to import / analyze irc logs
 * Add tools to import / analyze jenkins activity
 * Refactor logging with the usage of rabbitmq
+* Add support for dead letter exchange of rabbitmq (http://www.rabbitmq.com/dlx.html)
 
 ## Contributing
 
