@@ -1,4 +1,4 @@
-# TYPO3-Analytics <img src="" />
+# TYPO3-Analytics
 
 [![Dependencies Status](http://www.depending.in/andygrunwald/TYPO3-Analytics.png)](http://www.depending.in/andygrunwald/TYPO3-Analytics)
 
