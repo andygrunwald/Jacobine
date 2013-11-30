@@ -36,12 +36,12 @@ class MessageQueue {
     /**
      * Constructor to set up a connection to the RabbitMQ server
      *
-     * @param string    $host
-     * @param integer   $port
-     * @param string    $username
-     * @param string    $password
-     * @param string    $vHost
-     * @return void
+     * @param string $host
+     * @param integer $port
+     * @param string $username
+     * @param string $password
+     * @param string $vHost
+     * @return \TYPO3Analysis\Helper\MessageQueue
      */
     public function __construct($host, $port, $username, $password, $vHost) {
         $this->handle = new AMQPConnection($host, $port, $username, $password, $vHost);

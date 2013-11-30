@@ -34,12 +34,12 @@ class Database {
     /**
      * Constructor to initialize the database connection
      *
-     * @param string    $host
-     * @param integer   $port
-     * @param string    $username
-     * @param string    $password
-     * @param string    $database
-     * @return void
+     * @param string $host
+     * @param integer $port
+     * @param string $username
+     * @param string $password
+     * @param string $database
+     * @return \TYPO3Analysis\Helper\Database
      */
     public function __construct($host, $port, $username, $password, $database) {
         $this->connect($host, $port, $username, $password, $database);
