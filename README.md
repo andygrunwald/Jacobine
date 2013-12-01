@@ -1,7 +1,4 @@
-# TYPO3-Analytics
-
-[![Dependencies Status](http://www.depending.in/andygrunwald/TYPO3-Analytics.png)](http://www.depending.in/andygrunwald/TYPO3-Analytics)
-
+# TYPO3-Analytics [![Dependencies Status](https://www.depending.in/andygrunwald/TYPO3-Analytics.png)](http://www.depending.in/andygrunwald/TYPO3-Analytics)
 
 TYPO3-Analytics aims to take many different analysis on the [TYPO3](http://typo3org/) open source CMS and the community.
 Analysis can be the size of the different versions in MB, the most active contributers, the atmosphere / mood of the
