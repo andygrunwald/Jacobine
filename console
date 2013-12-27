@@ -18,6 +18,7 @@ use TYPO3Analysis\Command\ListProjectsCommand;
 use TYPO3Analysis\Command\ConsumerCommand;
 use TYPO3Analysis\Command\GitwebCommand;
 use TYPO3Analysis\Command\GerritCommand;
+use TYPO3Analysis\Command\NNTPCommand;
 
 $console = new Application();
 $console->add(new GetTYPO3OrgCommand());
@@ -26,4 +27,5 @@ $console->add(new ListConsumerCommand());
 $console->add(new ListProjectsCommand());
 $console->add(new GitwebCommand());
 $console->add(new GerritCommand());
+$console->add(new NNTPCommand());
 $console->run();

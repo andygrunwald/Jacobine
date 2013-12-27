@@ -3,6 +3,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/andygrunwald/Gerrie"
+        },
+        {
+            "type": "pear",
+            "url": "http://pear.php.net"
         }
     ],
     "require": {
@@ -16,7 +20,8 @@
         "phploc/phploc": "v2.0.2",
         "pdepend/pdepend": "1.1.1",
         "monolog/monolog": "1.6.0",
-        "andygrunwald/gerrie": "dev-master"
+        "andygrunwald/gerrie": "dev-master",
+        "pear-pear.php.net/Net_NNTP": "*"
     },
     "minimum-stability": "dev",
     "config": {

@@ -56,3 +56,5 @@ Projects:
       ConfigFile: gerrit-review.typo3.org.yml
     CVSAnaly:
       ConfigFile: cvsanaly-config
+    NNTP:
+      Host: lists.typo3.org
