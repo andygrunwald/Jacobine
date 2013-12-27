@@ -411,19 +411,24 @@
         },
         {
             "name": "psr/log",
-            "version": "1.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b"
+                "reference": "65f363ac44058796a8e1428cf41e6d92d8a75ddc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
-                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/65f363ac44058796a8e1428cf41e6d92d8a75ddc",
+                "reference": "65f363ac44058796a8e1428cf41e6d92d8a75ddc",
                 "shasum": ""
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "Psr\\Log\\": ""
@@ -445,7 +450,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2012-12-21 11:40:51"
+            "time": "2013-12-25 11:17:50"
         },
         {
             "name": "sebastian/finder-facade",
@@ -492,12 +497,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/git.git",
-                "reference": "9df628c8c27522ba122f85d4ca8f13bd6fe8b9aa"
+                "reference": "55cd9e850c0ac27b7c06897f9b423b509c2881d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/git/zipball/9df628c8c27522ba122f85d4ca8f13bd6fe8b9aa",
-                "reference": "9df628c8c27522ba122f85d4ca8f13bd6fe8b9aa",
+                "url": "https://api.github.com/repos/sebastianbergmann/git/zipball/55cd9e850c0ac27b7c06897f9b423b509c2881d8",
+                "reference": "55cd9e850c0ac27b7c06897f9b423b509c2881d8",
                 "shasum": ""
             },
             "require": {
@@ -530,7 +535,7 @@
             "keywords": [
                 "git"
             ],
-            "time": "2013-08-09 07:12:19"
+            "time": "2013-10-22 21:25:12"
         },
         {
             "name": "sebastian/version",
@@ -823,12 +828,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/fDOMDocument.git",
+<<<<<<< Updated upstream
                 "reference": "de4c6607576ec35b839d20a051c650b334117d6e"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/de4c6607576ec35b839d20a051c650b334117d6e",
                 "reference": "de4c6607576ec35b839d20a051c650b334117d6e",
+=======
+                "reference": "16ac1a31dd9071bb35662e8dafb88e62a7fde087"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/16ac1a31dd9071bb35662e8dafb88e62a7fde087",
+                "reference": "16ac1a31dd9071bb35662e8dafb88e62a7fde087",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -855,7 +869,11 @@
             ],
             "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convenience and to simplify the usage of DOM.",
             "homepage": "https://github.com/theseer/fDOMDocument",
+<<<<<<< Updated upstream
             "time": "2013-10-03 16:53:34"
+=======
+            "time": "2013-12-20 21:37:51"
+>>>>>>> Stashed changes
         },
         {
             "name": "videlalvaro/php-amqplib",
