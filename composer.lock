@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a6ef21c8b39d1cb3808e1ca09e26d20f",
+    "hash": "768a988488d25b618caeb36a73b5b0b4",
     "packages": [
         {
             "name": "andygrunwald/gerrie",
@@ -11,20 +11,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/andygrunwald/Gerrie.git",
-                "reference": "6bb05ca43876cc6088a6b610965ac96290d68130"
+                "reference": "6304bdd76f0901a948e17fa522b33230bf9e0f10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/6bb05ca43876cc6088a6b610965ac96290d68130",
-                "reference": "6bb05ca43876cc6088a6b610965ac96290d68130",
+                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/6304bdd76f0901a948e17fa522b33230bf9e0f10",
+                "reference": "6304bdd76f0901a948e17fa522b33230bf9e0f10",
                 "shasum": ""
             },
             "require": {
                 "kriswallsmith/buzz": "v0.10",
                 "php": ">=5.3.0",
-                "symfony/class-loader": "2.3.*",
-                "symfony/console": "2.3.*",
-                "symfony/yaml": "2.3.*"
+                "symfony/class-loader": "2.4.0",
+                "symfony/console": "2.4.0",
+                "symfony/yaml": "2.4.0"
             },
             "type": "library",
             "autoload": {
@@ -54,7 +54,7 @@
                 "issues": "https://github.com/andygrunwald/Gerrie/issues",
                 "source": "https://github.com/andygrunwald/Gerrie/tree/master"
             },
-            "time": "2013-09-16 17:15:41"
+            "time": "2013-12-27 18:30:28"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -106,16 +106,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.6.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "f72392d0e6eb855118f5a84e89ac2d257c704abd"
+                "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/f72392d0e6eb855118f5a84e89ac2d257c704abd",
-                "reference": "f72392d0e6eb855118f5a84e89ac2d257c704abd",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/6225b22de9dcf36546be3a0b2fa8e3d986153f57",
+                "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57",
                 "shasum": ""
             },
             "require": {
@@ -123,21 +123,26 @@
                 "psr/log": "~1.0"
             },
             "require-dev": {
+                "aws/aws-sdk-php": "~2.4.8",
                 "doctrine/couchdb": "dev-master",
                 "mlehner/gelf-php": "1.0.*",
-                "raven/raven": "0.5.*"
+                "phpunit/phpunit": "~3.7.0",
+                "raven/raven": "0.5.*",
+                "ruflin/elastica": "0.90.*"
             },
             "suggest": {
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
                 "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
                 "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
                 "ext-mongo": "Allow sending log messages to a MongoDB server",
                 "mlehner/gelf-php": "Allow sending log messages to a GrayLog2 server",
-                "raven/raven": "Allow sending log messages to a Sentry server"
+                "raven/raven": "Allow sending log messages to a Sentry server",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6.x-dev"
+                    "dev-master": "1.7.x-dev"
                 }
             },
             "autoload": {
@@ -164,20 +169,20 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2013-07-28 22:38:30"
+            "time": "2013-11-14 19:48:31"
         },
         {
             "name": "pdepend/pdepend",
-            "version": "1.1.1",
+            "version": "1.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pdepend/pdepend.git",
-                "reference": "6fcfb7666c95f341b42f02c94a47b3a51ed484e0"
+                "reference": "1537f19d62d7b30c13ac173270106df7c6b9c459"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/6fcfb7666c95f341b42f02c94a47b3a51ed484e0",
-                "reference": "6fcfb7666c95f341b42f02c94a47b3a51ed484e0",
+                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/1537f19d62d7b30c13ac173270106df7c6b9c459",
+                "reference": "1537f19d62d7b30c13ac173270106df7c6b9c459",
                 "shasum": ""
             },
             "require": {
@@ -187,9 +192,17 @@
                 "src/bin/pdepend"
             ],
             "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHP_": "src/main/php/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
             "description": "Official version of pdepend to be handled with Composer",
-            "time": "2013-07-25 19:23:48"
+            "time": "2013-12-04 17:46:00"
         },
         {
             "name": "pear-pear.php.net/Archive_Tar",
@@ -361,16 +374,16 @@
         },
         {
             "name": "phploc/phploc",
-            "version": "2.0.2",
+            "version": "2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phploc.git",
-                "reference": "2d81bba7621b5b2c0644525f489fbee3e64ca03d"
+                "reference": "2b3d3f4105cb16f78f5bdd77216b992dade053d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/2d81bba7621b5b2c0644525f489fbee3e64ca03d",
-                "reference": "2d81bba7621b5b2c0644525f489fbee3e64ca03d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phploc/zipball/2b3d3f4105cb16f78f5bdd77216b992dade053d0",
+                "reference": "2b3d3f4105cb16f78f5bdd77216b992dade053d0",
                 "shasum": ""
             },
             "require": {
@@ -407,7 +420,7 @@
             ],
             "description": "A tool for quickly measuring the size of a PHP project.",
             "homepage": "https://github.com/sebastianbergmann/phploc",
-            "time": "2013-09-04 08:30:10"
+            "time": "2013-12-18 08:31:50"
         },
         {
             "name": "psr/log",
@@ -574,17 +587,17 @@
         },
         {
             "name": "symfony/class-loader",
-            "version": "v2.3.4",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/ClassLoader",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/ClassLoader.git",
-                "reference": "622d370a07321329f5259c6f96d5c636104ad46b"
+                "reference": "6a2ebedbc780130f07b3a15363743d08eb46820c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/ClassLoader/zipball/622d370a07321329f5259c6f96d5c636104ad46b",
-                "reference": "622d370a07321329f5259c6f96d5c636104ad46b",
+                "url": "https://api.github.com/repos/symfony/ClassLoader/zipball/6a2ebedbc780130f07b3a15363743d08eb46820c",
+                "reference": "6a2ebedbc780130f07b3a15363743d08eb46820c",
                 "shasum": ""
             },
             "require": {
@@ -596,7 +609,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -620,21 +633,21 @@
             ],
             "description": "Symfony ClassLoader Component",
             "homepage": "http://symfony.com",
-            "time": "2013-08-13 20:18:00"
+            "time": "2013-11-26 16:40:27"
         },
         {
             "name": "symfony/console",
-            "version": "v2.3.4",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "db78f8ff7fc9e28d25ff9a0bf6ddf9f0e35fbbe3"
+                "reference": "3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/db78f8ff7fc9e28d25ff9a0bf6ddf9f0e35fbbe3",
-                "reference": "db78f8ff7fc9e28d25ff9a0bf6ddf9f0e35fbbe3",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c",
+                "reference": "3c1496ae96d24ccc6c340fcc25f71d7a1ab4c12c",
                 "shasum": ""
             },
             "require": {
@@ -649,7 +662,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -673,21 +686,21 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-08-17 16:34:49"
+            "time": "2013-11-27 09:10:40"
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v2.3.4",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/DomCrawler",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DomCrawler.git",
-                "reference": "e05e07fe8958a304b5e135f8e65d4ae6148cf59b"
+                "reference": "809495cca56a45e0df92b8d68764cf7d454b88c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/e05e07fe8958a304b5e135f8e65d4ae6148cf59b",
-                "reference": "e05e07fe8958a304b5e135f8e65d4ae6148cf59b",
+                "url": "https://api.github.com/repos/symfony/DomCrawler/zipball/809495cca56a45e0df92b8d68764cf7d454b88c5",
+                "reference": "809495cca56a45e0df92b8d68764cf7d454b88c5",
                 "shasum": ""
             },
             "require": {
@@ -702,7 +715,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -726,21 +739,21 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "http://symfony.com",
-            "time": "2013-07-21 12:12:18"
+            "time": "2013-12-03 14:52:22"
         },
         {
             "name": "symfony/finder",
-            "version": "v2.3.4",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "4a0fee5b86f5bbd9dfdc11ec124eba2915737ce1"
+                "reference": "72356bf0646b11af1bae666c28a639bd8ede459f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/4a0fee5b86f5bbd9dfdc11ec124eba2915737ce1",
-                "reference": "4a0fee5b86f5bbd9dfdc11ec124eba2915737ce1",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/72356bf0646b11af1bae666c28a639bd8ede459f",
+                "reference": "72356bf0646b11af1bae666c28a639bd8ede459f",
                 "shasum": ""
             },
             "require": {
@@ -749,7 +762,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -773,21 +786,21 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2013-08-13 20:18:00"
+            "time": "2013-11-26 16:40:27"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.4",
+            "version": "v2.4.0",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "5a279f1b5f5e1045a6c432354d9ea727ff3a9847"
+                "reference": "1ae235a1b9d3ad3d9f3860ff20acc072df95b7f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/5a279f1b5f5e1045a6c432354d9ea727ff3a9847",
-                "reference": "5a279f1b5f5e1045a6c432354d9ea727ff3a9847",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/1ae235a1b9d3ad3d9f3860ff20acc072df95b7f5",
+                "reference": "1ae235a1b9d3ad3d9f3860ff20acc072df95b7f5",
                 "shasum": ""
             },
             "require": {
@@ -796,7 +809,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -820,7 +833,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2013-08-24 15:26:22"
+            "time": "2013-11-26 16:40:27"
         },
         {
             "name": "theseer/fdomdocument",
@@ -828,21 +841,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/fDOMDocument.git",
-<<<<<<< Updated upstream
-                "reference": "de4c6607576ec35b839d20a051c650b334117d6e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/de4c6607576ec35b839d20a051c650b334117d6e",
-                "reference": "de4c6607576ec35b839d20a051c650b334117d6e",
-=======
                 "reference": "16ac1a31dd9071bb35662e8dafb88e62a7fde087"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/16ac1a31dd9071bb35662e8dafb88e62a7fde087",
                 "reference": "16ac1a31dd9071bb35662e8dafb88e62a7fde087",
->>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -869,29 +873,28 @@
             ],
             "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convenience and to simplify the usage of DOM.",
             "homepage": "https://github.com/theseer/fDOMDocument",
-<<<<<<< Updated upstream
-            "time": "2013-10-03 16:53:34"
-=======
             "time": "2013-12-20 21:37:51"
->>>>>>> Stashed changes
         },
         {
             "name": "videlalvaro/php-amqplib",
-            "version": "v2.1.0",
+            "version": "v2.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/videlalvaro/php-amqplib.git",
-                "reference": "adc2a425ab214517a5e76557a9370bdc6f212576"
+                "reference": "6ef2ca9a45bb9fb20872f824f4c7c1518315bd3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/adc2a425ab214517a5e76557a9370bdc6f212576",
-                "reference": "adc2a425ab214517a5e76557a9370bdc6f212576",
+                "url": "https://api.github.com/repos/videlalvaro/php-amqplib/zipball/6ef2ca9a45bb9fb20872f824f4c7c1518315bd3f",
+                "reference": "6ef2ca9a45bb9fb20872f824f4c7c1518315bd3f",
                 "shasum": ""
             },
             "require": {
                 "ext-bcmath": "*",
                 "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
             },
             "type": "library",
             "autoload": {
@@ -915,7 +918,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2013-06-17 19:25:27"
+            "time": "2013-12-22 12:49:53"
         }
     ],
     "packages-dev": [
