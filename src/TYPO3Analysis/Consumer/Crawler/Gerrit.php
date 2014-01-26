@@ -67,6 +67,7 @@ class Gerrit extends ConsumerAbstract {
 
         if ($projects === null) {
             $this->getLogger()->info('No projects available');
+            $this->acknowledgeMessage($message);
             return;
         }
 
