@@ -7,7 +7,8 @@ namespace TYPO3Analysis\Helper;
 use PhpAmqpLib\Connection\AMQPConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class MessageQueue {
+class MessageQueue
+{
 
     /**
      * Message Queue connection
@@ -43,7 +44,8 @@ class MessageQueue {
      * @param string $vHost
      * @return \TYPO3Analysis\Helper\MessageQueue
      */
-    public function __construct($host, $port, $username, $password, $vHost) {
+    public function __construct($host, $port, $username, $password, $vHost)
+    {
         $this->handle = new AMQPConnection($host, $port, $username, $password, $vHost);
         $this->renewChannel();
     }
@@ -53,7 +55,8 @@ class MessageQueue {
      *
      * @return void
      */
-    protected function renewChannel() {
+    protected function renewChannel()
+    {
         $this->channel = $this->handle->channel();
         $this->channel->basic_qos(0, 1, false);
     }
@@ -63,7 +66,8 @@ class MessageQueue {
      *
      * @return null|AMQPConnection
      */
-    protected function getHandle() {
+    protected function getHandle()
+    {
         return $this->handle;
     }
 
@@ -72,18 +76,20 @@ class MessageQueue {
      *
      * @return null|\PhpAmqpLib\Channel\AMQPChannel
      */
-    protected function getChannel() {
+    protected function getChannel()
+    {
         return $this->channel;
     }
 
     /**
      * Declares a new exchange at the message queue server
      *
-     * @param string    $exchange
-     * @param string    $exchangeType
+     * @param string $exchange
+     * @param string $exchangeType
      * @return void
      */
-    protected function declareExchange($exchange, $exchangeType) {
+    protected function declareExchange($exchange, $exchangeType)
+    {
         if (isset($this->declared['exchange'][$exchange]) === false) {
             $this->getChannel()->exchange_declare($exchange, $exchangeType, false, true, true);
             $this->declared['exchange'][$exchange] = true;
@@ -93,10 +99,11 @@ class MessageQueue {
     /**
      * Declares a new queue at the message queue server
      *
-     * @param string    $queue
+     * @param string $queue
      * @return void
      */
-    protected function declareQueue($queue) {
+    protected function declareQueue($queue)
+    {
         $this->getChannel()->queue_declare($queue, false, true, false, false);
         $this->declared['queue'][$queue] = true;
     }
@@ -104,13 +111,14 @@ class MessageQueue {
     /**
      * Sends a new message to message queue server
      *
-     * @param mixed     $message
-     * @param string    $exchange
-     * @param string    $queue
-     * @param string    $routing
-     * @param string    $exchangeType
+     * @param mixed $message
+     * @param string $exchange
+     * @param string $queue
+     * @param string $routing
+     * @param string $exchangeType
      */
-    public function sendMessage($message, $exchange = '', $queue = '', $routing = '', $exchangeType = 'topic') {
+    public function sendMessage($message, $exchange = '', $queue = '', $routing = '', $exchangeType = 'topic')
+    {
         if (is_array($message) === true) {
             $message = json_encode($message);
         }
@@ -131,15 +139,16 @@ class MessageQueue {
      * Consumer registration.
      * Registered a new consumer at message queue server to consume messages
      *
-     * @param string    $exchange
-     * @param string    $queue
-     * @param string    $routing
-     * @param string    $consumerTag
-     * @param array     $callback
-     * @param string    $exchangeType
+     * @param string $exchange
+     * @param string $queue
+     * @param string $routing
+     * @param string $consumerTag
+     * @param array $callback
+     * @param string $exchangeType
      * @return void
      */
-    public function basicConsume($exchange, $queue, $routing, $consumerTag, array $callback, $exchangeType = 'topic') {
+    public function basicConsume($exchange, $queue, $routing, $consumerTag, array $callback, $exchangeType = 'topic')
+    {
         $this->declareQueue($queue);
 
         if ($exchange) {
@@ -159,7 +168,8 @@ class MessageQueue {
      *
      * @return void
      */
-    public function close() {
+    public function close()
+    {
         #$this->getChannel()->close();
         #$this->getHandle()->close();
     }

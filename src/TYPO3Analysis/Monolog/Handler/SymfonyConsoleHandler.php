@@ -11,17 +11,18 @@
  */
 namespace TYPO3Analysis\Monolog\Handler;
 
-use Symfony\Component\Console\Output\OutputInterface;
-use Monolog\Logger;
-use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Handler sending logs to Symfony/Console output
  *
  * @author Vitaliy Zhukv <zhuk2205@gmail.com>
  */
-class SymfonyConsoleHandler extends AbstractProcessingHandler {
+class SymfonyConsoleHandler extends AbstractProcessingHandler
+{
 
     /**
      * @var \Symfony\Component\Console\Output\OutputInterface
@@ -32,24 +33,25 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler {
      * @var array
      */
     protected $levelStyles = array(
-        Logger::DEBUG       =>  'debug',
-        Logger::NOTICE      =>  'notice',
-        Logger::INFO        =>  'info',
-        Logger::WARNING     =>  'warning',
-        Logger::ERROR       =>  'error',
-        Logger::CRITICAL    =>  array('critical', 'error'),
-        Logger::ALERT       =>  array('alert', 'error'),
-        Logger::EMERGENCY   =>  array('emergency', 'error')
+        Logger::DEBUG => 'debug',
+        Logger::NOTICE => 'notice',
+        Logger::INFO => 'info',
+        Logger::WARNING => 'warning',
+        Logger::ERROR => 'error',
+        Logger::CRITICAL => array('critical', 'error'),
+        Logger::ALERT => array('alert', 'error'),
+        Logger::EMERGENCY => array('emergency', 'error')
     );
 
     /**
      * Construct
      *
-     * @param OutputInterface   $output
-     * @param bool|int          $level
+     * @param OutputInterface $output
+     * @param bool|int $level
      * @return void
      */
-    public function __construct(OutputInterface $output, $level = Logger::DEBUG) {
+    public function __construct(OutputInterface $output, $level = Logger::DEBUG)
+    {
         $this->consoleOutput = $output;
         parent::__construct($level);
     }
@@ -57,19 +59,20 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler {
     /**
      * Set level style
      *
-     * @param integer       $level
-     * @param string|array  $style
+     * @param integer $level
+     * @param string|array $style
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setLevelStyle($level, $style) {
+    public function setLevelStyle($level, $style)
+    {
         try {
             Logger::getLevelName($level);
-        }
-        catch (\InvalidArgumentException $exception) {
+        } catch (\InvalidArgumentException $exception) {
             throw new \InvalidArgumentException(sprintf(
                 'Can\'t set style "%s" to error level "%s".',
-                $style, $level
+                $style,
+                $level
             ), 0, $exception);
         }
 
@@ -81,13 +84,17 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler {
     /**
      * Get level style
      *
-     * @param integer   $level
+     * @param integer $level
      * @return string|array
      * @throws \InvalidArgumentException
      */
-    public function getLevelStyle($level) {
+    public function getLevelStyle($level)
+    {
         if (!isset($this->levelStyles[$level])) {
-            throw new \InvalidArgumentException('Level "'.$level.'" is not defined, use one of: '.implode(', ', array_keys($this->levelStyles)));
+            throw new \InvalidArgumentException('Level "' . $level . '" is not defined, use one of: ' . implode(
+                ', ',
+                array_keys($this->levelStyles)
+            ));
         }
 
         return $this->levelStyles[$level];
@@ -96,7 +103,8 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler {
     /**
      * {@inheritdoc}
      */
-    public function write(array $record) {
+    public function write(array $record)
+    {
         $writeText = $record['formatted'];
 
         // Check usage formatter
@@ -109,11 +117,13 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler {
                     $writeText = '<' . $levelStyle . '>' . $writeText . '</' . $levelStyle . '>';
                 }
 
-            } else if (is_array($levelStyle) || $levelStyle instanceof \Iterator) {
-                foreach ($levelStyle as $style) {
-                    if ($formatter->hasStyle($style)) {
-                        $writeText = '<' . $style . '>' . $writeText . '</' . $style . '>';
-                        break;
+            } else {
+                if (is_array($levelStyle) || $levelStyle instanceof \Iterator) {
+                    foreach ($levelStyle as $style) {
+                        if ($formatter->hasStyle($style)) {
+                            $writeText = '<' . $style . '>' . $writeText . '</' . $style . '>';
+                            break;
+                        }
                     }
                 }
             }
@@ -125,7 +135,8 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler {
     /**
      * {@inheritdoc}
      */
-    public function getDefaultFormatter() {
+    public function getDefaultFormatter()
+    {
         return new LineFormatter();
     }
 }

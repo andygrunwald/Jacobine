@@ -6,14 +6,16 @@ namespace TYPO3Analysis\Consumer\Crawler;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class Gerrit extends ConsumerAbstract {
+class Gerrit extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Prepares the message queues for a single Gerrit review system';
     }
 
@@ -23,7 +25,8 @@ class Gerrit extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('crawler.gerrit');
         $this->setRouting('crawler.gerrit');
     }
@@ -34,11 +37,12 @@ class Gerrit extends ConsumerAbstract {
      * @param \stdClass $message
      * @return null|void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         if (file_exists($messageData->configFile) === false) {
             $context = array('file' => $messageData->configFile);
@@ -72,7 +76,7 @@ class Gerrit extends ConsumerAbstract {
         }
 
         $parentMapping = array();
-        foreach($projects as $name => $info) {
+        foreach ($projects as $name => $info) {
             $projectId = $gerrie->importProject($name, $info, $parentMapping);
 
             $context = array(
@@ -89,19 +93,20 @@ class Gerrit extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
      * Adds new messages to queue system to import a single gerrit project
      *
-     * @param string    $project
-     * @param integer   $serverId
-     * @param integer   $projectId
-     * @param string    $configFile
+     * @param string $project
+     * @param integer $serverId
+     * @param integer $projectId
+     * @param string $configFile
      * @return void
      */
-    private function addFurtherMessageToQueue($project, $serverId, $projectId, $configFile) {
+    private function addFurtherMessageToQueue($project, $serverId, $projectId, $configFile)
+    {
         $message = array(
             'project' => $project,
             'projectId' => $projectId,
@@ -115,10 +120,11 @@ class Gerrit extends ConsumerAbstract {
     /**
      * Initialize the Gerrit configuration
      *
-     * @param string    $configFile
+     * @param string $configFile
      * @return \Gerrie\Helper\Configuration
      */
-    protected function initialGerrieConfig($configFile) {
+    protected function initialGerrieConfig($configFile)
+    {
         $gerrieConfig = new \Gerrie\Helper\Configuration($configFile);
         return $gerrieConfig;
     }

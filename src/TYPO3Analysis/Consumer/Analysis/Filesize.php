@@ -6,14 +6,16 @@ namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class Filesize extends ConsumerAbstract {
+class Filesize extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Determines the filesize in bytes and stores them in version database table.';
     }
 
@@ -23,7 +25,8 @@ class Filesize extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('analysis.filesize');
         $this->setRouting('analysis.filesize');
     }
@@ -31,15 +34,16 @@ class Filesize extends ConsumerAbstract {
     /**
      * The logic of the consumer
      *
-     * @param \stdClass     $message
+     * @param \stdClass $message
      * @return void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         // If the record does not exists in the database exit here
         if ($record === false) {
@@ -73,16 +77,17 @@ class Filesize extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
      * Receives a single version of the database
      *
-     * @param integer   $id
+     * @param integer $id
      * @return bool|array
      */
-    private function getVersionFromDatabase($id) {
+    private function getVersionFromDatabase($id)
+    {
         $fields = array('id', 'size_tar');
         $rows = $this->getDatabase()->getRecords($fields, 'versions', array('id' => $id), '', '', 1);
 
@@ -98,11 +103,12 @@ class Filesize extends ConsumerAbstract {
     /**
      * Updates a single version and sets the 'size_tar' value
      *
-     * @param integer   $id
-     * @param integer   $fileSize
+     * @param integer $id
+     * @param integer $fileSize
      * @return void
      */
-    private function saveFileSizeOfVersionInDatabase($id, $fileSize) {
+    private function saveFileSizeOfVersionInDatabase($id, $fileSize)
+    {
         $this->getDatabase()->updateRecord('versions', array('size_tar' => $fileSize), array('id' => $id));
 
         $context = array('filesize' => $fileSize, 'versionId' => $id);

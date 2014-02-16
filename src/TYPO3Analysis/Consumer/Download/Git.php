@@ -6,14 +6,16 @@ namespace TYPO3Analysis\Consumer\Download;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class Git extends ConsumerAbstract {
+class Git extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Downloads a Git repository.';
     }
 
@@ -23,7 +25,8 @@ class Git extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('download.git');
         $this->setRouting('download.git');
     }
@@ -31,14 +34,15 @@ class Git extends ConsumerAbstract {
     /**
      * The logic of the consumer
      *
-     * @param \stdClass     $message
+     * @param \stdClass $message
      * @return void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         $record = $this->getGitwebFromDatabase($messageData->id);
         $context = array('id' => $messageData->id);
@@ -83,18 +87,19 @@ class Git extends ConsumerAbstract {
         // Adds new messages to queue: Analyze this via CVSAnalY
         $this->addFurtherMessageToQueue($messageData->project, $record['id'], $checkoutPath);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
      * Adds new messages to queue system to analyze the checkout with CVSAnalY
      *
-     * @param string    $project
-     * @param integer   $id
-     * @param string    $dir
+     * @param string $project
+     * @param integer $id
+     * @param string $dir
      * @return void
      */
-    private function addFurtherMessageToQueue($project, $id, $dir) {
+    private function addFurtherMessageToQueue($project, $id, $dir)
+    {
         $message = array(
             'project' => $project,
             'gitwebId' => $id,
@@ -107,11 +112,12 @@ class Git extends ConsumerAbstract {
     /**
      * Updates a existing git clone
      *
-     * @param string    $git
-     * @param string    $checkoutPath
+     * @param string $git
+     * @param string $checkoutPath
      * @return array
      */
-    private function gitUpdate($git, $checkoutPath) {
+    private function gitUpdate($git, $checkoutPath)
+    {
         $pullOutput = array();
         chdir($checkoutPath);
 
@@ -142,10 +148,11 @@ class Git extends ConsumerAbstract {
     /**
      * Checks if the git repository got a master branch
      *
-     * @param string    $git
+     * @param string $git
      * @return bool
      */
-    private function hasRepositoryAMasterBranch($git) {
+    private function hasRepositoryAMasterBranch($git)
+    {
         $result = false;
 
         $command = escapeshellcmd($git);
@@ -170,12 +177,13 @@ class Git extends ConsumerAbstract {
      *
      * @todo clone all branches http://stackoverflow.com/questions/67699/how-do-i-clone-all-remote-branches-with-git
      *
-     * @param string    $git
-     * @param string    $repository
-     * @param string    $checkoutPath
+     * @param string $git
+     * @param string $repository
+     * @param string $checkoutPath
      * @return array
      */
-    private function gitClone($git, $repository, $checkoutPath) {
+    private function gitClone($git, $repository, $checkoutPath)
+    {
         mkdir($checkoutPath, 0777, true);
 
         $command = escapeshellcmd($git);
@@ -195,10 +203,11 @@ class Git extends ConsumerAbstract {
     /**
      * Receives a single gitweb record of the database
      *
-     * @param integer   $id
+     * @param integer $id
      * @return bool|array
      */
-    private function getGitwebFromDatabase($id) {
+    private function getGitwebFromDatabase($id)
+    {
         $fields = array('id', 'name', 'git');
         $rows = $this->getDatabase()->getRecords($fields, 'gitweb', array('id' => $id), '', '', 1);
 

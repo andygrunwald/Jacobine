@@ -24,10 +24,11 @@ class DatabaseFactoryTest extends \PHPUnit_Framework_TestCase
      * But it does mean that the factory does (something) with \PDO.
      * Not good but better than nothing.
      */
-    public function testFactoryReturnsPDOObject() {
+    public function testFactoryReturnsPDOObject()
+    {
         $this->setExpectedException('\PDOException');
 
-        $driver  = 'mysql';
+        $driver = 'mysql';
         $host = 'localhost';
         $port = 3306;
         $username = 'phpunit';

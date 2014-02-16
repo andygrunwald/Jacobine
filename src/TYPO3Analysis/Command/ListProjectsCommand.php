@@ -9,7 +9,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
-class ListProjectsCommand extends Command {
+class ListProjectsCommand extends Command
+{
 
     /**
      * Configuration
@@ -23,18 +24,20 @@ class ListProjectsCommand extends Command {
      *
      * @return void
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('analysis:list-projects')
-             ->setDescription('Lists all available and configured projects');
+            ->setDescription('Lists all available and configured projects');
     }
 
     /**
      * Sets the configuration
      *
-     * @param array     $config
+     * @param array $config
      * @return void
      */
-    public function setConfig($config) {
+    public function setConfig($config)
+    {
         $this->config = $config;
     }
 
@@ -43,7 +46,8 @@ class ListProjectsCommand extends Command {
      *
      * @return array
      */
-    public function getConfig() {
+    public function getConfig()
+    {
         return $this->config;
     }
 
@@ -52,11 +56,12 @@ class ListProjectsCommand extends Command {
      *
      * Sets up the config
      *
-     * @param InputInterface    $input      An InputInterface instance
-     * @param OutputInterface   $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return void
      */
-    protected function initialize(InputInterface $input, OutputInterface $output) {
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
         $this->setConfig(Yaml::parse(CONFIG_FILE));
     }
 
@@ -66,11 +71,12 @@ class ListProjectsCommand extends Command {
      * Lists all configured projects.
      * See Config/config.yml
      *
-     * @param InputInterface    $input      An InputInterface instance
-     * @param OutputInterface   $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return null|integer null or 0 if everything went fine, or an error code
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $config = $this->getConfig();
 
         if (is_array($config['Projects']) === false) {
@@ -94,23 +100,26 @@ class ListProjectsCommand extends Command {
     /**
      * Checks the configuration and necessary config parts
      *
-     * @param mixed     $config
+     * @param mixed $config
      * @return bool
      */
-    private function isProjectConfigValid($config) {
+    private function isProjectConfigValid($config)
+    {
         if (is_array($config) === false) {
             return false;
         }
 
         // Database settings
         if (array_key_exists('MySQL', $config) === false
-            || array_key_exists('Database', $config['MySQL']) === false) {
+            || array_key_exists('Database', $config['MySQL']) === false
+        ) {
             return false;
         }
 
         // RabbitMQ settings
         if (array_key_exists('RabbitMQ', $config) === false
-            || array_key_exists('Exchange', $config['RabbitMQ']) === false) {
+            || array_key_exists('Exchange', $config['RabbitMQ']) === false
+        ) {
             return false;
         }
 

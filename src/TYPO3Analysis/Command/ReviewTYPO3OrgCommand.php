@@ -4,20 +4,19 @@
  */
 namespace TYPO3Analysis\Command;
 
+use Gerrie\Gerrie;
 use Gerrie\Helper\Configuration;
 use Gerrie\Helper\Factory;
-use Gerrie\Gerrie;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3Analysis\Helper\Database;
 use TYPO3Analysis\Helper\DatabaseFactory;
 use TYPO3Analysis\Helper\MessageQueue;
 
-class ReviewTYPO3OrgCommand extends Command {
+class ReviewTYPO3OrgCommand extends Command
+{
 
     /**
      * JSON File with all information we need
@@ -66,9 +65,10 @@ class ReviewTYPO3OrgCommand extends Command {
      *
      * @return void
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('typo3:review.typo3.org')
-             ->setDescription('Queues tasks to import projects of review.typo3.org');
+            ->setDescription('Queues tasks to import projects of review.typo3.org');
     }
 
     /**
@@ -76,8 +76,8 @@ class ReviewTYPO3OrgCommand extends Command {
      *
      * Sets up the config, database and message queue
      *
-     * @param InputInterface    $input      An InputInterface instance
-     * @param OutputInterface   $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return void
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -88,9 +88,11 @@ class ReviewTYPO3OrgCommand extends Command {
         $projectConfig = $this->config['Projects']['TYPO3'];
 
         $databaseFactory = new DatabaseFactory();
+        // TODO Refactor this to use a config entity or an array
         $this->database = new Database($databaseFactory, $config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
 
         $config = $this->config['RabbitMQ'];
+        // TODO Refactor this to use a config entity or an array
         $this->messageQueue = new MessageQueue($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
     }
 
@@ -100,11 +102,12 @@ class ReviewTYPO3OrgCommand extends Command {
      * Reads all versions from get.typo3.org/json, store them into a database
      * and add new messages to message queue to download this versions.
      *
-     * @param InputInterface    $input      An InputInterface instance
-     * @param OutputInterface   $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return null|integer null or 0 if everything went fine, or an error code
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $project = 'TYPO3';
 
         // Bootstrap Gerrie
@@ -125,7 +128,7 @@ class ReviewTYPO3OrgCommand extends Command {
         }
 
         $parentMapping = array();
-        foreach($projects as $name => $info) {
+        foreach ($projects as $name => $info) {
             $projectId = $gerrie->importProject($name, $info, &$parentMapping);
             var_dump($projects);
             die();
@@ -140,7 +143,8 @@ class ReviewTYPO3OrgCommand extends Command {
         return null;
     }
 
-    protected function initialGerrieConfig($configDir) {
+    protected function initialGerrieConfig($configDir)
+    {
         $configFile = rtrim($configDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $configFile .= static::CONFIG_FILE;
 

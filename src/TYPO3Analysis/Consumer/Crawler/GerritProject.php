@@ -6,14 +6,16 @@ namespace TYPO3Analysis\Consumer\Crawler;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class GerritProject extends ConsumerAbstract {
+class GerritProject extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Imports a single project of a Gerrit review system';
     }
 
@@ -23,7 +25,8 @@ class GerritProject extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('crawler.gerritproject');
         $this->setRouting('crawler.gerritproject');
     }
@@ -34,11 +37,12 @@ class GerritProject extends ConsumerAbstract {
      * @param \stdClass $message
      * @return null|void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         if (file_exists($messageData->configFile) === false) {
             $context = array('file' => $messageData->configFile);
@@ -81,16 +85,17 @@ class GerritProject extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
      * Initialize the Gerrit configuration
      *
-     * @param string    $configFile
+     * @param string $configFile
      * @return \Gerrie\Helper\Configuration
      */
-    protected function initialGerrieConfig($configFile) {
+    protected function initialGerrieConfig($configFile)
+    {
         $gerrieConfig = new \Gerrie\Helper\Configuration($configFile);
         return $gerrieConfig;
     }

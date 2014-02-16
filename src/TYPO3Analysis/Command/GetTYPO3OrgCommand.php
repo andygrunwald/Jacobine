@@ -5,16 +5,15 @@
 namespace TYPO3Analysis\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3Analysis\Helper\Database;
 use TYPO3Analysis\Helper\DatabaseFactory;
 use TYPO3Analysis\Helper\MessageQueue;
 
-class GetTYPO3OrgCommand extends Command {
+class GetTYPO3OrgCommand extends Command
+{
 
     /**
      * JSON File with all information we need
@@ -70,9 +69,10 @@ class GetTYPO3OrgCommand extends Command {
      *
      * @return void
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('typo3:get.typo3.org')
-             ->setDescription('Queues tasks for TYPO3 CMS releases');
+            ->setDescription('Queues tasks for TYPO3 CMS releases');
     }
 
     /**
@@ -80,8 +80,8 @@ class GetTYPO3OrgCommand extends Command {
      *
      * Sets up the config, HTTP client, database and message queue
      *
-     * @param InputInterface    $input      An InputInterface instance
-     * @param OutputInterface   $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return void
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -96,9 +96,11 @@ class GetTYPO3OrgCommand extends Command {
         $projectConfig = $this->config['Projects']['TYPO3'];
 
         $databaseFactory = new DatabaseFactory();
+        // TODO Refactor this to use a config entity or an array
         $this->database = new Database($databaseFactory, $config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
 
         $config = $this->config['RabbitMQ'];
+        // TODO Refactor this to use a config entity or an array
         $this->messageQueue = new MessageQueue($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
     }
 
@@ -108,11 +110,12 @@ class GetTYPO3OrgCommand extends Command {
      * Reads all versions from get.typo3.org/json, store them into a database
      * and add new messages to message queue to download this versions.
      *
-     * @param InputInterface    $input      An InputInterface instance
-     * @param OutputInterface   $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return null|integer null or 0 if everything went fine, or an error code
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $versions = $this->getReleaseInformation();
         foreach ($versions as $branch => $data) {
             // $data got two keys: releases + latest
@@ -122,7 +125,8 @@ class GetTYPO3OrgCommand extends Command {
             // @todo update database with this information!
             if (is_array($data) === false
                 || array_key_exists('releases', $data) === false
-                || is_array($data['releases']) === false) {
+                || is_array($data['releases']) === false
+            ) {
                 continue;
             }
 
@@ -158,11 +162,12 @@ class GetTYPO3OrgCommand extends Command {
     /**
      * Stores a single version of TYPO3 into the database table 'versions'
      *
-     * @param string    $branch         Branch version like 4.7, 6.0, 6.1, ...
-     * @param array     $versionData    Data about the current version provided by the json file
+     * @param string $branch Branch version like 4.7, 6.0, 6.1, ...
+     * @param array $versionData Data about the current version provided by the json file
      * @return array
      */
-    private function insertVersionIntoDatabase($branch, $versionData) {
+    private function insertVersionIntoDatabase($branch, $versionData)
+    {
         $data = array(
             'branch' => $branch,
             'version' => $versionData['version'],
@@ -183,11 +188,19 @@ class GetTYPO3OrgCommand extends Command {
     /**
      * Receives a single version from the database table 'versions' (if exists).
      *
-     * @param string    $version    A version like 4.5.7, 6.0.4, ...
+     * @param string $version A version like 4.5.7, 6.0.4, ...
      * @return bool|array
      */
-    private function getVersionFromDatabase($version) {
-        $rows = $this->database->getRecords(array('id', 'downloaded'), 'versions', array('version' => $version), '', '', 1);
+    private function getVersionFromDatabase($version)
+    {
+        $rows = $this->database->getRecords(
+            array('id', 'downloaded'),
+            'versions',
+            array('version' => $version),
+            '',
+            '',
+            1
+        );
 
         $row = false;
         if (count($rows) === 1) {
@@ -203,7 +216,8 @@ class GetTYPO3OrgCommand extends Command {
      *
      * @return array
      */
-    private function getReleaseInformation() {
+    private function getReleaseInformation()
+    {
         $response = $this->browser->get(static::JSON_FILE_URL);
         if ($response->isOk() !== true) {
             return false;

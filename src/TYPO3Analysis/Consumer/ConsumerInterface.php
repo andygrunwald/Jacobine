@@ -4,7 +4,8 @@
  */
 namespace TYPO3Analysis\Consumer;
 
-interface ConsumerInterface {
+interface ConsumerInterface
+{
 
     /**
      * Gets a description of the consumer
@@ -24,7 +25,7 @@ interface ConsumerInterface {
     /**
      * The logic of the consumer
      *
-     * @param stdClass  $message
+     * @param stdClass $message
      * @return void
      */
     public function process($message);
@@ -39,7 +40,7 @@ interface ConsumerInterface {
     /**
      * Sets the queue name
      *
-     * @param string    $queue
+     * @param string $queue
      * @return void
      */
     public function setQueue($queue);
@@ -54,7 +55,7 @@ interface ConsumerInterface {
     /**
      * Sets the routing key
      *
-     * @param string    $routing
+     * @param string $routing
      * @return void
      */
     public function setRouting($routing);
@@ -69,7 +70,7 @@ interface ConsumerInterface {
     /**
      * Sets the exchange name
      *
-     * @param string    $exchange
+     * @param string $exchange
      * @return void
      */
     public function setExchange($exchange);
@@ -91,7 +92,7 @@ interface ConsumerInterface {
     /**
      * Sets the database
      *
-     * @param \TYPO3Analysis\Helper\Database    $database
+     * @param \TYPO3Analysis\Helper\Database $database
      * @return void
      */
     public function setDatabase($database);
@@ -106,7 +107,7 @@ interface ConsumerInterface {
     /**
      * Sets the config
      *
-     * @param array     $config
+     * @param array $config
      * @return void
      */
     public function setConfig(array $config);
@@ -121,7 +122,7 @@ interface ConsumerInterface {
     /**
      * Sets the message queue
      *
-     * @param \TYPO3Analysis\Helper\MessageQueue    $messageQueue
+     * @param \TYPO3Analysis\Helper\MessageQueue $messageQueue
      * @return void
      */
     public function setMessageQueue($messageQueue);
@@ -136,7 +137,7 @@ interface ConsumerInterface {
     /**
      * Sets the logger
      *
-     * @param \Monolog\Logger   $logger
+     * @param \Monolog\Logger $logger
      * @return void
      */
     public function setLogger($logger);

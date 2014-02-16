@@ -12,14 +12,16 @@ namespace TYPO3Analysis\Consumer\Crawler;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class NNTPGroup extends ConsumerAbstract {
+class NNTPGroup extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Imports a single NNTP group of a NNTP server';
     }
 
@@ -29,7 +31,8 @@ class NNTPGroup extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('crawler.nntpgroup');
         $this->setRouting('crawler.nntpgroup');
     }
@@ -40,13 +43,14 @@ class NNTPGroup extends ConsumerAbstract {
      * @param \stdClass $message
      * @return null|void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
-        $groupId = (int) $messageData->groupId;
+        $groupId = (int)$messageData->groupId;
         $nntpHost = $messageData->host;
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         $record = $this->getNNTPGroupFromDatabase($groupId);
 
@@ -68,24 +72,24 @@ class NNTPGroup extends ConsumerAbstract {
         $nntpClient->selectGroup($groupName);
 
         // Select last indexed article
-        $articleNumber = $lastIndexedArticle = (int) $record['last_indexed'];
+        $articleNumber = $lastIndexedArticle = (int)$record['last_indexed'];
         if ($articleNumber <= 0) {
             // first time indexing
-            $articleNumber = (int) $nntpClient->first();
+            $articleNumber = (int)$nntpClient->first();
         }
 
         $this->getLogger()->info('Select NNTP article', array('article' => $articleNumber));
         $dummyArticle = $nntpClient->selectArticle($articleNumber);
 
         // Check if the last article is still the last article
-        $lastArticleNumber = (int) $nntpClient->last();
+        $lastArticleNumber = (int)$nntpClient->last();
         if ($articleNumber === $lastArticleNumber) {
             $this->getLogger()->info('Group got no new articles', array('group' => $groupName));
             $this->acknowledgeMessage($message);
             return;
 
         } else {
-            $articleNumber = (($articleNumber === 1) ? $articleNumber: $nntpClient->selectNextArticle());
+            $articleNumber = (($articleNumber === 1) ? $articleNumber : $nntpClient->selectNextArticle());
         }
 
         $pearObj = new \PEAR();
@@ -139,7 +143,7 @@ class NNTPGroup extends ConsumerAbstract {
             unset($articleHeader, $articleBody);
 
             $articleNumber = $nntpClient->selectNextArticle();
-            switch (TRUE) {
+            switch (true) {
                 case is_int($articleNumber):
                     $lastIndexedArticle = $articleNumber;
                     break;
@@ -147,25 +151,26 @@ class NNTPGroup extends ConsumerAbstract {
                     $articleNumber = false;
                     break;
             }
-        } while($articleNumber !== false);
+        } while ($articleNumber !== false);
 
-        $this->updateLastIndexedArticle($groupId,  $lastIndexedArticle);
+        $this->updateLastIndexedArticle($groupId, $lastIndexedArticle);
 
         $nntpClient->disconnect();
         unset($nntpClient);
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
      * Receives a single nntp_group record of the database
      *
-     * @param integer   $id
+     * @param integer $id
      * @return bool|array
      */
-    private function getNNTPGroupFromDatabase($id) {
+    private function getNNTPGroupFromDatabase($id)
+    {
         $fields = array('id', 'name', 'last_indexed');
         $rows = $this->getDatabase()->getRecords($fields, 'nntp_group', array('id' => $id), '', '', 1);
 
@@ -185,7 +190,8 @@ class NNTPGroup extends ConsumerAbstract {
      * @param integer $lastIndexedArticle
      * @return void
      */
-    private function updateLastIndexedArticle($groupId,  $lastIndexedArticle) {
+    private function updateLastIndexedArticle($groupId, $lastIndexedArticle)
+    {
         $data = array('last_indexed' => $lastIndexedArticle);
         $where = array('id' => $groupId);
         $this->getDatabase()->updateRecord('nntp_group', $data, $where);
@@ -201,7 +207,8 @@ class NNTPGroup extends ConsumerAbstract {
      * @param string $body
      * @return void
      */
-    private function indexNNTPGroupArticle($nntpClient, $groupId, $articleNumber, $header, $body) {
+    private function indexNNTPGroupArticle($nntpClient, $groupId, $articleNumber, $header, $body)
+    {
         $articleId = $this->indexArticle($groupId, $articleNumber, $body);
         $this->indexArticleHeader($nntpClient, $articleId, $header);
     }
@@ -214,7 +221,8 @@ class NNTPGroup extends ConsumerAbstract {
      * @param string $body
      * @return integer
      */
-    private function indexArticle($groupId, $articleNumber, $body) {
+    private function indexArticle($groupId, $articleNumber, $body)
+    {
         $data = array(
             'group_id' => $groupId,
             'article_no' => $articleNumber,
@@ -232,7 +240,8 @@ class NNTPGroup extends ConsumerAbstract {
      * @param array $header
      * @return void
      */
-    private function indexArticleHeader($nntpClient, $articleId, $header) {
+    private function indexArticleHeader($nntpClient, $articleId, $header)
+    {
         foreach ($header as $singleHeaderLine) {
             $headerName = $this->getHeaderName($singleHeaderLine);
             if ($headerName === false) {
@@ -259,7 +268,8 @@ class NNTPGroup extends ConsumerAbstract {
      * @param string $headerLine
      * @return bool|string
      */
-    private function getHeaderName($headerLine) {
+    private function getHeaderName($headerLine)
+    {
         // Split it by ':'
         $colon = strpos($headerLine, ':');
         if ($colon === false) {
@@ -286,21 +296,22 @@ class NNTPGroup extends ConsumerAbstract {
      *  text/html; charset="iso-8859-1"
      *  text/html; charset=iso-8859-1
      *  text/html; charset=ISO-8859-15
-     *  text/plain;  	charset="iso-8859-1"
-     *  text/plain;  	charset="us-ascii"
-     *  text/plain;  	charset="utf-8"
-     *  text/plain;  	charset="windows-1255"
-     *  text/plain;  	charset=ISO-8859-1;  	format="flowed"
+     *  text/plain;    charset="iso-8859-1"
+     *  text/plain;    charset="us-ascii"
+     *  text/plain;    charset="utf-8"
+     *  text/plain;    charset="windows-1255"
+     *  text/plain;    charset=ISO-8859-1;    format="flowed"
      *  text/plain; charset=ISO-8859-1; delsp=yes; format=flowed
      *  text/plain; delsp=yes; charset=ISO-8859-1; format=flowed
-     *  text/plain; format=flowed; charset="iso-8859-1";  	reply-type=original
+     *  text/plain; format=flowed; charset="iso-8859-1";    reply-type=original
      *  text/plain; format=flowed; delsp=yes; charset=iso-8859-15
      *  ...
      *
      * @param string $header
      * @return string
      */
-    private function getArticleCharset($header) {
+    private function getArticleCharset($header)
+    {
         $charset = 'utf-8'; // assuming the best case
 
         $matches = array();
@@ -333,7 +344,8 @@ class NNTPGroup extends ConsumerAbstract {
      * @param string $currentCharset
      * @return string
      */
-    private function convertTextToUTF8($text, $currentCharset) {
+    private function convertTextToUTF8($text, $currentCharset)
+    {
         $currentCharset = strtoupper($currentCharset);
 
         if ($currentCharset == 'UTF-8' || !$currentCharset) {
@@ -359,7 +371,8 @@ class NNTPGroup extends ConsumerAbstract {
      * @param string $currentCharset
      * @return array
      */
-    private function convertArticleHeaderToUTF8(array $header, $currentCharset) {
+    private function convertArticleHeaderToUTF8(array $header, $currentCharset)
+    {
         if ($currentCharset == 'utf-8') {
             return $header;
         }
@@ -379,7 +392,8 @@ class NNTPGroup extends ConsumerAbstract {
      * @param integer $articleNumber
      * @return bool
      */
-    private function articleExists($groupId, $articleNumber) {
+    private function articleExists($groupId, $articleNumber)
+    {
         $where = array(
             'group_id' => $groupId,
             'article_no' => $articleNumber,

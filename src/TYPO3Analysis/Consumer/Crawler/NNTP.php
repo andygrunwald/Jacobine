@@ -6,14 +6,16 @@ namespace TYPO3Analysis\Consumer\Crawler;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class NNTP extends ConsumerAbstract {
+class NNTP extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Crawls a NNTP server for groups and add further messages for every single group';
     }
 
@@ -23,7 +25,8 @@ class NNTP extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('crawler.nntp');
         $this->setRouting('crawler.nntp');
     }
@@ -34,12 +37,13 @@ class NNTP extends ConsumerAbstract {
      * @param \stdClass $message
      * @return null|void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
         $nntpConfig = $messageData->config;
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         if (is_object($nntpConfig) === false || property_exists($nntpConfig, 'Host') === false) {
             $context = array('config' => $nntpConfig);
@@ -64,13 +68,18 @@ class NNTP extends ConsumerAbstract {
             $groupRecord = $this->getGroupFromDatabase($group['group']);
 
             if ($groupRecord === false) {
-                $description = ((array_key_exists($group['group'], $descriptions) === true) ? $descriptions[$group['group']]: '');
+                $description = ((array_key_exists(
+                    $group['group'],
+                    $descriptions
+                ) === true) ? $descriptions[$group['group']] : '');
                 $id = $this->insertGroupRecord(
                     $group['group'],
                     $description,
-                    $group['first'], $group['last'],
+                    $group['first'],
+                    $group['last'],
                     $groupSummary['count'],
-                    $group['posting']);
+                    $group['posting']
+                );
 
             } else {
                 $id = $groupRecord['id'];
@@ -87,7 +96,7 @@ class NNTP extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
@@ -98,7 +107,8 @@ class NNTP extends ConsumerAbstract {
      * @param integer $groupId
      * @return void
      */
-    private function addFurtherMessageToQueue($project, $host, $groupId) {
+    private function addFurtherMessageToQueue($project, $host, $groupId)
+    {
         $message = array(
             'project' => $project,
             'host' => $host,
@@ -111,10 +121,11 @@ class NNTP extends ConsumerAbstract {
     /**
      * Receives a single nntp_group record of the database
      *
-     * @param string   $group
+     * @param string $group
      * @return bool|array
      */
-    private function getGroupFromDatabase($group) {
+    private function getGroupFromDatabase($group)
+    {
         $fields = array('id');
         $rows = $this->getDatabase()->getRecords($fields, 'nntp_group', array('name' => $group), '', '', 1);
 
@@ -138,7 +149,8 @@ class NNTP extends ConsumerAbstract {
      * @param string $posting
      * @return void
      */
-    private function insertGroupRecord($name, $description, $first, $last, $cnt, $posting) {
+    private function insertGroupRecord($name, $description, $first, $last, $cnt, $posting)
+    {
         $data = array(
             'name' => $name,
             'description' => $description,

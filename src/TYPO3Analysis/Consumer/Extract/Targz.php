@@ -6,14 +6,16 @@ namespace TYPO3Analysis\Consumer\Extract;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class Targz extends ConsumerAbstract {
+class Targz extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Extracts a *.tar.gz archive.';
     }
 
@@ -23,7 +25,8 @@ class Targz extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('extract.targz');
         $this->setRouting('extract.targz');
     }
@@ -31,14 +34,15 @@ class Targz extends ConsumerAbstract {
     /**
      * The logic of the consumer
      *
-     * @param \stdClass     $message
+     * @param \stdClass $message
      * @return void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         $record = $this->getVersionFromDatabase($messageData->versionId);
         $context = array('versionId' => $messageData->versionId);
@@ -111,16 +115,17 @@ class Targz extends ConsumerAbstract {
         // Adds new messages to queue: analyze phploc
         $this->addFurtherMessageToQueue($messageData->project, $record['id'], $folder . $targetFolder);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
      * Receives a single version of the database
      *
-     * @param integer   $id
+     * @param integer $id
      * @return bool|array
      */
-    private function getVersionFromDatabase($id) {
+    private function getVersionFromDatabase($id)
+    {
         $fields = array('id', 'version', 'extracted');
         $rows = $this->getDatabase()->getRecords($fields, 'versions', array('id' => $id), '', '', 1);
 
@@ -136,10 +141,11 @@ class Targz extends ConsumerAbstract {
     /**
      * Updates a single version and sets them to 'extracted'
      *
-     * @param integer   $id
+     * @param integer $id
      * @return void
      */
-    private function setVersionAsExtractedInDatabase($id) {
+    private function setVersionAsExtractedInDatabase($id)
+    {
         $this->getDatabase()->updateRecord('versions', array('extracted' => 1), array('id' => $id));
         $this->getLogger()->info('Set version record as extracted', array('versionId' => $id));
     }
@@ -147,12 +153,13 @@ class Targz extends ConsumerAbstract {
     /**
      * Adds new messages to queue system to analyze the folder and start github linguist analysis
      *
-     * @param string    $project
-     * @param integer   $versionId
-     * @param string    $directory
+     * @param string $project
+     * @param integer $versionId
+     * @param string $directory
      * @return void
      */
-    private function addFurtherMessageToQueue($project, $versionId, $directory) {
+    private function addFurtherMessageToQueue($project, $versionId, $directory)
+    {
         $message = array(
             'project' => $project,
             'versionId' => $versionId,

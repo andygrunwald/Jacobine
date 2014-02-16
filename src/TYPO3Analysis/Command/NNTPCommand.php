@@ -5,14 +5,14 @@
 namespace TYPO3Analysis\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3Analysis\Helper\MessageQueue;
 
-class NNTPCommand extends Command {
+class NNTPCommand extends Command
+{
 
     /**
      * Message Queue Queue
@@ -54,10 +54,17 @@ class NNTPCommand extends Command {
      *
      * @return void
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('crawler:nntp')
-             ->setDescription('Adds a NNTP server to message queue to crawl this.')
-             ->addOption('project', null, InputOption::VALUE_OPTIONAL, 'Chose the project (for configuration, etc.).', 'TYPO3');
+            ->setDescription('Adds a NNTP server to message queue to crawl this.')
+            ->addOption(
+                'project',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Chose the project (for configuration, etc.).',
+                'TYPO3'
+            );
     }
 
     /**
@@ -65,17 +72,19 @@ class NNTPCommand extends Command {
      *
      * @return string
      */
-    protected function getProject() {
+    protected function getProject()
+    {
         return $this->project;
     }
 
     /**
      * Sets the current project
      *
-     * @param string    $project
+     * @param string $project
      * @return void
      */
-    protected function setProject($project) {
+    protected function setProject($project)
+    {
         $this->project = $project;
     }
 
@@ -84,8 +93,8 @@ class NNTPCommand extends Command {
      *
      * Sets up the project, config, database and message queue
      *
-     * @param InputInterface    $input    An InputInterface instance
-     * @param OutputInterface   $output   An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return void
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -99,11 +108,13 @@ class NNTPCommand extends Command {
     /**
      * Initialize the message queue object
      *
-     * @param array     $parsedConfig
+     * @param array $parsedConfig
      * @return MessageQueue
      */
-    private function initializeMessageQueue($parsedConfig) {
+    private function initializeMessageQueue($parsedConfig)
+    {
         $config = $parsedConfig['RabbitMQ'];
+        // TODO Refactor this to use a config entity or an array
         $messageQueue = new MessageQueue($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
 
         return $messageQueue;
@@ -114,12 +125,13 @@ class NNTPCommand extends Command {
      *
      * Checks the config and adds a NNTP server to message queue.
      *
-     * @param InputInterface    $input      An InputInterface instance
-     * @param OutputInterface   $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return null|integer null or 0 if everything went fine, or an error code
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $projectConfig = $this->config['Projects'][$this->getProject()];
 
         $nntpConfig = $projectConfig['NNTP'];

@@ -4,7 +4,8 @@
  */
 namespace TYPO3Analysis\Helper;
 
-class Database {
+class Database
+{
 
     /**
      * Database handle
@@ -45,7 +46,8 @@ class Database {
      * @param string $database
      * @return \TYPO3Analysis\Helper\Database
      */
-    public function __construct(DatabaseFactory $factory, $host, $port, $username, $password, $database) {
+    public function __construct(DatabaseFactory $factory, $host, $port, $username, $password, $database)
+    {
         $this->factory = $factory;
         // TODO make database driver configurable (via config)
         $this->connect('mysql', $host, $port, $username, $password, $database);
@@ -62,7 +64,8 @@ class Database {
      * @param string $database
      * @return void
      */
-    public function connect($driverName, $host, $port, $username, $password, $database) {
+    public function connect($driverName, $host, $port, $username, $password, $database)
+    {
         $this->reconnect($driverName, $host, $port, $username, $password, $database);
         $this->setCredentials($driverName, $host, $port, $username, $password, $database);
     }
@@ -78,7 +81,8 @@ class Database {
      * @param string $database
      * @return void
      */
-    protected function reconnect($driverName, $host, $port, $username, $password, $database) {
+    protected function reconnect($driverName, $host, $port, $username, $password, $database)
+    {
         $this->handle = $this->factory->create($driverName, $host, $port, $username, $password, $database);
     }
 
@@ -93,7 +97,8 @@ class Database {
      * @param string $database
      * @return void
      */
-    private function setCredentials($driverName, $host, $port, $username, $password, $database) {
+    private function setCredentials($driverName, $host, $port, $username, $password, $database)
+    {
         $this->credentials = [
             'diver' => $driverName,
             'host' => $host,
@@ -114,7 +119,8 @@ class Database {
      * @return bool
      * @throws \Exception
      */
-    protected function setLastStatement(\PDOStatement $statement) {
+    protected function setLastStatement(\PDOStatement $statement)
+    {
         $this->lastStatement = $statement;
         $errorInfo = $statement->errorInfo();
 
@@ -125,7 +131,13 @@ class Database {
         // This can be the case if the download of a HTTP package is to slow (e.g. due to a slow bandwith).
         if ($errorInfo[1] && $errorInfo[1] == 2006) {
             $credentials = $this->credentials;
-            $this->reconnect($credentials['host'], $credentials['host'], $credentials['username'], $credentials['password'], $credentials['database']);
+            $this->reconnect(
+                $credentials['host'],
+                $credentials['host'],
+                $credentials['username'],
+                $credentials['password'],
+                $credentials['database']
+            );
             return true;
 
         } elseif ($errorInfo[1]) {
@@ -142,7 +154,8 @@ class Database {
      *
      * @return null|\PDOStatement
      */
-    protected function getLastStatement() {
+    protected function getLastStatement()
+    {
         return $this->lastStatement;
     }
 
@@ -151,7 +164,8 @@ class Database {
      *
      * @return null|\PDO
      */
-    protected function getHandle() {
+    protected function getHandle()
+    {
         return $this->handle;
     }
 
@@ -160,11 +174,12 @@ class Database {
      *
      * Identifier will be :fieldname
      *
-     * @param array     $parts
-     * @param string    $implodeGlue
+     * @param array $parts
+     * @param string $implodeGlue
      * @return array
      */
-    protected function buildPreparedParts(array $parts, $implodeGlue) {
+    protected function buildPreparedParts(array $parts, $implodeGlue)
+    {
         $queryParts = array();
         $prepareParts = array();
 
@@ -180,15 +195,22 @@ class Database {
      * Gets records form the database.
      * Executes a SELECT statement.
      *
-     * @param array     $fields
-     * @param string    $table
-     * @param array     $where
-     * @param string    $groupBy
-     * @param string    $orderBy
-     * @param string    $limit
+     * @param array $fields An array of fields. E.g. array('*') or array('id', 'version', ...)
+     * @param string $table
+     * @param array $where
+     * @param string $groupBy
+     * @param string $orderBy
+     * @param string $limit
      * @return array
      */
-    public function getRecords(array $fields = array('*'), $table, array $where = array(), $groupBy = '', $orderBy = '', $limit = '') {
+    public function getRecords(
+        array $fields,
+        $table,
+        array $where = array(),
+        $groupBy = '',
+        $orderBy = '',
+        $limit = ''
+    ) {
         list($where, $prepareParts) = $this->buildPreparedParts($where, ' AND ');
         $query = '
             SELECT ' . implode(',', $fields) . '
@@ -217,17 +239,21 @@ class Database {
      * Inserts a single record into the database.
      * A prepared statement will be used.
      *
-     * @param string    $table
-     * @param array     $data
+     * @param string $table
+     * @param array $data
      * @return string
      */
-    public function insertRecord($table, array $data) {
+    public function insertRecord($table, array $data)
+    {
         $preparedValues = array();
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $preparedValues[':' . $key] = $value;
         }
 
-        $query = 'INSERT INTO ' . $table . ' (' . implode(',', array_keys($data)) . ') VALUES (' . implode(',', array_keys($preparedValues)) . ')';
+        $query = 'INSERT INTO ' . $table . ' (' . implode(',', array_keys($data)) . ') VALUES (' . implode(
+            ',',
+            array_keys($preparedValues)
+        ) . ')';
         $this->executeStatement($query, $preparedValues);
 
         return $this->getHandle()->lastInsertId();
@@ -236,12 +262,13 @@ class Database {
     /**
      * Update record in the database.
      *
-     * @param string    $table
-     * @param array     $data
-     * @param array     $where
+     * @param string $table
+     * @param array $data
+     * @param array $where
      * @return bool
      */
-    public function updateRecord($table, array $data, array $where = array()) {
+    public function updateRecord($table, array $data, array $where = array())
+    {
         list($where, $prepareWhereParts) = $this->buildPreparedParts($where, ' AND ');
         list($update, $prepareUpdateParts) = $this->buildPreparedParts($data, ', ');
         $prepareParts = $prepareWhereParts + $prepareUpdateParts;
@@ -258,11 +285,12 @@ class Database {
     /**
      * Delete record(s) from database
      *
-     * @param string    $table
-     * @param array     $where
+     * @param string $table
+     * @param array $where
      * @return bool
      */
-    public function deleteRecords($table, array $where = array()) {
+    public function deleteRecords($table, array $where = array())
+    {
         list($where, $prepareWhereParts) = $this->buildPreparedParts($where, ' AND ');
 
         $query = '
@@ -276,11 +304,12 @@ class Database {
     /**
      * Executes a single database statement
      *
-     * @param string    $query
-     * @param array     $preparedParts
+     * @param string $query
+     * @param array $preparedParts
      * @return bool
      */
-    private function executeStatement($query, array $preparedParts) {
+    private function executeStatement($query, array $preparedParts)
+    {
         $statement = $this->getHandle()->prepare($query);
         $result = $statement->execute($preparedParts);
 

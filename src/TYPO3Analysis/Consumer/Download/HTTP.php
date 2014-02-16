@@ -6,14 +6,16 @@ namespace TYPO3Analysis\Consumer\Download;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class HTTP extends ConsumerAbstract {
+class HTTP extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Downloads a HTTP resource.';
     }
 
@@ -23,7 +25,8 @@ class HTTP extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('download.http');
         $this->setRouting('download.http');
     }
@@ -31,14 +34,15 @@ class HTTP extends ConsumerAbstract {
     /**
      * The logic of the consumer
      *
-     * @param \stdClass     $message
+     * @param \stdClass $message
      * @return void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         $record = $this->getVersionFromDatabase($messageData->versionId);
         $context = array('versionId' => $messageData->versionId);
@@ -69,7 +73,9 @@ class HTTP extends ConsumerAbstract {
         $targetFile = $targetDir . $fileName;
 
         // If the file already there do not download it again
-        if (file_exists($targetFile) === true && $record['checksum_tar_md5'] && md5_file($targetFile) === $record['checksum_tar_md5']) {
+        if (file_exists($targetFile) === true && $record['checksum_tar_md5']
+            && md5_file($targetFile) === $record['checksum_tar_md5']
+        ) {
             $context = array(
                 'targetFile' => $targetFile
             );
@@ -77,7 +83,7 @@ class HTTP extends ConsumerAbstract {
             $this->setVersionAsDownloadedInDatabase($record['id']);
             $this->acknowledgeMessage($message);
             $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetFile);
-            $this->getLogger()->info('Finish processing message', (array) $messageData);
+            $this->getLogger()->info('Finish processing message', (array)$messageData);
             return;
         }
 
@@ -88,7 +94,9 @@ class HTTP extends ConsumerAbstract {
         $this->getLogger()->info('Starting download', $context);
 
         // We download the file with wget, because we get a progress bar for free :)
-        $command = 'wget ' . escapeshellarg($record['url_tar']) . ' --output-document=' . escapeshellarg($targetTempFile);
+        $command = 'wget ' . escapeshellarg($record['url_tar']) . ' --output-document=' . escapeshellarg(
+            $targetTempFile
+        );
 
         try {
             $this->executeCommand($command);
@@ -136,18 +144,19 @@ class HTTP extends ConsumerAbstract {
         // Adds new messages to queue: extract the file, get filesize or tar.gz file
         $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetFile);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
      * Adds new messages to queue system to extract a tar.gz file and get the filesize of this file
      *
-     * @param string    $project
-     * @param integer   $id
-     * @param string    $file
+     * @param string $project
+     * @param integer $id
+     * @param string $file
      * @return void
      */
-    private function addFurtherMessageToQueue($project, $id, $file) {
+    private function addFurtherMessageToQueue($project, $id, $file)
+    {
         $message = array(
             'project' => $project,
             'versionId' => $id,
@@ -161,10 +170,11 @@ class HTTP extends ConsumerAbstract {
     /**
      * Receives a single version of the database
      *
-     * @param integer   $id
+     * @param integer $id
      * @return bool|array
      */
-    private function getVersionFromDatabase($id) {
+    private function getVersionFromDatabase($id)
+    {
         $fields = array('id', 'version', 'checksum_tar_md5', 'url_tar', 'downloaded');
         $rows = $this->getDatabase()->getRecords($fields, 'versions', array('id' => $id), '', '', 1);
 
@@ -180,10 +190,11 @@ class HTTP extends ConsumerAbstract {
     /**
      * Updates a single version and sets them to 'downloaded'
      *
-     * @param integer   $id
+     * @param integer $id
      * @return void
      */
-    private function setVersionAsDownloadedInDatabase($id) {
+    private function setVersionAsDownloadedInDatabase($id)
+    {
         $this->getDatabase()->updateRecord('versions', array('downloaded' => 1), array('id' => $id));
         $this->getLogger()->info('Set version as downloaded', array('versionId' => $id));
     }

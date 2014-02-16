@@ -4,10 +4,11 @@
  */
 namespace TYPO3Analysis\Consumer\Crawler;
 
-use TYPO3Analysis\Consumer\ConsumerAbstract;
 use Symfony\Component\DomCrawler\Crawler;
+use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class Gitweb extends ConsumerAbstract {
+class Gitweb extends ConsumerAbstract
+{
 
     /**
      * HTTP Client
@@ -21,7 +22,8 @@ class Gitweb extends ConsumerAbstract {
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Crawls a Gitweb-Index page for Git-repositories';
     }
 
@@ -31,7 +33,8 @@ class Gitweb extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('crawler.gitweb');
         $this->setRouting('crawler.gitweb');
 
@@ -47,18 +50,19 @@ class Gitweb extends ConsumerAbstract {
     /**
      * The logic of the consumer
      *
-     * @param \stdClass     $message
+     * @param \stdClass $message
      * @return void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         try {
             $content = $this->getContent($this->browser, $messageData->url);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $context = array(
                 'url' => $messageData->url,
                 'message' => $e->getMessage()
@@ -85,7 +89,9 @@ class Gitweb extends ConsumerAbstract {
 
             $detailCrawler = new Crawler($content);
             /* @var $detailCrawler \Symfony\Component\DomCrawler\Crawler */
-            $gitUrl = $detailCrawler->filterXPath('//table[@class="projects_list"]/tr[@class="metadata_url"]/td[2]')->text();
+            $gitUrl = $detailCrawler->filterXPath(
+                '//table[@class="projects_list"]/tr[@class="metadata_url"]/td[2]'
+            )->text();
 
             $gitwebRecord = $this->getGitwebFromDatabase($gitUrl);
             if ($gitwebRecord === false) {
@@ -100,18 +106,19 @@ class Gitweb extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
      * Returns the content of a web page
      *
-     * @param \Buzz\Browser     $browser
-     * @param string            $url
+     * @param \Buzz\Browser $browser
+     * @param string $url
      * @return mixed
      * @throws \Exception
      */
-    private function getContent($browser, $url) {
+    private function getContent($browser, $url)
+    {
         $this->getLogger()->info('Requesting url', array('url' => $url));
         $response = $browser->get($url);
         /* @var $response \Buzz\Message\Response */
@@ -132,11 +139,12 @@ class Gitweb extends ConsumerAbstract {
     /**
      * Adds new messages to queue system to download the git repository
      *
-     * @param string    $project
-     * @param integer   $id
+     * @param string $project
+     * @param integer $id
      * @return void
      */
-    private function addFurtherMessageToQueue($project, $id) {
+    private function addFurtherMessageToQueue($project, $id)
+    {
         $message = array(
             'project' => $project,
             'id' => $id
@@ -148,10 +156,11 @@ class Gitweb extends ConsumerAbstract {
     /**
      * Receives a single gitweb record of the database
      *
-     * @param string   $repository
+     * @param string $repository
      * @return bool|array
      */
-    private function getGitwebFromDatabase($repository) {
+    private function getGitwebFromDatabase($repository)
+    {
         $fields = array('id');
         $rows = $this->getDatabase()->getRecords($fields, 'gitweb', array('git' => $repository), '', '', 1);
 
@@ -167,11 +176,12 @@ class Gitweb extends ConsumerAbstract {
     /**
      * Inserts a new gitweb record to database
      *
-     * @param string   $name
-     * @param string   $repository
+     * @param string $name
+     * @param string $repository
      * @return void
      */
-    private function insertGitwebRecord($name, $repository) {
+    private function insertGitwebRecord($name, $repository)
+    {
         $data = array(
             'name' => $name,
             'git' => $repository

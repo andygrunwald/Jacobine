@@ -5,13 +5,12 @@
 namespace TYPO3Analysis\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
-class ListConsumerCommand extends Command {
+class ListConsumerCommand extends Command
+{
 
     /**
      * Base namespace of consumer
@@ -39,18 +38,20 @@ class ListConsumerCommand extends Command {
      *
      * @return void
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('analysis:list-consumer')
-             ->setDescription('Lists all available consumer');
+            ->setDescription('Lists all available consumer');
     }
 
     /**
      * Sets the consumer path
      *
-     * @param String    $consumerPath
+     * @param String $consumerPath
      * @return void
      */
-    public function setConsumerPath($consumerPath) {
+    public function setConsumerPath($consumerPath)
+    {
         $this->consumerPath = $consumerPath;
     }
 
@@ -59,7 +60,8 @@ class ListConsumerCommand extends Command {
      *
      * @return String
      */
-    public function getConsumerPath() {
+    public function getConsumerPath()
+    {
         return $this->consumerPath;
     }
 
@@ -68,8 +70,8 @@ class ListConsumerCommand extends Command {
      *
      * Sets up the consumer path
      *
-     * @param InputInterface    $input      An InputInterface instance
-     * @param OutputInterface   $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return void
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
@@ -84,11 +86,12 @@ class ListConsumerCommand extends Command {
      *
      * Lists all available consumer.
      *
-     * @param InputInterface    $input      An InputInterface instance
-     * @param OutputInterface   $output     An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      * @return null|integer null or 0 if everything went fine, or an error code
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
 
         $path = $this->getConsumerPath();
         $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;

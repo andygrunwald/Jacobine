@@ -4,7 +4,8 @@
  */
 namespace TYPO3Analysis\Helper;
 
-class DatabaseFactory {
+class DatabaseFactory
+{
 
     /**
      * Factory method to create a database object
@@ -17,8 +18,9 @@ class DatabaseFactory {
      * @param string $database
      * @return \TYPO3Analysis\Helper\Database
      */
-    public function create($driverName, $host, $port, $username, $password, $database) {
-        $dsn = $this->buildDsn($driverName, $host, $port, $database );
+    public function create($driverName, $host, $port, $username, $password, $database)
+    {
+        $dsn = $this->buildDsn($driverName, $host, $port, $database);
         return new \PDO($dsn, $username, $password);
     }
 
@@ -31,7 +33,8 @@ class DatabaseFactory {
      * @param string $database
      * @return string
      */
-    private function buildDsn($driverName, $host, $port, $database) {
+    private function buildDsn($driverName, $host, $port, $database)
+    {
         $dsn = strtolower($driverName) . ':host=' . $host . ';port=' . intval($port) . ';dbname=' . $database;
         return $dsn;
     }

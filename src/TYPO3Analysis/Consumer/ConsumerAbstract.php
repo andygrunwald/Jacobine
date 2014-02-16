@@ -4,7 +4,8 @@
  */
 namespace TYPO3Analysis\Consumer;
 
-abstract class ConsumerAbstract implements ConsumerInterface {
+abstract class ConsumerAbstract implements ConsumerInterface
+{
 
     /**
      * The queue name
@@ -68,7 +69,8 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      * @param \stdClass $message
      * @return void
      */
-    public function setMessage($message) {
+    public function setMessage($message)
+    {
         $this->message = $message;
     }
 
@@ -77,7 +79,8 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return \stdClass
      */
-    public function getMessage() {
+    public function getMessage()
+    {
         return $this->message;
     }
 
@@ -86,17 +89,19 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return string
      */
-    public function getQueue() {
+    public function getQueue()
+    {
         return $this->queue;
     }
 
     /**
      * Sets the queue name
      *
-     * @param string    $queue
+     * @param string $queue
      * @return void
      */
-    public function setQueue($queue) {
+    public function setQueue($queue)
+    {
         $this->queue = $queue;
     }
 
@@ -105,17 +110,19 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return string
      */
-    public function getRouting() {
+    public function getRouting()
+    {
         return $this->routing;
     }
 
     /**
      * Sets the routing key
      *
-     * @param string    $routing
+     * @param string $routing
      * @return void
      */
-    public function setRouting($routing) {
+    public function setRouting($routing)
+    {
         $this->routing = $routing;
     }
 
@@ -124,17 +131,19 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return string
      */
-    public function getExchange() {
+    public function getExchange()
+    {
         return $this->exchange;
     }
 
     /**
      * Sets the exchange name
      *
-     * @param string    $exchange
+     * @param string $exchange
      * @return void
      */
-    public function setExchange($exchange) {
+    public function setExchange($exchange)
+    {
         $this->exchange = $exchange;
     }
 
@@ -143,7 +152,8 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return string
      */
-    public function getConsumerTag() {
+    public function getConsumerTag()
+    {
         return get_class($this);
     }
 
@@ -152,17 +162,19 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return \TYPO3Analysis\Helper\Database
      */
-    public function getDatabase() {
+    public function getDatabase()
+    {
         return $this->database;
     }
 
     /**
      * Sets the database
      *
-     * @param \TYPO3Analysis\Helper\Database    $database
+     * @param \TYPO3Analysis\Helper\Database $database
      * @return void
      */
-    public function setDatabase($database) {
+    public function setDatabase($database)
+    {
         $this->database = $database;
     }
 
@@ -171,17 +183,19 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return array
      */
-    public function getConfig() {
+    public function getConfig()
+    {
         return $this->config;
     }
 
     /**
      * Sets the config
      *
-     * @param array     $config
+     * @param array $config
      * @return void
      */
-    public function setConfig(array $config) {
+    public function setConfig(array $config)
+    {
         $this->config = $config;
     }
 
@@ -190,17 +204,19 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return \TYPO3Analysis\Helper\MessageQueue
      */
-    public function getMessageQueue() {
+    public function getMessageQueue()
+    {
         return $this->messageQueue;
     }
 
     /**
      * Sets the message queue
      *
-     * @param \TYPO3Analysis\Helper\MessageQueue    $messageQueue
+     * @param \TYPO3Analysis\Helper\MessageQueue $messageQueue
      * @return void
      */
-    public function setMessageQueue($messageQueue) {
+    public function setMessageQueue($messageQueue)
+    {
         $this->messageQueue = $messageQueue;
     }
 
@@ -209,27 +225,30 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return \Monolog\Logger
      */
-    public function getLogger() {
+    public function getLogger()
+    {
         return $this->logger;
     }
 
     /**
      * Sets the logger
      *
-     * @param \Monolog\Logger   $logger
+     * @param \Monolog\Logger $logger
      * @return void
      */
-    public function setLogger($logger) {
+    public function setLogger($logger)
+    {
         $this->logger = $logger;
     }
 
     /**
      * Acknowledges a message of a consumer to the message queue server
      *
-     * @param \stdClass  $message
+     * @param \stdClass $message
      * @return void
      */
-    protected function acknowledgeMessage($message) {
+    protected function acknowledgeMessage($message)
+    {
         $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
     }
 
@@ -242,7 +261,8 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      * @throws \Exception
      * @return array
      */
-    protected function executeCommand($command, $withUser = true, $environmentVarsToAdd = array()) {
+    protected function executeCommand($command, $withUser = true, $environmentVarsToAdd = array())
+    {
         $output = array();
         $returnValue = 0;
 
@@ -273,7 +293,8 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      * @param array $environmentVars
      * @return string
      */
-    private function getEnvironmentVarsCommandPart($environmentVars = array()) {
+    private function getEnvironmentVarsCommandPart($environmentVars = array())
+    {
         $commandPart = array();
 
         foreach ($environmentVars as $envVar) {
@@ -293,7 +314,8 @@ abstract class ConsumerAbstract implements ConsumerInterface {
      *
      * @return string
      */
-    private function getUserCommandPart() {
+    private function getUserCommandPart()
+    {
         $userInformation = posix_getpwuid(posix_geteuid());
         $username = $userInformation['name'];
         $commandPart = 'sudo -u ' . escapeshellarg($username);

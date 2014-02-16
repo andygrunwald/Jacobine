@@ -6,14 +6,16 @@ namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class PDepend extends ConsumerAbstract {
+class PDepend extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Executes the PDepend analysis on a given folder.';
     }
 
@@ -23,7 +25,8 @@ class PDepend extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('analysis.pdepend');
         $this->setRouting('analysis.pdepend');
     }
@@ -31,14 +34,15 @@ class PDepend extends ConsumerAbstract {
     /**
      * The logic of the consumer
      *
-     * @param \stdClass     $message
+     * @param \stdClass $message
      * @return void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
@@ -59,7 +63,8 @@ class PDepend extends ConsumerAbstract {
 
         // If there was already a pDepend run, all files must be exist. If yes, exit here
         if (file_exists($jDependChartFile) === true && file_exists($jDependXmlFile) === true
-            && file_exists($overviewPyramidFile) === true && file_exists($summaryXmlFile) === true) {
+            && file_exists($overviewPyramidFile) === true && file_exists($summaryXmlFile) === true
+        ) {
             $context = array(
                 'versionId' => $messageData->versionId,
                 'directory' => $messageData->directory
@@ -78,7 +83,9 @@ class PDepend extends ConsumerAbstract {
         $command .= ' --overview-pyramid=' . escapeshellarg($overviewPyramidFile);
         $command .= ' --summary-xml=' . escapeshellarg($summaryXmlFile);
         $command .= ' --suffix=' . escapeshellarg($filePattern);
-        $command .= ' --coderank-mode=inheritance,property,method ' . escapeshellarg($dirToAnalyze . DIRECTORY_SEPARATOR);
+        $command .= ' --coderank-mode=inheritance,property,method ' . escapeshellarg(
+            $dirToAnalyze . DIRECTORY_SEPARATOR
+        );
 
         $context = array('directory' => $dirToAnalyze);
         $this->getLogger()->info('Start analyzing with pDepend', $context);
@@ -91,7 +98,8 @@ class PDepend extends ConsumerAbstract {
         }
 
         if (file_exists($jDependChartFile) !== true || file_exists($jDependXmlFile) !== true
-            || file_exists($overviewPyramidFile) !== true || file_exists($summaryXmlFile) !== true) {
+            || file_exists($overviewPyramidFile) !== true || file_exists($summaryXmlFile) !== true
+        ) {
             $context['jDependChart'] = $jDependChartFile;
             $context['jDependXml'] = $jDependXmlFile;
             $context['overviewPyramid'] = $overviewPyramidFile;
@@ -106,6 +114,6 @@ class PDepend extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 }

@@ -6,15 +6,17 @@ namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class GithubLinguist extends ConsumerAbstract {
+class GithubLinguist extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
-        return 'Executes the Github Linguist analysis on a given folder and stores the results in linguist database table.';
+    public function getDescription()
+    {
+        return 'Executes the Github Linguist analysis on a folder and stores the results in linguist database table.';
     }
 
     /**
@@ -23,7 +25,8 @@ class GithubLinguist extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('analysis.linguist');
         $this->setRouting('analysis.linguist');
     }
@@ -31,14 +34,15 @@ class GithubLinguist extends ConsumerAbstract {
     /**
      * The logic of the consumer
      *
-     * @param \stdClass     $message
+     * @param \stdClass $message
      * @return void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
@@ -49,7 +53,7 @@ class GithubLinguist extends ConsumerAbstract {
 
         try {
             $this->clearLinguistRecordsFromDatabase($messageData->versionId);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->acknowledgeMessage($message);
             return;
         }
@@ -89,7 +93,7 @@ class GithubLinguist extends ConsumerAbstract {
         }
 
         $this->acknowledgeMessage($message);
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
@@ -106,7 +110,8 @@ class GithubLinguist extends ConsumerAbstract {
      * @param array $results
      * @return array
      */
-    protected function parseGithubLinguistResults(array $results) {
+    protected function parseGithubLinguistResults(array $results)
+    {
         $parsedResults = array();
 
         foreach ($results as $line) {
@@ -128,11 +133,12 @@ class GithubLinguist extends ConsumerAbstract {
     /**
      * Inserts the github-linguist results in database
      *
-     * @param integer   $versionId
-     * @param array     $result
+     * @param integer $versionId
+     * @param array $result
      * @throws \Exception
      */
-    protected function storeLinguistDataInDatabase($versionId, array $result) {
+    protected function storeLinguistDataInDatabase($versionId, array $result)
+    {
         $this->getLogger()->info('Store linguist information in database', array('version' => $versionId));
         foreach ($result as $language) {
             $language['version'] = $versionId;
@@ -148,11 +154,12 @@ class GithubLinguist extends ConsumerAbstract {
     /**
      * Deletes the linguist records of github linguist analyses
      *
-     * @param integer   $versionId
+     * @param integer $versionId
      * @return void
      * @throws \Exception
      */
-    protected function clearLinguistRecordsFromDatabase($versionId) {
+    protected function clearLinguistRecordsFromDatabase($versionId)
+    {
         $deleteResult = $this->getDatabase()->deleteRecords('linguist', array('version' => intval($versionId)));
 
         if ($deleteResult === false) {

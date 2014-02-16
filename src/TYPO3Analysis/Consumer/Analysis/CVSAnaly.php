@@ -6,14 +6,16 @@ namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
-class CVSAnaly extends ConsumerAbstract {
+class CVSAnaly extends ConsumerAbstract
+{
 
     /**
      * Gets a description of the consumer
      *
      * @return string
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return 'Executes the CVSAnaly analysis on a given folder and stores the results in database.';
     }
 
@@ -23,7 +25,8 @@ class CVSAnaly extends ConsumerAbstract {
      *
      * @return void
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->setQueue('analysis.cvsanaly');
         $this->setRouting('analysis.cvsanaly');
     }
@@ -31,14 +34,15 @@ class CVSAnaly extends ConsumerAbstract {
     /**
      * The logic of the consumer
      *
-     * @param \stdClass     $message
+     * @param \stdClass $message
      * @return void
      */
-    public function process($message) {
+    public function process($message)
+    {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $this->getLogger()->info('Receiving message', (array)$messageData);
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->checkoutDir) !== true) {
@@ -47,7 +51,10 @@ class CVSAnaly extends ConsumerAbstract {
             return;
         }
 
-        $this->getLogger()->info('Start analyzing directory with CVSAnaly', array('directory' => $messageData->checkoutDir));
+        $this->getLogger()->info(
+            'Start analyzing directory with CVSAnaly',
+            array('directory' => $messageData->checkoutDir)
+        );
 
         try {
             $extensions = $this->getCVSAnalyExtensions($this->getConfig());
@@ -61,7 +68,12 @@ class CVSAnaly extends ConsumerAbstract {
             return;
         }
 
-        $command = $this->buildCVSAnalyCommand($this->getConfig(), $messageData->project, $messageData->checkoutDir, $extensions);
+        $command = $this->buildCVSAnalyCommand(
+            $this->getConfig(),
+            $messageData->project,
+            $messageData->checkoutDir,
+            $extensions
+        );
         try {
             $this->executeCommand($command, true, array('PYTHONPATH'));
         } catch (\Exception $e) {
@@ -77,19 +89,20 @@ class CVSAnaly extends ConsumerAbstract {
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
      * Builds the CVSAnaly command
      *
-     * @param array     $config
-     * @param string    $project
-     * @param string    $directory
-     * @param string    $extensions
+     * @param array $config
+     * @param string $project
+     * @param string $directory
+     * @param string $extensions
      * @return string
      */
-    private function buildCVSAnalyCommand($config, $project, $directory, $extensions) {
+    private function buildCVSAnalyCommand($config, $project, $directory, $extensions)
+    {
         $projectConfig = $config['Projects'][$project];
 
         $configFile = rtrim(dirname(CONFIG_FILE), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -115,7 +128,8 @@ class CVSAnaly extends ConsumerAbstract {
      * @param array $config
      * @return string
      */
-    private function getCVSAnalyExtensions($config) {
+    private function getCVSAnalyExtensions($config)
+    {
         $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
         $command .= ' --list-extensions';
 
