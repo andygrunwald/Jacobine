@@ -14,6 +14,13 @@ class Database {
     protected $handle = null;
 
     /**
+     * Database factory
+     *
+     * @var \TYPO3Analysis\Helper\DatabaseFactory
+     */
+    protected $factory = null;
+
+    /**
      * Last used statement
      *
      * @var \PDOStatement
@@ -25,15 +32,12 @@ class Database {
      *
      * @var array
      */
-    protected $credentials = array(
-        'dsn' => null,
-        'username' => null,
-        'password' => null
-    );
+    protected $credentials = [];
 
     /**
      * Constructor to initialize the database connection
      *
+     * @param DatabaseFactory $factory
      * @param string $host
      * @param integer $port
      * @param string $username
@@ -41,50 +45,63 @@ class Database {
      * @param string $database
      * @return \TYPO3Analysis\Helper\Database
      */
-    public function __construct($host, $port, $username, $password, $database) {
-        $this->connect($host, $port, $username, $password, $database);
+    public function __construct(DatabaseFactory $factory, $host, $port, $username, $password, $database) {
+        $this->factory = $factory;
+        // TODO make database driver configurable (via config)
+        $this->connect('mysql', $host, $port, $username, $password, $database);
     }
 
     /**
      * Connects to the database
      *
-     * @param string    $host
-     * @param integer   $port
-     * @param string    $username
-     * @param string    $password
-     * @param string    $database
+     * @param string $driverName
+     * @param string $host
+     * @param integer $port
+     * @param string $username
+     * @param string $password
+     * @param string $database
      * @return void
      */
-    public function connect($host, $port, $username, $password, $database) {
-        $dsn = 'mysql:host=' . $host . ';port=' . intval($port) . ';dbname=' . $database;
-        $this->reconnect($dsn, $username, $password);
-        $this->setCredentials($dsn, $username, $password);
+    public function connect($driverName, $host, $port, $username, $password, $database) {
+        $this->reconnect($driverName, $host, $port, $username, $password, $database);
+        $this->setCredentials($driverName, $host, $port, $username, $password, $database);
     }
 
     /**
      * Reconnects to the database
      *
-     * @param string   $dsn
-     * @param string   $username
-     * @param string   $password
+     * @param string $driverName
+     * @param string $host
+     * @param integer $port
+     * @param string $username
+     * @param string $password
+     * @param string $database
      * @return void
      */
-    protected function reconnect($dsn, $username, $password) {
-        $this->handle = new \PDO($dsn, $username, $password);
+    protected function reconnect($driverName, $host, $port, $username, $password, $database) {
+        $this->handle = $this->factory->create($driverName, $host, $port, $username, $password, $database);
     }
 
     /**
      * Sets the database connection credentials
      *
-     * @param string   $dsn
-     * @param string   $username
-     * @param string   $password
+     * @param string $driverName
+     * @param string $host
+     * @param integer $port
+     * @param string $username
+     * @param string $password
+     * @param string $database
      * @return void
      */
-    private function setCredentials($dsn, $username, $password) {
-        $this->credentials['dsn'] = $dsn;
-        $this->credentials['username'] = $username;
-        $this->credentials['password'] = $password;
+    private function setCredentials($driverName, $host, $port, $username, $password, $database) {
+        $this->credentials = [
+            'diver' => $driverName,
+            'host' => $host,
+            'port' => $port,
+            'username' => $username,
+            'password' => $password,
+            'database' => $database
+        ];
     }
 
     /**
@@ -107,7 +124,8 @@ class Database {
         // In the long time the connection can be lost.
         // This can be the case if the download of a HTTP package is to slow (e.g. due to a slow bandwith).
         if ($errorInfo[1] && $errorInfo[1] == 2006) {
-            $this->reconnect($this->credentials['dsn'], $this->credentials['username'], $this->credentials['password']);
+            $credentials = $this->credentials;
+            $this->reconnect($credentials['host'], $credentials['host'], $credentials['username'], $credentials['password'], $credentials['database']);
             return true;
 
         } elseif ($errorInfo[1]) {

@@ -15,6 +15,7 @@ use Monolog\Processor\ProcessIdProcessor;
 use Monolog\Processor\MemoryUsageProcessor;
 use Monolog\Processor\MemoryPeakUsageProcessor;
 use TYPO3Analysis\Helper\Database;
+use TYPO3Analysis\Helper\DatabaseFactory;
 use TYPO3Analysis\Helper\MessageQueue;
 use TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler;
 
@@ -110,9 +111,10 @@ class ConsumerCommand extends Command {
         }
 
         $config = $parsedConfig['MySQL'];
-
         $projectConfig = $parsedConfig['Projects'][$this->getProject()];
-        $database = new Database($config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
+
+        $databaseFactory = new DatabaseFactory();
+        $database = new Database($databaseFactory, $config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
 
         return $database;
     }
