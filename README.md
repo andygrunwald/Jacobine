@@ -1,4 +1,9 @@
-# TYPO3-Analytics [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/badges/quality-score.png?s=fa5eb02b03f8c63636e620caf8734c187769e3e2)](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/) [![Code Coverage](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/badges/coverage.png?s=10a00adba7915f1687f28cbdbcb77e97f90a96ae)](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/) [![Dependency Status](https://www.versioneye.com/user/projects/52ff3ba2ec1375bab100022a/badge.png)](https://www.versioneye.com/user/projects/52ff3ba2ec1375bab100022a)
+# TYPO3-Analytics 
+
+[![Build Status](https://travis-ci.org/andygrunwald/TYPO3-Analytics.png?branch=master)](https://travis-ci.org/andygrunwald/TYPO3-Analytics)
+[![Dependency Status](https://www.versioneye.com/user/projects/52ff3ba2ec1375bab100022a/badge.png)](https://www.versioneye.com/user/projects/52ff3ba2ec1375bab100022a)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/badges/quality-score.png?s=fa5eb02b03f8c63636e620caf8734c187769e3e2)](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/)
+[![Code Coverage](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/badges/coverage.png?s=10a00adba7915f1687f28cbdbcb77e97f90a96ae)](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/) 
 
 TYPO3-Analytics aims to take many different analysis on the [TYPO3](http://typo3org/) open source CMS and the community.
 Analysis can be the size of the different versions in MB, the most active contributers, the atmosphere / mood of the
