@@ -48,7 +48,7 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
      *
      * @param OutputInterface $output
      * @param bool|int $level
-     * @return void
+     * @return \TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler
      */
     public function __construct(OutputInterface $output, $level = Logger::DEBUG)
     {

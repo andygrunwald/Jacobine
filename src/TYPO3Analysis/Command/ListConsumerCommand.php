@@ -104,7 +104,7 @@ class ListConsumerCommand extends Command
         $basePath = realpath($basePath) . DIRECTORY_SEPARATOR;
 
         foreach ($finder as $file) {
-            /* @var $file SplFileInfo */
+            /* @var $file \SplFileInfo */
             $className = $file->getRealpath();
             $className = str_replace($basePath, '', $className);
             $className = substr($className, 0, -4);

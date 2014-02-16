@@ -104,7 +104,7 @@ class PHPLoc extends ConsumerAbstract
      * Stores the result of phploc command to database
      *
      * @param integer $versionId
-     * @param SimpleXMLElement $phpLocResults
+     * @param \SimpleXMLElement $phpLocResults
      * @return void
      */
     private function storePhpLocDataInDatabase($versionId, $phpLocResults)

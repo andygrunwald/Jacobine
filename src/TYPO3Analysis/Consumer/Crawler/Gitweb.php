@@ -178,7 +178,7 @@ class Gitweb extends ConsumerAbstract
      *
      * @param string $name
      * @param string $repository
-     * @return void
+     * @return string
      */
     private function insertGitwebRecord($name, $repository)
     {

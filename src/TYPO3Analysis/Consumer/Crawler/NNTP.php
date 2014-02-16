@@ -147,7 +147,7 @@ class NNTP extends ConsumerAbstract
      * @param integer $last
      * @param integer $cnt
      * @param string $posting
-     * @return void
+     * @return string
      */
     private function insertGroupRecord($name, $description, $first, $last, $cnt, $posting)
     {

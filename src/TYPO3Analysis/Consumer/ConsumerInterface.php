@@ -25,7 +25,7 @@ interface ConsumerInterface
     /**
      * The logic of the consumer
      *
-     * @param stdClass $message
+     * @param \stdClass $message
      * @return void
      */
     public function process($message);

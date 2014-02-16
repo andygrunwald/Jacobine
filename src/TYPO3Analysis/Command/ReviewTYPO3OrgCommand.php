@@ -108,6 +108,15 @@ class ReviewTYPO3OrgCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // TODO Take care of this! Does this class might sense? Or is this just old code?
+        // Maybe it was replaces by GerritCommand? Step in deeper!
+        $message = __CLASS__ . '->' . __METHOD__ . ':';
+        $message .= 'Deactivated! This class has to be refactored and make it working again.';
+        $message .= 'Sorry for this. Please come back later.'.
+        $message = '<error>' . $message . '</error>';
+        $output->writeln($message);
+        die(99);
+
         $project = 'TYPO3';
 
         // Bootstrap Gerrie
@@ -129,9 +138,9 @@ class ReviewTYPO3OrgCommand extends Command
 
         $parentMapping = array();
         foreach ($projects as $name => $info) {
-            $projectId = $gerrie->importProject($name, $info, &$parentMapping);
-            var_dump($projects);
-            die();
+            //$projectId = $gerrie->importProject($name, $info, &$parentMapping);
+            //var_dump($projects);
+            //die();
 
             // Import / update single project via Gerrie
             // Return the insert id

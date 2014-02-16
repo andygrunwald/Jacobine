@@ -132,6 +132,7 @@ class Database
         if ($errorInfo[1] && $errorInfo[1] == 2006) {
             $credentials = $this->credentials;
             $this->reconnect(
+                $credentials['driver'],
                 $credentials['host'],
                 $credentials['host'],
                 $credentials['username'],

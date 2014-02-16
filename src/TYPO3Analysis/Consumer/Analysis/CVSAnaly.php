@@ -130,13 +130,15 @@ class CVSAnaly extends ConsumerAbstract
      */
     private function getCVSAnalyExtensions($config)
     {
-        $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
-        $command .= ' --list-extensions';
-
+        // TODO Take care of this ... configure extensions or make this work!
         // Hardcoded extensions, because some extensions may not work correct
         // With this way we can enable / disable various extensions
         // and know that all works fine :)
         // Later on we try to fix all extensions in CVSAnaly to work with all repositories
+        //
+        // $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
+        // $command .= ' --list-extensions';
+        //
         // $extensions = $this->executeCommand($command);
         // $extensions = implode('', $extensions);
         $extensions = 'Months, Weeks';
