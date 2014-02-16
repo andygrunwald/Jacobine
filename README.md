@@ -61,12 +61,23 @@ To list all available consumers execute `php console analysis:list-consumer`.
 
 ## Contributing
 
-* Fork and clone it (`git clone git://github.com/andygrunwald/TYPO3-Analytics.git`)
+In short:
+
+* Fork and clone it (`git clone https://github.com/andygrunwald/TYPO3-Analytics.git`)
 * Create your feature branch (`git checkout -b my-new-feature`)
 * Make your changes (hack hack hack)
 * Commit your changes (`git commit -am 'Add some feature'`)
 * Push to the branch (`git push origin my-new-feature`)
 * Create new Pull Request
+
+A more detailed guide can be found at githubs [Fork A Repo](https://help.github.com/articles/fork-a-repo).
+
+### Coding Styleguide
+
+For convenience we follow the [PSR-1](http://www.php-fig.org/psr/psr-1/) and [PSR-2](http://www.php-fig.org/psr/psr-2/) coding styleguides of [PHP Framework Interop Group](http://www.php-fig.org/).
+
+Please be so nice to take care of this during code contribution (e.g. pull requests).
+To check your code against this standards you can use the tool [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer/) for this.
 
 ## Questions / Contact / Feedback
 
