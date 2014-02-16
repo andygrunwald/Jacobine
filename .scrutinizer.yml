@@ -1,3 +1,9 @@
+filter:
+    excluded_paths:
+        - 'Config/*'
+        - 'Database/*'
+        - 'vendor/*'
+
 tools:
     external_code_coverage: true
 
