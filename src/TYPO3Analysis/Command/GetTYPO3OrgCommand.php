@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3Analysis\Helper\Database;
+use TYPO3Analysis\Helper\DatabaseFactory;
 use TYPO3Analysis\Helper\MessageQueue;
 
 class GetTYPO3OrgCommand extends Command {
@@ -93,7 +94,9 @@ class GetTYPO3OrgCommand extends Command {
 
         $config = $this->config['MySQL'];
         $projectConfig = $this->config['Projects']['TYPO3'];
-        $this->database = new Database($config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
+
+        $databaseFactory = new DatabaseFactory();
+        $this->database = new Database($databaseFactory, $config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
 
         $config = $this->config['RabbitMQ'];
         $this->messageQueue = new MessageQueue($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
