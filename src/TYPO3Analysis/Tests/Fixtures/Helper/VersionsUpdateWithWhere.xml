@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<dataset>
+    <table name="versions">
+        <column>id</column>
+        <column>branch</column>
+        <column>version</column>
+        <column>date</column>
+        <column>type</column>
+        <column>checksum_tar_md5</column>
+        <column>checksum_tar_sha1</column>
+        <column>checksum_zip_md5</column>
+        <column>checksum_zip_sha1</column>
+        <column>url_tar</column>
+        <column>url_zip</column>
+        <column>downloaded</column>
+        <column>extracted</column>
+        <column>size_tar</column>
+        <row>
+            <value>3</value>
+            <value>6.2</value>
+            <value>6.2.0beta2</value>
+            <value>2013-11-21 19:50:17 UTC</value>
+            <value>development</value>
+            <value>d0806b18c28f3e72415160853bcb0e23</value>
+            <value>665627d613e5159328681911bb584b535e5b0afc</value>
+            <value>50cd865600cd058a23dcff77ed6cac06</value>
+            <value>cd1298605180236832fdf21a55dfe3ef7d0bc269</value>
+            <value>http://get.typo3.org/6.2.0beta2</value>
+            <value>http://get.typo3.org/6.2.0beta2/zip</value>
+            <value>0</value>
+            <value>2</value>
+            <value>20953946</value>
+        </row>
+    </table>
+</dataset>
+
+
+
+

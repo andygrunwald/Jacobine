@@ -64,7 +64,7 @@ class Database
      * @param string $database
      * @return void
      */
-    public function connect($driverName, $host, $port, $username, $password, $database)
+    protected function connect($driverName, $host, $port, $username, $password, $database)
     {
         $this->reconnect($driverName, $host, $port, $username, $password, $database);
         $this->setCredentials($driverName, $host, $port, $username, $password, $database);
@@ -242,10 +242,14 @@ class Database
      *
      * @param string $table
      * @param array $data
+     * @throws \UnexpectedValueException
      * @return string
      */
     public function insertRecord($table, array $data)
     {
+        $this->checkIfTableEmpty($table);
+        $this->checkIfDataIsEmpty($data);
+
         $preparedValues = array();
         foreach ($data as $key => $value) {
             $preparedValues[':' . $key] = $value;
@@ -261,6 +265,34 @@ class Database
     }
 
     /**
+     * Checks if table name was given
+     *
+     * @param string $table
+     * @throws \UnexpectedValueException
+     * @return void
+     */
+    private function checkIfTableEmpty($table)
+    {
+        if (!$table) {
+            throw new \UnexpectedValueException('Table must not be empty!', 1392668682);
+        }
+    }
+
+    /**
+     * Checks if incoming data is empty
+     *
+     * @param array $data
+     * @throws \UnexpectedValueException
+     * @return void
+     */
+    private function checkIfDataIsEmpty(array $data)
+    {
+        if ($data === []) {
+            throw new \UnexpectedValueException('Data must not be empty!', 1392668862);
+        }
+    }
+
+    /**
      * Update record in the database.
      *
      * @param string $table
@@ -270,14 +302,25 @@ class Database
      */
     public function updateRecord($table, array $data, array $where = array())
     {
-        list($where, $prepareWhereParts) = $this->buildPreparedParts($where, ' AND ');
+        $this->checkIfTableEmpty($table);
+        $this->checkIfDataIsEmpty($data);
+
+        $prepareWhereParts = [];
+        if ($where) {
+            list($where, $prepareWhereParts) = $this->buildPreparedParts($where, ' AND ');
+        }
+
         list($update, $prepareUpdateParts) = $this->buildPreparedParts($data, ', ');
         $prepareParts = $prepareWhereParts + $prepareUpdateParts;
 
         $query = '
             UPDATE ' . $table . '
-            SET ' . $update . '
-            WHERE ' . $where;
+            SET ' . $update;
+
+        if ($where) {
+            $query .= ' WHERE ' . $where;
+        }
+
         $result = $this->executeStatement($query, $prepareParts);
 
         return $result;
@@ -290,13 +333,17 @@ class Database
      * @param array $where
      * @return bool
      */
-    public function deleteRecords($table, array $where = array())
+    public function deleteRecords($table, array $where)
     {
+        $this->checkIfTableEmpty($table);
+        $this->checkIfDataIsEmpty($where);
+
         list($where, $prepareWhereParts) = $this->buildPreparedParts($where, ' AND ');
 
         $query = '
             DELETE FROM ' . $table . '
             WHERE ' . $where;
+
         $result = $this->executeStatement($query, $prepareWhereParts);
 
         return $result;
