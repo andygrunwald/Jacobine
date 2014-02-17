@@ -16,8 +16,9 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
      */
     protected $databaseConnection;
 
-    public function __construct() {
-        $this->databaseConnection = new \PDO('sqlite::memory:');
+    public function __construct()
+    {
+        $this->databaseConnection = $this->createDatabaseConnectionObject();
 
         // This is not the same as in Database/database-scheme.sql
         // but we test on SQLLite and for the tests we do not need
@@ -45,6 +46,16 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * Method to create the database connection object
+     *
+     * @return \PDO
+     */
+    protected function createDatabaseConnectionObject()
+    {
+        return new \PDO('sqlite::memory:');
+    }
+
+    /**
      * Returns the test database connection.
      *
      * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
@@ -65,7 +76,8 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         return $this->createXMLDataSet($dataSetFile);
     }
 
-    protected function getDatabaseObject() {
+    protected function getDatabaseObject()
+    {
         // Create a DatabaseFactory mock object
         $factory = $this->getMock('TYPO3Analysis\Helper\DatabaseFactory');
         $factory->expects($this->once())
@@ -229,7 +241,8 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertSame($expectedRowCount, $this->getConnection()->getRowCount('versions'));
     }
 
-    public function testGetRecordsWithMultipleRows() {
+    public function testGetRecordsWithMultipleRows()
+    {
         $database = $this->getDatabaseObject();
 
         $fields = ['id'];
