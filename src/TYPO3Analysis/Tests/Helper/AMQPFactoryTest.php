@@ -36,8 +36,7 @@ class AMQPFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testFactoryReturnsConnectionObject()
     {
-        $exceptionMessage = 'Error Connecting to server(61): Connection refused';
-        $this->setExpectedException('\PhpAmqpLib\Exception\AMQPRuntimeException', $exceptionMessage);
+        $this->setExpectedException('\PhpAmqpLib\Exception\AMQPRuntimeException');
 
         $host = 'localhost';
         $port = 1234;
