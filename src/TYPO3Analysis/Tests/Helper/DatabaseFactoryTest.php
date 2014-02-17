@@ -26,7 +26,9 @@ class DatabaseFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testFactoryReturnsPDOObject()
     {
-        $this->setExpectedException('\PDOException');
+        $exceptionCode = 2002;
+        $exceptionMessage = 'SQLSTATE[HY000] [2002] No such file or directory';
+        $this->setExpectedException('\PDOException', $exceptionMessage, $exceptionCode);
 
         $driver = 'mysql';
         $host = 'localhost';

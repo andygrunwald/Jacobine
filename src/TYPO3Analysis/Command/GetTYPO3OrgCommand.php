@@ -8,6 +8,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
+use TYPO3Analysis\Helper\AMQPFactory;
 use TYPO3Analysis\Helper\Database;
 use TYPO3Analysis\Helper\DatabaseFactory;
 use TYPO3Analysis\Helper\MessageQueue;
@@ -100,8 +101,10 @@ class GetTYPO3OrgCommand extends Command
         $this->database = new Database($databaseFactory, $config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
 
         $config = $this->config['RabbitMQ'];
-        // TODO Refactor this to use a config entity or an array
-        $this->messageQueue = new MessageQueue($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
+
+        $amqpFactory = new AMQPFactory();
+        $amqpConnection = $amqpFactory->createConnection($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
+        $this->messageQueue = new MessageQueue($amqpConnection, $amqpFactory);
     }
 
     /**

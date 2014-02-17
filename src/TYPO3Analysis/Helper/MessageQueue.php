@@ -4,25 +4,27 @@
  */
 namespace TYPO3Analysis\Helper;
 
-use PhpAmqpLib\Connection\AMQPConnection;
-use PhpAmqpLib\Message\AMQPMessage;
-
 class MessageQueue
 {
+
+    /**
+     * @var AMQPFactory
+     */
+    protected $factory;
 
     /**
      * Message Queue connection
      *
      * @var \PhpAmqpLib\Connection\AMQPConnection
      */
-    protected $handle = null;
+    protected $handle;
 
     /**
      * Message Queue channel
      *
      * @var \PhpAmqpLib\Channel\AMQPChannel
      */
-    protected $channel = null;
+    protected $channel;
 
     /**
      * Store of declared exchanges and queues
@@ -37,28 +39,26 @@ class MessageQueue
     /**
      * Constructor to set up a connection to the RabbitMQ server
      *
-     * @param string $host
-     * @param integer $port
-     * @param string $username
-     * @param string $password
-     * @param string $vHost
+     * @param \PhpAmqpLib\Connection\AMQPConnection $amqpConnection
+     * @param \TYPO3Analysis\Helper\AMQPFactory $amqpFactory
      * @return \TYPO3Analysis\Helper\MessageQueue
      */
-    public function __construct($host, $port, $username, $password, $vHost)
+    public function __construct(\PhpAmqpLib\Connection\AMQPConnection $amqpConnection, AMQPFactory $amqpFactory)
     {
-        $this->handle = new AMQPConnection($host, $port, $username, $password, $vHost);
+        $this->handle = $amqpConnection;
+        $this->factory = $amqpFactory;
         $this->renewChannel();
     }
 
     /**
-     * Creates a new channel with QoS!
+     * Creates a new channel!
+     * We do not define any QoS, because the message queue server will take care of this :)
      *
      * @return void
      */
     protected function renewChannel()
     {
         $this->channel = $this->handle->channel();
-        $this->channel->basic_qos(0, 1, false);
     }
 
     /**
@@ -131,7 +131,8 @@ class MessageQueue
             $this->declareQueue($queue);
         }
 
-        $message = new AMQPMessage($message, array('content_type' => 'text/plain'));
+        $message = $this->factory->createMessage($message, ['content_type' => 'text/plain']);
+        /* @var \PhpAmqpLib\Message\AMQPMessage $message */
         $this->getChannel()->basic_publish($message, $exchange, $routing);
     }
 

@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
+use TYPO3Analysis\Helper\AMQPFactory;
 use TYPO3Analysis\Helper\Database;
 use TYPO3Analysis\Helper\DatabaseFactory;
 use TYPO3Analysis\Helper\MessageQueue;
@@ -140,8 +141,10 @@ class ConsumerCommand extends Command
     private function initializeMessageQueue($parsedConfig)
     {
         $config = $parsedConfig['RabbitMQ'];
-        // TODO Refactor this to use a config entity or an array
-        $messageQueue = new MessageQueue($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
+
+        $amqpFactory = new AMQPFactory();
+        $amqpConnection = $amqpFactory->createConnection($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
+        $messageQueue = new MessageQueue($amqpConnection, $amqpFactory);
 
         return $messageQueue;
     }
