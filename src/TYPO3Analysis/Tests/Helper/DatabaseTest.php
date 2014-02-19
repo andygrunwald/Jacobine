@@ -7,6 +7,7 @@ namespace TYPO3Analysis\Tests\Helper;
 use PHPUnit_Extensions_Database_DataSet_IDataSet;
 use PHPUnit_Extensions_Database_DB_IDatabaseConnection;
 use TYPO3Analysis\Helper\Database;
+use TYPO3Analysis\Tests\Fixtures\PDOMock;
 
 class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 {
@@ -72,25 +73,92 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
      */
     protected function getDataSet()
     {
-        $dataSetFile = dirname(__FILE__) . '/../Fixtures/Helper/Versions.xml';
+        $dataSetFile = dirname(__FILE__) . '/../Fixtures/DatabaseTables/Versions.xml';
         return $this->createXMLDataSet($dataSetFile);
     }
 
-    protected function getDatabaseObject()
+    /**
+     * Returns a Database object.
+     * This is used with a PDO / sqllite ::memory: connection to execute DBUnit tests
+     *
+     * @param \PDO $databaseConnection
+     * @return Database
+     */
+    protected function getDatabaseObject($databaseConnection)
     {
-        // Create a DatabaseFactory mock object
+        // Mock of \TYPO3Analysis\Helper\DatabaseFactory
         $factory = $this->getMock('TYPO3Analysis\Helper\DatabaseFactory');
-        $factory->expects($this->once())
+        $factory->expects($this->any())
                 ->method('create')
-                ->will($this->returnValue($this->databaseConnection));
+                ->will($this->returnValue($databaseConnection));
 
         $host = 'localhost';
         $port = 3306;
         $username = 'phpunit';
-        $passwort = '';
+        $password = '';
         $database = 'testcase';
 
-        return new Database($factory, $host, $port, $username, $passwort, $database);
+        return new Database($factory, $host, $port, $username, $password, $database);
+    }
+
+    /**
+     * Returns an array for ->errorInfo method
+     *
+     * @link http://de2.php.net/manual/en/pdostatement.errorinfo.php
+     * @param integer $errorInfoCode
+     * @return array
+     */
+    public function getPDOErrorInfo($errorInfoCode)
+    {
+        $errorInfoCode = (int) $errorInfoCode;
+        switch ($errorInfoCode) {
+            case 2006:
+                $errorInfoMessage = 'MySQL server has gone away';
+                break;
+            default:
+                $errorInfoMessage = 'Driver specific error message';
+        }
+
+        $errorInfo = [
+            // SQLSTATE error code (a five characters alphanumeric identifier defined in the ANSI SQL standard)
+            0 => 'tests',
+            // Driver specific error code
+            1 => $errorInfoCode,
+            // Driver specific error message
+            2 => $errorInfoMessage
+        ];
+
+        return $errorInfo;
+    }
+
+    /**
+     * Returns a Database object
+     * with a full mock of a PDO object to execute Unit tests
+     *
+     * @param integer $errorInfoCode
+     * @return Database
+     */
+    protected function getDatabaseObjectWithMockedPDO($errorInfoCode)
+    {
+        // First Mock of \PDOStatement
+        $pdoStatementMock = $this->getMock('\PDOStatement', ['errorInfo', 'execute']);
+
+        $errorInfo = $this->getPDOErrorInfo($errorInfoCode);
+        $pdoStatementMock->expects($this->once())
+                         ->method('errorInfo')
+                         ->will($this->returnValue($errorInfo));
+
+        $pdoStatementMock->expects($this->any())
+                         ->method('execute')
+                         ->will($this->returnValue(false));
+
+        // Mock of \PDO
+        $pdoMock = $this->getMock('\PDOMock', ['prepare']);
+        $pdoMock->expects($this->any())
+                ->method('prepare')
+                ->will($this->returnValue($pdoStatementMock));
+
+        return $this->getDatabaseObject($pdoMock);
     }
 
     public function testInsertWithSuccess()
@@ -113,7 +181,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         ];
 
         $expectedRowCount = $this->getConnection()->getRowCount('versions') + 1;
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $insertedId = $database->insertRecord('versions', $dataToInsert);
 
         $this->assertEquals($expectedRowCount, $this->getConnection()->getRowCount('versions'));
@@ -128,7 +196,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
             'id' => 7
         ];
 
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $database->insertRecord('', $dataToInsert);
     }
 
@@ -136,7 +204,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->setExpectedException('\UnexpectedValueException');
 
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $database->insertRecord('versions', []);
     }
 
@@ -148,7 +216,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
             'downloaded' => 0
         ];
 
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $database->updateRecord('', $dataToUpdate);
     }
 
@@ -156,7 +224,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->setExpectedException('\UnexpectedValueException');
 
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $database->updateRecord('versions', []);
     }
 
@@ -169,12 +237,12 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         $where = ['id' => 3];
         $rowCountBeforeUpdate = $this->getConnection()->getRowCount('versions');
 
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $database->updateRecord('versions', $dataToUpdate, $where);
 
         $queryTable = $this->getConnection()->createQueryTable('versions', 'SELECT * FROM versions WHERE id = 3');
 
-        $dataSetFile = dirname(__FILE__) . '/../Fixtures/Helper/VersionsUpdateWithWhere.xml';
+        $dataSetFile = dirname(__FILE__) . '/../Fixtures/DatabaseTables/VersionsUpdateWithWhere.xml';
         $expectedTable = $this->createXMLDataSet($dataSetFile)->getTable('versions');
 
         $this->assertTablesEqual($expectedTable, $queryTable);
@@ -190,12 +258,12 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         ];
         $rowCountBeforeUpdate = $this->getConnection()->getRowCount('versions');
 
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $database->updateRecord('versions', $dataToUpdate);
 
         $queryTable = $this->getConnection()->createQueryTable('versions', 'SELECT * FROM versions');
 
-        $dataSetFile = dirname(__FILE__) . '/../Fixtures/Helper/VersionsUpdateWithoutWhere.xml';
+        $dataSetFile = dirname(__FILE__) . '/../Fixtures/DatabaseTables/VersionsUpdateWithoutWhere.xml';
         $expectedTable = $this->createXMLDataSet($dataSetFile)->getTable('versions');
 
         $this->assertTablesEqual($expectedTable, $queryTable);
@@ -210,7 +278,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
             'downloaded' => 0
         ];
 
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $database->deleteRecords('', $where);
     }
 
@@ -218,7 +286,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->setExpectedException('\UnexpectedValueException');
 
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $database->deleteRecords('versions', []);
     }
 
@@ -229,12 +297,12 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         ];
         $expectedRowCount = $this->getConnection()->getRowCount('versions') - 1;
 
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
         $database->deleteRecords('versions', $where);
 
         $queryTable = $this->getConnection()->createQueryTable('versions', 'SELECT * FROM versions');
 
-        $dataSetFile = dirname(__FILE__) . '/../Fixtures/Helper/VersionsDeleteSingleRow.xml';
+        $dataSetFile = dirname(__FILE__) . '/../Fixtures/DatabaseTables/VersionsDeleteSingleRow.xml';
         $expectedTable = $this->createXMLDataSet($dataSetFile)->getTable('versions');
 
         $this->assertTablesEqual($expectedTable, $queryTable);
@@ -243,7 +311,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
     public function testGetRecordsWithMultipleRows()
     {
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
 
         $fields = ['id'];
         $table = 'versions';
@@ -258,7 +326,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
     public function testGetRecordsWithGroupBy()
     {
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
 
         $fields = ['id'];
         $table = 'versions';
@@ -274,7 +342,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
     public function testGetRecordsWithOrderBy()
     {
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
 
         $fields = ['id'];
         $table = 'versions';
@@ -290,7 +358,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
     public function testGetRecordsWithLimit()
     {
-        $database = $this->getDatabaseObject();
+        $database = $this->getDatabaseObject($this->databaseConnection);
 
         $fields = ['id'];
         $table = 'versions';
@@ -302,5 +370,16 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertSame(4, count($result));
         $this->assertArrayHasKey('id', $result[0]);
         $this->assertSame('2', $result[1]['id']);
+    }
+
+    public function testDatabaseReconnectWithUndefinedDatabaseError()
+    {
+        $this->setExpectedException('\Exception');
+
+        $database = $this->getDatabaseObjectWithMockedPDO(9999);
+
+        $table = 'versions';
+        $where = ['type' => 'development'];
+        $database->deleteRecords($table, $where);
     }
 }

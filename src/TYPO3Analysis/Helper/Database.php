@@ -100,7 +100,7 @@ class Database
     private function setCredentials($driverName, $host, $port, $username, $password, $database)
     {
         $this->credentials = [
-            'diver' => $driverName,
+            'driver' => $driverName,
             'host' => $host,
             'port' => $port,
             'username' => $username,
