@@ -9,6 +9,7 @@
             "url": "http://pear.php.net"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "videlalvaro/php-amqplib": "2.2.*",
         "kriswallsmith/buzz": "0.10",
