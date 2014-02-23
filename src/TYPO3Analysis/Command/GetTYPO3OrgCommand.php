@@ -46,11 +46,11 @@ class GetTYPO3OrgCommand extends Command
     const JSON_FILE_URL = 'http://get.typo3.org/json';
 
     /**
-     * Message Queue Queue
+     * Message Queue Exchange
      *
      * @var string
      */
-    const QUEUE = 'download.http';
+    const EXCHANGE = 'TYPO3';
 
     /**
      * Message Queue routing
@@ -109,12 +109,15 @@ class GetTYPO3OrgCommand extends Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
+        // Config
         $this->config = Yaml::parse(CONFIG_FILE);
 
+        // HTTP Client
         $curlClient = new \Buzz\Client\Curl();
         $curlClient->setTimeout(intval($this->config['Various']['Requests']['Timeout']));
         $this->browser = new \Buzz\Browser($curlClient);
 
+        // Database client
         $config = $this->config['MySQL'];
         $projectConfig = $this->config['Projects']['TYPO3'];
 
@@ -122,6 +125,7 @@ class GetTYPO3OrgCommand extends Command
         // TODO Refactor this to use a config entity or an array
         $this->database = new Database($databaseFactory, $config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
 
+        // Message queue client
         $config = $this->config['RabbitMQ'];
 
         $amqpFactory = new AMQPFactory();
@@ -162,7 +166,7 @@ class GetTYPO3OrgCommand extends Command
                     continue;
                 }
 
-                // If the current version already in database, skip it
+                // Try to get the current version from the database
                 $versionRecord = $this->getVersionFromDatabase($releaseVersion);
 
                 // If the current version is not in database already, create it
@@ -178,7 +182,9 @@ class GetTYPO3OrgCommand extends Command
                         'filenamePrefix' => 'typo3_',
                         'filenamePostfix' => '.tar.gz',
                     );
-                    $this->messageQueue->sendMessage($message, 'TYPO3', self::QUEUE, self::ROUTING);
+
+                    $exchange = ['name' => self::EXCHANGE];
+                    $this->messageQueue->sendMessage($message, $exchange, [], self::ROUTING, true);
                 }
             }
         }
