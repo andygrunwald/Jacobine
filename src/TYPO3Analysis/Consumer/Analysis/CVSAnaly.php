@@ -57,7 +57,11 @@ class CVSAnaly extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('analysis.cvsanaly');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'analysis.cvsanaly');
+        $this->enableDeadLettering();
+
         $this->setRouting('analysis.cvsanaly');
     }
 
@@ -72,12 +76,12 @@ class CVSAnaly extends ConsumerAbstract
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->checkoutDir) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->checkoutDir));
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -93,8 +97,7 @@ class CVSAnaly extends ConsumerAbstract
                 'dir' => $messageData->checkoutDir
             );
             $this->getLogger()->error('CVSAnaly extensions can not be received', $context);
-
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
@@ -112,8 +115,7 @@ class CVSAnaly extends ConsumerAbstract
                 'message' => $e->getMessage()
             );
             $this->getLogger()->error('CVSAnaly command failed', $context);
-
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 

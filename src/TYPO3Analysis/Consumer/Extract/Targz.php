@@ -52,7 +52,11 @@ class Targz extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('extract.targz');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'extract.targz');
+        $this->enableDeadLettering();
+
         $this->setRouting('extract.targz');
     }
 
@@ -67,15 +71,15 @@ class Targz extends ConsumerAbstract
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         $record = $this->getVersionFromDatabase($messageData->versionId);
         $context = array('versionId' => $messageData->versionId);
 
         // If the record does not exists in the database exit here
         if ($record === false) {
-            $this->getLogger()->info('Record does not exist in version table', $context);
-            $this->acknowledgeMessage($message);
+            $this->getLogger()->critical('Record does not exist in version table', $context);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -89,7 +93,7 @@ class Targz extends ConsumerAbstract
         // If there is no file, exit here
         if (file_exists($messageData->filename) !== true) {
             $this->getLogger()->critical('File does not exist', array('filename' => $messageData->filename));
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
@@ -105,7 +109,7 @@ class Targz extends ConsumerAbstract
 
         if (is_dir($targetFolder) === false) {
             $this->getLogger()->critical('Directory can`t be created', array('folder' => $folder));
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
@@ -125,7 +129,7 @@ class Targz extends ConsumerAbstract
                 'message' => $e->getMessage()
             );
             $this->getLogger()->critical('Extract command failed', $context);
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 

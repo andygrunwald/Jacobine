@@ -63,7 +63,11 @@ class GerritProject extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('crawler.gerritproject');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'crawler.gerritproject');
+        $this->enableDeadLettering();
+
         $this->setRouting('crawler.gerritproject');
     }
 
@@ -78,12 +82,12 @@ class GerritProject extends ConsumerAbstract
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         if (file_exists($messageData->configFile) === false) {
             $context = array('file' => $messageData->configFile);
             $this->getLogger()->critical('Gerrit config file does not exist', $context);
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -109,7 +113,7 @@ class GerritProject extends ConsumerAbstract
         );
         if ($gerritProject === false) {
             $this->getLogger()->critical('Gerrit project does not exists in database', $context);
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 

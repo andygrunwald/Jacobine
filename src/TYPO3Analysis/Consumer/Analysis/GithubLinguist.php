@@ -56,7 +56,11 @@ class GithubLinguist extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('analysis.linguist');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'analysis.linguist');
+        $this->enableDeadLettering();
+
         $this->setRouting('analysis.linguist');
     }
 
@@ -71,19 +75,19 @@ class GithubLinguist extends ConsumerAbstract
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
         try {
             $this->clearLinguistRecordsFromDatabase($messageData->versionId);
         } catch (\Exception $e) {
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -100,14 +104,14 @@ class GithubLinguist extends ConsumerAbstract
         try {
             $output = $this->executeCommand($command);
         } catch (\Exception $e) {
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
         if ($output === array()) {
             $msg = 'github-linguist returns no result';
             $this->getLogger()->critical($msg);
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
@@ -117,7 +121,7 @@ class GithubLinguist extends ConsumerAbstract
         try {
             $this->storeLinguistDataInDatabase($messageData->versionId, $parsedResults);
         } catch (\Exception $e) {
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -193,10 +197,10 @@ class GithubLinguist extends ConsumerAbstract
         $deleteResult = $this->getDatabase()->deleteRecords('linguist', array('version' => intval($versionId)));
 
         if ($deleteResult === false) {
-            $msg = 'Delete of inguist records for version failed';
+            $msg = 'Delete of linguist records for version failed';
             $this->getLogger()->critical($msg, array('version' => $versionId));
 
-            $msg = sprintf('Delete of inguist records for version %s failed', $versionId);
+            $msg = sprintf('Delete of linguist records for version %s failed', $versionId);
             throw new \Exception($msg, 1368805543);
         }
     }

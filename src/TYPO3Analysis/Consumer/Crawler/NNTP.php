@@ -59,7 +59,11 @@ class NNTP extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('crawler.nntp');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'crawler.nntp');
+        $this->enableDeadLettering();
+
         $this->setRouting('crawler.nntp');
     }
 
@@ -75,12 +79,12 @@ class NNTP extends ConsumerAbstract
         $messageData = json_decode($message->body);
         $nntpConfig = $messageData->config;
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         if (is_object($nntpConfig) === false || property_exists($nntpConfig, 'Host') === false) {
             $context = array('config' => $nntpConfig);
             $this->getLogger()->critical('NNTP configuration does not exist or is incomplete', $context);
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 

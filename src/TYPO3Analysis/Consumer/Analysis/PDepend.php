@@ -53,7 +53,11 @@ class PDepend extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('analysis.pdepend');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'analysis.pdepend');
+        $this->enableDeadLettering();
+
         $this->setRouting('analysis.pdepend');
     }
 
@@ -68,12 +72,12 @@ class PDepend extends ConsumerAbstract
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -119,7 +123,7 @@ class PDepend extends ConsumerAbstract
         try {
             $this->executeCommand($command);
         } catch (\Exception $e) {
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
@@ -132,7 +136,7 @@ class PDepend extends ConsumerAbstract
             $context['summaryXml'] = $summaryXmlFile;
 
             $this->getLogger()->critical('pDepend analysis result files does not exist!', $context);
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 

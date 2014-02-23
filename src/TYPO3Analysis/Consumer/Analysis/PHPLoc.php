@@ -52,7 +52,11 @@ class PHPLoc extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('analysis.phploc');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'analysis.phploc');
+        $this->enableDeadLettering();
+
         $this->setRouting('analysis.phploc');
     }
 
@@ -67,7 +71,7 @@ class PHPLoc extends ConsumerAbstract
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         // If there is already a phploc record in database, exit here
         if ($this->getPhpLocDataFromDatabase($messageData->versionId) !== false) {
@@ -82,7 +86,7 @@ class PHPLoc extends ConsumerAbstract
         // If there is no directory to analyse, exit here
         if (is_dir($messageData->directory) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -106,13 +110,13 @@ class PHPLoc extends ConsumerAbstract
         try {
             $this->executeCommand($command);
         } catch (\Exception $e) {
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
         if (file_exists($xmlFile) === false) {
             $this->getLogger()->critical('phploc result file does not exist!', array('file' => $xmlFile));
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 

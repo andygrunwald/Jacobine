@@ -60,7 +60,11 @@ class Gitweb extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('crawler.gitweb');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'crawler.gitweb');
+        $this->enableDeadLettering();
+
         $this->setRouting('crawler.gitweb');
 
         $config = $this->getConfig();
@@ -83,7 +87,7 @@ class Gitweb extends ConsumerAbstract
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         try {
             $content = $this->getContent($this->browser, $messageData->url);
@@ -93,7 +97,7 @@ class Gitweb extends ConsumerAbstract
                 'message' => $e->getMessage()
             );
             $this->getLogger()->error('Reading gitweb frontend failed', $context);
-            $this->acknowledgeMessage($message);
+            $this->rejectMessage($message);
             return;
         }
 

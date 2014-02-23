@@ -65,7 +65,11 @@ class NNTPGroup extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('crawler.nntpgroup');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'crawler.nntpgroup');
+        $this->enableDeadLettering();
+
         $this->setRouting('crawler.nntpgroup');
     }
 
@@ -82,15 +86,15 @@ class NNTPGroup extends ConsumerAbstract
         $groupId = (int)$messageData->groupId;
         $nntpHost = $messageData->host;
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         $record = $this->getNNTPGroupFromDatabase($groupId);
 
         // If the record does not exists in the database exit here
         if ($record === false) {
             $context = array('groupId' => $groupId);
-            $this->getLogger()->info('Record does not exist in nntp_group table', $context);
-            $this->acknowledgeMessage($message);
+            $this->getLogger()->critical('Record does not exist in nntp_group table', $context);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -107,7 +111,7 @@ class NNTPGroup extends ConsumerAbstract
         $articleNumber = $lastIndexedArticle = (int)$record['last_indexed'];
         if ($articleNumber <= 0) {
             // first time indexing
-            $articleNumber = (int)$nntpClient->first();
+            $articleNumber = (int) $nntpClient->first();
         }
 
         $this->getLogger()->info('Select NNTP article', array('article' => $articleNumber));
@@ -126,8 +130,8 @@ class NNTPGroup extends ConsumerAbstract
 
         $pearObj = new \PEAR();
         if ($pearObj->isError($dummyArticle)) {
-            $this->getLogger()->info('Article can not be selected', array('article' => $articleNumber));
-            $this->acknowledgeMessage($message);
+            $this->getLogger()->critical('Article can not be selected', array('article' => $articleNumber));
+            $this->rejectMessage($message);
             return;
         }
 

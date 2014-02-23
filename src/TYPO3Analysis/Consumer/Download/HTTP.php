@@ -44,7 +44,7 @@ class HTTP extends ConsumerAbstract
      */
     public function getDescription()
     {
-        return 'Downloads a HTTP resource.';
+        return 'Downloads a HTTP resource';
     }
 
     /**
@@ -55,7 +55,11 @@ class HTTP extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('download.http');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'download.http');
+        $this->enableDeadLettering();
+
         $this->setRouting('download.http');
     }
 
@@ -70,19 +74,21 @@ class HTTP extends ConsumerAbstract
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         $record = $this->getVersionFromDatabase($messageData->versionId);
-        $context = array('versionId' => $messageData->versionId);
+        $context = [
+            'versionId' => $messageData->versionId
+        ];
 
-        // If the record does not exists in the database exit here
+        // If the record does not exists in the database, reject message
         if ($record === false) {
-            $this->getLogger()->info('Record does not exist in version table', $context);
-            $this->acknowledgeMessage($message);
+            $this->getLogger()->critical('Record does not exist in version table', $context);
+            $this->rejectMessage($message);
             return;
         }
 
-        // If the file has already been downloaded exit here
+        // If the file has already been downloaded, skip this message
         if (isset($record['downloaded']) === true && $record['downloaded']) {
             $this->getLogger()->info('Record marked as already downloaded', $context);
             $this->acknowledgeMessage($message);
@@ -126,8 +132,8 @@ class HTTP extends ConsumerAbstract
                 'file' => $record['url_tar'],
                 'timeout' => $config['Various']['Downloads']['Timeout'],
             );
-            $this->getLogger()->critical('Download of file failed', $context);
-            $this->acknowledgeMessage($this->getMessage());
+            $this->getLogger()->critical('Download command failed', $context);
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
@@ -135,7 +141,7 @@ class HTTP extends ConsumerAbstract
         if ($downloadFile->exists() !== true) {
             $context = ['targetFile' => $downloadFile->getFile()];
             $this->getLogger()->critical('File does not exist after download', $context);
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
@@ -155,7 +161,7 @@ class HTTP extends ConsumerAbstract
                 'fileHash' => $md5Hash
             );
             $this->getLogger()->critical('Checksums for file are not equal', $context);
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
@@ -167,7 +173,7 @@ class HTTP extends ConsumerAbstract
         // Adds new messages to queue: extract the file, get filesize or tar.gz file
         $this->addFurtherMessageToQueue($messageData->project, $record['id'], $downloadFile->getFile());
 
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**

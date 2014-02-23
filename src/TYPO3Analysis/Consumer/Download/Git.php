@@ -52,7 +52,11 @@ class Git extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('download.git');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'download.git');
+        $this->enableDeadLettering();
+
         $this->setRouting('download.git');
     }
 
@@ -67,15 +71,15 @@ class Git extends ConsumerAbstract
         $this->setMessage($message);
         $messageData = json_decode($message->body);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         $record = $this->getGitwebFromDatabase($messageData->id);
         $context = array('id' => $messageData->id);
 
         // If the record does not exists in the database exit here
         if ($record === false) {
-            $this->getLogger()->info('Record does not exist in gitweb table', $context);
-            $this->acknowledgeMessage($message);
+            $this->getLogger()->critical('Record does not exist in gitweb table', $context);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -102,8 +106,7 @@ class Git extends ConsumerAbstract
                 'message' => $e->getMessage()
             );
             $this->getLogger()->error('Git clone / pull failed', $context);
-
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 

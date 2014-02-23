@@ -52,7 +52,11 @@ class Filesize extends ConsumerAbstract
      */
     public function initialize()
     {
-        $this->setQueue('analysis.filesize');
+        parent::initialize();
+
+        $this->setQueueOption('name', 'analysis.filesize');
+        $this->enableDeadLettering();
+
         $this->setRouting('analysis.filesize');
     }
 
@@ -68,13 +72,13 @@ class Filesize extends ConsumerAbstract
         $messageData = json_decode($message->body);
         $record = $this->getVersionFromDatabase($messageData->versionId);
 
-        $this->getLogger()->info('Receiving message', (array)$messageData);
+        $this->getLogger()->info('Receiving message', (array) $messageData);
 
         // If the record does not exists in the database exit here
         if ($record === false) {
             $context = array('versionId' => $messageData->versionId);
-            $this->getLogger()->info('Record does not exist in version table', $context);
-            $this->acknowledgeMessage($message);
+            $this->getLogger()->critical('Record does not exist in version table', $context);
+            $this->rejectMessage($message);
             return;
         }
 
@@ -90,7 +94,7 @@ class Filesize extends ConsumerAbstract
         if (file_exists($messageData->filename) !== true) {
             $context = array('filename' => $messageData->filename);
             $this->getLogger()->critical('File does not exist', $context);
-            $this->acknowledgeMessage($this->getMessage());
+            $this->rejectMessage($this->getMessage());
             return;
         }
 
