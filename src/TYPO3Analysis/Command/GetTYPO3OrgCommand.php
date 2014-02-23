@@ -73,7 +73,7 @@ class GetTYPO3OrgCommand extends Command
     protected function configure()
     {
         $this->setName('typo3:get.typo3.org')
-            ->setDescription('Queues tasks for TYPO3 CMS releases');
+             ->setDescription('Queues tasks for TYPO3 CMS releases');
     }
 
     /**
