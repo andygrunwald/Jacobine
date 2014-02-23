@@ -297,7 +297,7 @@ class ConsumerCommand extends Command
         $consumer->initialize();
 
         $projectConfig = $this->config['Projects'][$this->getProject()];
-        $consumer->setExchange($projectConfig['RabbitMQ']['Exchange']);
+        $consumer->setExchangeOption('name', $projectConfig['RabbitMQ']['Exchange']);
 
         $consumerIdent = str_replace('\\', '\\\\', $consumerIdent);
         $logger->info('Consumer starts', array('consumer' => $consumerIdent));
@@ -305,8 +305,9 @@ class ConsumerCommand extends Command
         // Register consumer at message queue
         $callback = array($consumer, 'process');
         $this->messageQueue->basicConsume(
-            $consumer->getExchange(),
-            $consumer->getQueue(),
+            $consumer->getExchangeOptions(),
+            $consumer->getQueueOptions(),
+            $consumer->isDeadLetteringEnabled(),
             $consumer->getRouting(),
             $consumer->getConsumerTag(),
             $callback

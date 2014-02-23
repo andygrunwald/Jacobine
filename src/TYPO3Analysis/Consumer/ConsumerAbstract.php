@@ -23,18 +23,18 @@ abstract class ConsumerAbstract implements ConsumerInterface
 {
 
     /**
-     * The queue name
+     * The queue options
      *
-     * @var string
+     * @var array
      */
-    private $queue = '';
+    private $queueOptions = [];
 
     /**
-     * The exchange name
+     * The exchange options
      *
-     * @var string
+     * @var array
      */
-    private $exchange = '';
+    private $exchangeOptions = [];
 
     /**
      * The routing key
@@ -42,6 +42,15 @@ abstract class ConsumerAbstract implements ConsumerInterface
      * @var string
      */
     private $routing = '';
+
+    /**
+     * Bool if deadlettering is enabled
+     *
+     * @link http://www.rabbitmq.com/dlx.html
+     *
+     * @var string
+     */
+    private $deadLettering = false;
 
     /**
      * Database connection
@@ -100,24 +109,69 @@ abstract class ConsumerAbstract implements ConsumerInterface
     }
 
     /**
-     * Gets the queue name
+     * Returns the queue options
      *
-     * @return string
+     * @return array
      */
-    public function getQueue()
+    public function getQueueOptions()
     {
-        return $this->queue;
+        return $this->queueOptions;
     }
 
     /**
-     * Sets the queue name
+     * Sets a bulk of queue options
      *
-     * @param string $queue
+     * @param array $queue
      * @return void
      */
-    public function setQueue($queue)
+    public function setQueueOptions(array $queue)
     {
-        $this->queue = $queue;
+        $this->queueOptions = $queue;
+    }
+
+    /**
+     * Sets a single queue option
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function setQueueOption($name, $value)
+    {
+        $this->queueOptions[$name] = $value;
+    }
+
+    /**
+     * Returns the exchange options
+     *
+     * @return array
+     */
+    public function getExchangeOptions()
+    {
+        return $this->exchangeOptions;
+    }
+
+    /**
+     * Sets a bulk of exchange options
+     *
+     * @param array $exchange
+     * @return void
+     */
+    public function setExchangeOptions(array $exchange)
+    {
+        $this->exchangeOptions = $exchange;
+    }
+
+    /**
+     * Sets a single exchange option
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function setExchangeOption($name, $value)
+    {
+        $this->exchangeOptions[$name] = $value;
     }
 
     /**
@@ -139,27 +193,6 @@ abstract class ConsumerAbstract implements ConsumerInterface
     public function setRouting($routing)
     {
         $this->routing = $routing;
-    }
-
-    /**
-     * Gets the exchange name
-     *
-     * @return string
-     */
-    public function getExchange()
-    {
-        return $this->exchange;
-    }
-
-    /**
-     * Sets the exchange name
-     *
-     * @param string $exchange
-     * @return void
-     */
-    public function setExchange($exchange)
-    {
-        $this->exchange = $exchange;
     }
 
     /**
@@ -254,6 +287,48 @@ abstract class ConsumerAbstract implements ConsumerInterface
     public function setLogger($logger)
     {
         $this->logger = $logger;
+    }
+
+    /**
+     * Enable dead lettering
+     *
+     * @return void
+     */
+    public function enableDeadLettering()
+    {
+        $this->deadLettering = true;
+    }
+
+    /**
+     * Checks if dead lettering is enabled
+     *
+     * @return boolean
+     */
+    public function isDeadLetteringEnabled()
+    {
+        return $this->deadLettering;
+    }
+
+    /**
+     * Disable dead lettering
+     *
+     * @return void
+     */
+    public function disableDeadLettering()
+    {
+        $this->deadLettering = false;
+    }
+
+    /**
+     * Initialize the consumer.
+     * E.g. sets the queue and routing key
+     *
+     * @return void
+     */
+    public function initialize()
+    {
+        $this->setQueueOptions($this->getMessageQueue()->getDefaultQueueOptions());
+        $this->setExchangeOptions($this->getMessageQueue()->getDefaultExchangeOptions());
     }
 
     /**

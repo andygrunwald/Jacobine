@@ -54,6 +54,39 @@ class MessageQueue
     );
 
     /**
+     * Default queue options
+     *
+     * @var array
+     */
+    protected $defaultQueueOptions = [
+        'name' => '',
+        'passive' => false,
+        'durable' => false,
+        'exclusive' => false,
+        'auto_delete' => true,
+        'nowait' => false,
+        'arguments' => null,
+        'ticket' => null
+    ];
+
+    /**
+     * Default exchange options
+     *
+     * @var array
+     */
+    protected $defaultExchangeOptions = [
+        'name' => '',
+        'type' => 'topic',
+        'passive' => false,
+        'durable' => false,
+        'auto_delete' => true,
+        'internal' => false,
+        'nowait' => false,
+        'arguments' => null,
+        'ticket' => null
+    ];
+
+    /**
      * Constructor to set up a connection to the RabbitMQ server
      *
      * @param \PhpAmqpLib\Connection\AMQPConnection $amqpConnection
@@ -101,84 +134,148 @@ class MessageQueue
     /**
      * Declares a new exchange at the message queue server
      *
-     * @param string $exchange
-     * @param string $exchangeType
+     * @param array $exchange
      * @return void
      */
-    protected function declareExchange($exchange, $exchangeType)
+    protected function declareExchange(array $exchange)
     {
-        if (isset($this->declared['exchange'][$exchange]) === false) {
-            $this->getChannel()->exchange_declare($exchange, $exchangeType, false, true, true);
-            $this->declared['exchange'][$exchange] = true;
+        if (isset($this->declared['exchange'][$exchange['name']]) === false) {
+            $this->getChannel()->exchange_declare(
+                $exchange['name'],
+                $exchange['type'],
+                $exchange['passive'],
+                $exchange['durable'],
+                $exchange['auto_delete'],
+                $exchange['internal'],
+                $exchange['nowait'],
+                $exchange['arguments'],
+                $exchange['ticket']
+            );
+            $this->declared['exchange'][$exchange['name']] = true;
         }
     }
 
     /**
      * Declares a new queue at the message queue server
      *
-     * @param string $queue
+     * @param array $queue
      * @return void
      */
-    protected function declareQueue($queue)
+    protected function declareQueue(array $queue)
     {
-        $this->getChannel()->queue_declare($queue, false, true, false, false);
-        $this->declared['queue'][$queue] = true;
+        $this->getChannel()->queue_declare(
+            $queue['name'],
+            $queue['passive'],
+            $queue['durable'],
+            $queue['exclusive'],
+            $queue['auto_delete'],
+            $queue['nowait'],
+            $queue['arguments'],
+            $queue['ticket']
+        );
+        $this->declared['queue'][$queue['name']] = true;
     }
 
     /**
      * Sends a new message to message queue server
      *
      * @param mixed $message
-     * @param string $exchange
-     * @param string $queue
+     * @param array $exchangeOptions
+     * @param array $queueOptions
      * @param string $routing
-     * @param string $exchangeType
+     * @param bool $doNotDeclare If false exchange and message will be declared, if true the message will be just sent
      */
-    public function sendMessage($message, $exchange = '', $queue = '', $routing = '', $exchangeType = 'topic')
+    public function sendMessage($message, array $exchangeOptions, $queueOptions, $routing = '', $doNotDeclare = false)
     {
         if (is_array($message) === true) {
             $message = json_encode($message);
         }
 
-        if ($exchange) {
-            $this->declareExchange($exchange, $exchangeType);
+        if ($doNotDeclare === false && $exchangeOptions) {
+            $this->declareExchange($exchangeOptions);
         }
 
-        if ($queue) {
-            $this->declareQueue($queue);
+        if ($doNotDeclare === false && $queueOptions) {
+            $this->declareQueue($queueOptions);
         }
 
         $message = $this->factory->createMessage($message, ['content_type' => 'text/plain']);
         /* @var \PhpAmqpLib\Message\AMQPMessage $message */
-        $this->getChannel()->basic_publish($message, $exchange, $routing);
+        $this->getChannel()->basic_publish($message, $exchangeOptions['name'], $routing);
     }
 
     /**
      * Consumer registration.
      * Registered a new consumer at message queue server to consume messages
      *
-     * @param string $exchange
-     * @param string $queue
+     * @param array $exchangeOptions
+     * @param array $queueOptions
+     * @param boolean $deadLettering
      * @param string $routing
      * @param string $consumerTag
      * @param array $callback
-     * @param string $exchangeType
      * @return void
      */
-    public function basicConsume($exchange, $queue, $routing, $consumerTag, array $callback, $exchangeType = 'topic')
+    public function basicConsume(array $exchangeOptions, array $queueOptions, $deadLettering, $routing, $consumerTag, array $callback)
     {
-        $this->declareQueue($queue);
 
-        if ($exchange) {
-            $this->declareExchange($exchange, $exchangeType);
-            $this->getChannel()->queue_bind($queue, $exchange, $routing);
+        // Declare all needed stuff regarding dead lettering
+        if ($deadLettering) {
+            // Setup dead letter exchange
+            $deadLetterExchangeOptions = $exchangeOptions;
+            $deadLetterExchangeOptions['name'] .= '.deadletter';
+            //$deadLetterExchangeOptions['type'] = 'direct';
+            $this->declareExchange($deadLetterExchangeOptions);
+
+            // Setup dead letter queue
+            $deadLetterQueueOptions = $queueOptions;
+            $deadLetterQueueOptions['name'] .= '.deadletter';
+            $this->declareQueue($deadLetterQueueOptions);
+
+            // Bind them
+            $this->getChannel()->queue_bind(
+                $deadLetterQueueOptions['name'],
+                $deadLetterExchangeOptions['name'],
+                $routing
+            );
+
+            // Extend the original queue with the dead letter exchange
+            $queueOptions['arguments']['x-dead-letter-exchange'] = ['S', $deadLetterExchangeOptions['name']];
         }
-        $this->getChannel()->basic_consume($queue, $consumerTag, false, false, false, false, $callback);
+
+        $this->declareQueue($queueOptions);
+
+        if ($exchangeOptions) {
+            $this->declareExchange($exchangeOptions);
+            $this->getChannel()->queue_bind($queueOptions['name'], $exchangeOptions['name'], $routing);
+        }
+
+        $this->getChannel()->basic_consume($queueOptions['name'], $consumerTag, false, false, false, false, $callback);
 
         // Loop as long as the channel has callbacks registered
         while (count($this->getChannel()->callbacks)) {
             $this->getChannel()->wait();
         }
+    }
+
+    /**
+     * Returns the default queue options
+     *
+     * @return array
+     */
+    public function getDefaultQueueOptions()
+    {
+        return $this->defaultQueueOptions;
+    }
+
+    /**
+     * Returns the default exchange options
+     *
+     * @return array
+     */
+    public function getDefaultExchangeOptions()
+    {
+        return $this->defaultExchangeOptions;
     }
 
     /**

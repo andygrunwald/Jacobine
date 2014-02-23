@@ -47,19 +47,28 @@ interface ConsumerInterface
     public function process($message);
 
     /**
-     * Gets the queue name
+     * Returns the queue options
      *
-     * @return string
+     * @return array
      */
-    public function getQueue();
+    public function getQueueOptions();
 
     /**
-     * Sets the queue name
+     * Sets a bulk of queue options
      *
-     * @param string $queue
+     * @param array $queue
      * @return void
      */
-    public function setQueue($queue);
+    public function setQueueOptions(array $queue);
+
+    /**
+     * Sets a single queue option
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function setQueueOption($name, $value);
 
     /**
      * Gets the routing key
@@ -77,19 +86,28 @@ interface ConsumerInterface
     public function setRouting($routing);
 
     /**
-     * Gets the exchange name
+     * Returns the exchange options
      *
-     * @return string
+     * @return array
      */
-    public function getExchange();
+    public function getExchangeOptions();
 
     /**
-     * Sets the exchange name
+     * Sets a bulk of exchange options
      *
-     * @param string $exchange
+     * @param array $exchange
      * @return void
      */
-    public function setExchange($exchange);
+    public function setExchangeOptions(array $exchange);
+
+    /**
+     * Sets a single exchange option
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function setExchangeOption($name, $value);
 
     /**
      * Gets the consumer tag

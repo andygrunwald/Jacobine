@@ -28,6 +28,34 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
      */
     protected $messageQueue;
 
+    protected $defaultQueueOptions = [
+        'name' => '',
+        'passive' => false,
+        'durable' => false,
+        'exclusive' => false,
+        'auto_delete' => true,
+        'nowait' => false,
+        'arguments' => null,
+        'ticket' => null
+    ];
+
+    /**
+     * Default exchange options
+     *
+     * @var array
+     */
+    protected $defaultExchangeOptions = [
+        'name' => '',
+        'type' => 'topic',
+        'passive' => false,
+        'durable' => false,
+        'auto_delete' => true,
+        'internal' => false,
+        'nowait' => false,
+        'arguments' => null,
+        'ticket' => null
+    ];
+
     public function setUp()
     {
         $amqpChannelMock = $this->getMock('\PhpAmqpLib\Channel\AMQPChannel', [], [], '', false);
@@ -71,9 +99,11 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
             'Value 1',
             'Important value 2'
         ];
-        $exchange = 'logging';
 
-        $this->messageQueue->sendMessage($message, $exchange);
+        $exchangeOptions = $this->defaultExchangeOptions;
+        $exchangeOptions['name'] = 'logging';
+
+        $this->messageQueue->sendMessage($message, $exchangeOptions);
     }
 
     public function testSendMessageWithAnArrayAndExchangeAndQueue()
@@ -82,10 +112,14 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
             'Value 1',
             'Important value 2'
         ];
-        $exchange = 'logging';
-        $queue = 'logging';
 
-        $this->messageQueue->sendMessage($message, $exchange, $queue);
+        $exchangeOptions = $this->defaultExchangeOptions;
+        $exchangeOptions['name'] = 'logging';
+
+        $queueOptions = $this->defaultQueueOptions;
+        $queueOptions['name'] = 'logging';
+
+        $this->messageQueue->sendMessage($message, $exchangeOptions, $queueOptions);
     }
 
     public function testSendMessageWithAnArrayAndExchangeAndQueueAndRouting()
@@ -94,24 +128,15 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
             'Value 1',
             'Important value 2'
         ];
-        $exchange = 'logging';
-        $queue = 'logging';
+
+        $exchangeOptions = $this->defaultExchangeOptions;
+        $exchangeOptions['name'] = 'logging';
+
+        $queueOptions = $this->defaultQueueOptions;
+        $queueOptions['name'] = 'logging';
+
         $routing = 'logging.error';
 
-        $this->messageQueue->sendMessage($message, $exchange, $queue, $routing);
-    }
-
-    public function testSendMessageWithAnArrayAndExchangeAndQueueAndRoutingAndExchangeType()
-    {
-        $message = [
-            'Value 1',
-            'Important value 2'
-        ];
-        $exchange = 'logging';
-        $queue = 'logging';
-        $routing = 'logging.error';
-        $exchangeType = 'topic';
-
-        $this->messageQueue->sendMessage($message, $exchange, $queue, $routing, $exchangeType);
+        $this->messageQueue->sendMessage($message, $exchangeOptions, $queueOptions, $routing);
     }
 }
