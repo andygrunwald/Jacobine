@@ -343,6 +343,17 @@ abstract class ConsumerAbstract implements ConsumerInterface
     }
 
     /**
+     * Reject a message of a consumer
+     *
+     * @param \stdClass $message
+     * @param bool $requeue
+     */
+    protected function rejectMessage($message, $requeue = false)
+    {
+        $message->delivery_info['channel']->basic_reject($message->delivery_info['delivery_tag'], $requeue);
+    }
+
+    /**
      * Executes a single command to the system
      *
      * @param string $command
