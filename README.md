@@ -52,7 +52,7 @@ To list all available consumers execute `php console analysis:list-consumer`.
 
 * PHP >= 5.4
 
-## Contributing
+## Contributing + Usage
 
 * Fork and clone it (`git clone https://github.com/andygrunwald/TYPO3-Analytics.git`)
 * Create your feature branch (`git checkout -b my-new-feature`)
@@ -69,6 +69,10 @@ For convenience we follow the [PSR-1](http://www.php-fig.org/psr/psr-1/) and [PS
 
 Please be so nice to take care of this during code contribution (e.g. pull requests).
 To check your code against this standards you can use the tool [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer/) for this.
+
+### License
+
+This project is released under the terms of the [MIT license](http://en.wikipedia.org/wiki/MIT_License).
 
 ## Questions / Contact / Feedback
 
