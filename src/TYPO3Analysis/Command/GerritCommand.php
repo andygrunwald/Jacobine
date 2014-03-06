@@ -44,13 +44,6 @@ class GerritCommand extends Command
 {
 
     /**
-     * Queue for the message queue
-     *
-     * @var string
-     */
-    const QUEUE = 'crawler.gerrit';
-
-    /**
      * Routing key for the message queue
      *
      * @var string
@@ -179,7 +172,8 @@ class GerritCommand extends Command
             'configFile' => $configFile
         );
 
-        $this->messageQueue->sendMessage($message, $projectConfig['RabbitMQ']['Exchange'], self::QUEUE, self::ROUTING);
+        $exchange = ['name' => $projectConfig['RabbitMQ']['Exchange']];
+        $this->messageQueue->sendMessage($message, $exchange, [], self::ROUTING, true);
         return null;
     }
 }

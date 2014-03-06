@@ -44,13 +44,6 @@ class GitwebCommand extends Command
 {
 
     /**
-     * Message Queue Queue
-     *
-     * @var string
-     */
-    const QUEUE = 'crawler.gitweb';
-
-    /**
      * Message Queue routing
      *
      * @var string
@@ -180,7 +173,8 @@ class GitwebCommand extends Command
             'url' => $gitwebUrl
         );
 
-        $this->messageQueue->sendMessage($message, $projectConfig['RabbitMQ']['Exchange'], self::QUEUE, self::ROUTING);
+        $exchange = ['name' => $projectConfig['RabbitMQ']['Exchange']];
+        $this->messageQueue->sendMessage($message, $exchange, [], self::ROUTING, true);
         return null;
     }
 }

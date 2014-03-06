@@ -44,13 +44,6 @@ class NNTPCommand extends Command
 {
 
     /**
-     * Message Queue Queue
-     *
-     * @var string
-     */
-    const QUEUE = 'crawler.nntp';
-
-    /**
      * Message Queue routing
      *
      * @var string
@@ -178,7 +171,8 @@ class NNTPCommand extends Command
             'config' => $nntpConfig
         );
 
-        $this->messageQueue->sendMessage($message, $projectConfig['RabbitMQ']['Exchange'], self::QUEUE, self::ROUTING);
+        $exchange = ['name' => $projectConfig['RabbitMQ']['Exchange']];
+        $this->messageQueue->sendMessage($message, $exchange, [], self::ROUTING, true);
         return null;
     }
 }
