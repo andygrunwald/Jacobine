@@ -1,7 +1,14 @@
 <?php
 /**
- * @todo adds a description (license text, description of this class / file, etc)
+ * This file is part of the TYPO3-Analytics package.
  *
+ * (c) Andreas Grunwald <andygrunwald@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
  * Some of the logic (communication with NNTP server and transformation to utf8) of this class
  * is based on the work of dkd (Ingo Renner / @irnnr)
  * Thx to dkd (Olivier Dobberkau / @T3RevNeverEnd) to publish the code!
