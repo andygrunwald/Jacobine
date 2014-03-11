@@ -49,7 +49,7 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         $formatter = $this->getMock('Monolog\\Formatter\\FormatterInterface');
         $formatter->expects($this->any())
             ->method('format')
-            ->will($this->returnCallback(function($record) { return $record['message']; }));
+            ->will($this->returnCallback(function ($record) { return $record['message']; }));
 
         return $formatter;
     }
@@ -61,7 +61,7 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
             $formatterMock = $this->getMock('\Symfony\Component\Console\Formatter\OutputFormatterInterface');
             $formatterMock->expects($this->any())
                 ->method('format')
-                ->will($this->returnCallback(function($record) { return $record; }));
+                ->will($this->returnCallback(function ($record) { return $record; }));
 
             $formatterMock->expects($this->any())
                 ->method('hasStyle')
