@@ -147,4 +147,19 @@ interface ConsumerInterface
      * @return void
      */
     public function setLogger($logger);
+
+    /**
+     * Sets the message
+     *
+     * @param \stdClass $message
+     * @return void
+     */
+    public function setMessage($message);
+
+    /**
+     * Gets the message
+     *
+     * @return \stdClass
+     */
+    public function getMessage();
 }
