@@ -64,7 +64,7 @@ class MessageQueue
      */
     protected function renewChannel()
     {
-        $this->channel = $this->handle->channel();
+        $this->channel = $this->getHandle()->channel();
     }
 
     /**
