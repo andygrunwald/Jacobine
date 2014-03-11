@@ -18,7 +18,6 @@
  */
 namespace TYPO3Analysis\Monolog\Handler;
 
-use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,50 +63,6 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
     }
 
     /**
-     * Set level style
-     *
-     * @param integer $level
-     * @param string|array $style
-     * @return $this
-     * @throws \InvalidArgumentException
-     */
-    public function setLevelStyle($level, $style)
-    {
-        try {
-            Logger::getLevelName($level);
-        } catch (\InvalidArgumentException $exception) {
-            throw new \InvalidArgumentException(sprintf(
-                'Can\'t set style "%s" to error level "%s".',
-                $style,
-                $level
-            ), 0, $exception);
-        }
-
-        $this->levelStyles[$level] = $style;
-
-        return $this;
-    }
-
-    /**
-     * Get level style
-     *
-     * @param integer $level
-     * @return string|array
-     * @throws \InvalidArgumentException
-     */
-    public function getLevelStyle($level)
-    {
-        if (!isset($this->levelStyles[$level])) {
-            throw new \InvalidArgumentException('Level "' . $level . '" is not defined, use one of: ' . implode(
-                ', ',
-                array_keys($this->levelStyles)
-            ));
-        }
-
-        return $this->levelStyles[$level];
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function write(array $record)
@@ -137,13 +92,5 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
         }
 
         $this->consoleOutput->writeln($writeText);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultFormatter()
-    {
-        return new LineFormatter();
     }
 }
