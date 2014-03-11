@@ -54,7 +54,7 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         return $formatter;
     }
 
-    protected function getMockObject($writeLineMessage, $addFormatterMock = true)
+    protected function getMockObject($writeLineMessage, $addFormatterMock = true, $hasStyleReturnValue = false)
     {
         $formatterMock = null;
         if ($addFormatterMock === true) {
@@ -63,7 +63,9 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
                 ->method('format')
                 ->will($this->returnCallback(function($record) { return $record; }));
 
-            // TODO formatter hasStyle has to be mocked as well: $formatter->hasStyle($style)
+            $formatterMock->expects($this->any())
+                ->method('hasStyle')
+                ->will($this->returnValue($hasStyleReturnValue));
         }
 
         $outputMock = $this->getMock('\Symfony\Component\Console\Output\OutputInterface');
@@ -80,6 +82,15 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function testWriteWithoutFormatter()
     {
+        $outputMock = $this->getMockObject('test', false);
+        $consoleHandler = new SymfonyConsoleHandler($outputMock);
+        $consoleHandler->setFormatter($this->getIdentityFormatter());
+
+        $consoleHandler->handle($this->getRecord());
+    }
+
+    public function testWriteWithFormatterWithoutStyle()
+    {
         $outputMock = $this->getMockObject('test');
         $consoleHandler = new SymfonyConsoleHandler($outputMock);
         $consoleHandler->setFormatter($this->getIdentityFormatter());
@@ -87,5 +98,21 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         $consoleHandler->handle($this->getRecord());
     }
 
+    public function testWriteWithFormatterWithStyle()
+    {
+        $outputMock = $this->getMockObject('<warning>test</warning>', true, true);
+        $consoleHandler = new SymfonyConsoleHandler($outputMock);
+        $consoleHandler->setFormatter($this->getIdentityFormatter());
 
+        $consoleHandler->handle($this->getRecord());
+    }
+
+    public function testWriteWithFormatterWithStyleAsArray()
+    {
+        $outputMock = $this->getMockObject('<critical>test</critical>', true, true);
+        $consoleHandler = new SymfonyConsoleHandler($outputMock);
+        $consoleHandler->setFormatter($this->getIdentityFormatter());
+
+        $consoleHandler->handle($this->getRecord(Logger::CRITICAL));
+    }
 }
