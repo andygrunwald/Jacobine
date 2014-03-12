@@ -24,6 +24,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
     public function __construct()
     {
+        parent::__construct();
         $this->databaseConnection = $this->createDatabaseConnectionObject();
 
         // This is not the same as in Database/database-scheme.sql
