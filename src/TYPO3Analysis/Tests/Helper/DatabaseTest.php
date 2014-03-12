@@ -13,7 +13,6 @@ namespace TYPO3Analysis\Tests\Helper;
 use PHPUnit_Extensions_Database_DataSet_IDataSet;
 use PHPUnit_Extensions_Database_DB_IDatabaseConnection;
 use TYPO3Analysis\Helper\Database;
-use TYPO3Analysis\Tests\Fixtures\PDOMock;
 
 class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 {
