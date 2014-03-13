@@ -11,6 +11,7 @@
 namespace TYPO3Analysis\Consumer\Download;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
+use TYPO3Analysis\Helper\File;
 
 class HTTP extends ConsumerAbstract
 {
@@ -99,19 +100,14 @@ class HTTP extends ConsumerAbstract
         );
         $this->getLogger()->info('Starting download', $context);
 
-        // We download the file with wget, because we get a progress bar for free :)
-        $command = 'wget ' . escapeshellarg($record['url_tar']) . ' --output-document=' . escapeshellarg(
-            $targetTempFile
-        );
-
-        try {
-            $this->executeCommand($command);
-        } catch (\Exception $e) {
+        $downloadFile = new File($targetTempFile);
+        $downloadResult = $downloadFile->download($record['url_tar'], $config['Various']['Downloads']['Timeout']);
+        if (!$downloadResult) {
             $context = array(
-                'command' => $command,
-                'message' => $e->getMessage()
+                'file' => $record['url_tar'],
+                'timeout' => $config['Various']['Downloads']['Timeout'],
             );
-            $this->getLogger()->critical('Download command failed', $context);
+            $this->getLogger()->critical('Download of file failed', $context);
             $this->acknowledgeMessage($this->getMessage());
             return;
         }
@@ -124,6 +120,7 @@ class HTTP extends ConsumerAbstract
         }
 
         if (is_dir($targetDir) === false) {
+            // TODO What the fuck? Was i drunken?!
             mkdir($targetDir, 0777, true);
         }
 
