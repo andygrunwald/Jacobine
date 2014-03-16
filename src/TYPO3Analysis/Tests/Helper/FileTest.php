@@ -10,37 +10,92 @@
 
 namespace TYPO3Analysis\Tests\Helper;
 
+use org\bovigo\vfs\vfsStream;
 use TYPO3Analysis\Helper\File;
+use org\bovigo\vfs\vfsStreamFile;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * File object
-     *
-     * @var \TYPO3Analysis\Helper\File
-     */
-    protected $file;
 
     /**
      * @var string
      */
-    protected $setUpFilename = '/var/www/my-notes.txt';
-
-    public function setUp()
-    {
-        $this->file = new File($this->setUpFilename);
-    }
+    protected $dummyFilename = 'my-test-file.txt';
 
     public function testConstructorSetsFilename()
     {
-        $this->assertEquals($this->setUpFilename, $this->file->getFile());
+        $file = new File($this->dummyFilename);
+        $this->assertEquals($this->dummyFilename, $file->getFile());
     }
 
     public function testFilenameSetterAndGetter()
     {
-        $filename = '/etc/another/file';
-        $this->file->setFile($filename);
+        $file = new File($this->dummyFilename);
 
-        $this->assertEquals($filename, $this->file->getFile());
+        $filename = '/etc/another/file.zip';
+        $file->setFile($filename);
+
+        $this->assertEquals($filename, $file->getFile());
+    }
+
+    public function testFileExistsOfExistingFile()
+    {
+        $vfs = vfsStream::setup('root', null, [$this->dummyFilename => '']);
+
+        $file = new File($vfs->getChild($this->dummyFilename)->url());
+
+        $this->assertTrue($file->exists());
+    }
+
+    public function testFileExistsOfNonExistingFile()
+    {
+        vfsStream::setup();
+        $fileUrl = vfsStream::url('root/' . $this->dummyFilename);
+        $file = new File($fileUrl);
+
+        $this->assertFalse($file->exists());
+    }
+
+    public function testGetMD5OfFileContent()
+    {
+        $content = 'This is content for a unit test.';
+        $content .= 'We just need some content.';
+        $content .= 'And of course, we need always contributer.';
+        $content .= 'If you want to improve this test suite, check our github repository and contribute!';
+        $content .= 'https://github.com/andygrunwald/TYPO3-Analytics';
+
+        $vfs = vfsStream::setup('root', null, [$this->dummyFilename => $content]);
+
+        $file = new File($vfs->getChild($this->dummyFilename)->url());
+
+        $this->assertEquals('9ce29d3b573eba5de16f0eab944e2e77', $file->getMd5OfFile());
+    }
+
+    public function testRenameWithExistingFile()
+    {
+        $vfs = vfsStream::setup('root', null, [$this->dummyFilename => '']);
+
+        $file = new File($vfs->getChild($this->dummyFilename)->url());
+
+        $targetFileName = 'root/new-' . $this->dummyFilename;
+        $targetFileUrl = vfsStream::url($targetFileName);
+
+        $this->assertTrue($file->rename($targetFileUrl));
+        $this->assertEquals('vfs://' . $targetFileName, $file->getFile());
+        $this->assertTrue($vfs->hasChild($targetFileName));
+    }
+
+    public function testRenameWithoutExistingFile()
+    {
+        $vfs = vfsStream::setup('root', null, []);
+
+        $file = new File(vfsStream::url($this->dummyFilename));
+
+        $targetFileName = 'root/new-' . $this->dummyFilename;
+        $targetFileUrl = vfsStream::url($targetFileName);
+
+        $this->assertFalse($file->rename($targetFileUrl));
+        $this->assertEquals('vfs://' . $this->dummyFilename, $file->getFile());
+        $this->assertFalse($vfs->hasChild($targetFileName));
     }
 }

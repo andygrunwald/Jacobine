@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "fb86aa77d92d65e8a272278dc064f45f",
+    "hash": "c5b0e4d85cd3fb741fe7530f4580c067",
     "packages": [
         {
             "name": "andygrunwald/gerrie",
@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/andygrunwald/Gerrie.git",
-                "reference": "6304bdd76f0901a948e17fa522b33230bf9e0f10"
+                "reference": "771b0b2ecace7816f6e13870cc1299af03124e26"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/6304bdd76f0901a948e17fa522b33230bf9e0f10",
-                "reference": "6304bdd76f0901a948e17fa522b33230bf9e0f10",
+                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/771b0b2ecace7816f6e13870cc1299af03124e26",
+                "reference": "771b0b2ecace7816f6e13870cc1299af03124e26",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "issues": "https://github.com/andygrunwald/Gerrie/issues",
                 "source": "https://github.com/andygrunwald/Gerrie/tree/master"
             },
-            "time": "2013-12-27 18:30:28"
+            "time": "2014-03-06 13:01:39"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -921,6 +921,36 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "mikey179/vfsStream",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mikey179/vfsStream.git",
+                "reference": "063fb10633f10c5ccbcac26227e94f46d9336f90"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/063fb10633f10c5ccbcac26227e94f46d9336f90",
+                "reference": "063fb10633f10c5ccbcac26227e94f46d9336f90",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "org\\bovigo\\vfs\\": "src/main/php"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "homepage": "http://vfs.bovigo.org/",
+            "time": "2013-04-01 10:41:02"
+        },
         {
             "name": "phpunit/dbunit",
             "version": "1.3.0",

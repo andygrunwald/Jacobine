@@ -72,35 +72,35 @@ class HTTP extends ConsumerAbstract
         // @todo find a better way for the filename ... Download-Prefix in project config?
         // in $messageData->Project you can find the project
         $fileName = 'typo3_' . $record['version'] . '.tar.gz';
-        $targetTempFile = $targetTempDir . $fileName;
+        $downloadFile = new File($targetTempDir . $fileName);
 
         $config = $this->getConfig();
         $projectConfig = $config['Projects'][$messageData->project];
         $targetDir = rtrim($projectConfig['ReleasesPath'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $targetFile = $targetDir . $fileName;
+        $targetFile = new File($targetDir . $fileName);
 
         // If the file already there do not download it again
-        if (file_exists($targetFile) === true && $record['checksum_tar_md5']
-            && md5_file($targetFile) === $record['checksum_tar_md5']
+        if ($targetFile->exists() === true && $record['checksum_tar_md5']
+            && $targetFile->getMd5OfFile() === $record['checksum_tar_md5']
         ) {
             $context = array(
-                'targetFile' => $targetFile
+                'targetFile' => $targetFile->getFile()
             );
             $this->getLogger()->info('File already exists', $context);
             $this->setVersionAsDownloadedInDatabase($record['id']);
             $this->acknowledgeMessage($message);
-            $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetFile);
+            $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetFile->getFile());
             $this->getLogger()->info('Finish processing message', (array)$messageData);
             return;
         }
 
         $context = array(
             'downloadUrl' => $record['url_tar'],
-            'targetFile' => $targetTempFile
+            'targetFile' => $downloadFile->getFile()
         );
         $this->getLogger()->info('Starting download', $context);
 
-        $downloadFile = new File($targetTempFile);
+
         $downloadResult = $downloadFile->download($record['url_tar'], $config['Various']['Downloads']['Timeout']);
         if (!$downloadResult) {
             $context = array(
@@ -113,8 +113,9 @@ class HTTP extends ConsumerAbstract
         }
 
         // If there is no file after download, exit here
-        if (file_exists($targetTempFile) !== true) {
-            $this->getLogger()->critical('File does not exist after download', array('targetFile' => $targetTempFile));
+        if ($downloadFile->exists() !== true) {
+            $context = ['targetFile' => $downloadFile->getFile()];
+            $this->getLogger()->critical('File does not exist after download', $context);
             $this->acknowledgeMessage($this->getMessage());
             return;
         }
@@ -124,13 +125,13 @@ class HTTP extends ConsumerAbstract
             mkdir($targetDir, 0777, true);
         }
 
-        rename($targetTempFile, $targetFile);
+        $downloadFile->rename($targetFile->getFile());
 
         // If the hashes are not equal, exit here
-        $md5Hash = md5_file($targetFile);
+        $md5Hash = $downloadFile->getMd5OfFile();
         if ($record['checksum_tar_md5'] && $md5Hash !== $record['checksum_tar_md5']) {
             $context = array(
-                'targetFile' => $targetFile,
+                'targetFile' => $downloadFile->getFile(),
                 'databaseHash' => $record['checksum_tar_md5'],
                 'fileHash' => $md5Hash
             );
@@ -145,7 +146,7 @@ class HTTP extends ConsumerAbstract
         $this->acknowledgeMessage($message);
 
         // Adds new messages to queue: extract the file, get filesize or tar.gz file
-        $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetFile);
+        $this->addFurtherMessageToQueue($messageData->project, $record['id'], $downloadFile->getFile());
 
         $this->getLogger()->info('Finish processing message', (array)$messageData);
     }

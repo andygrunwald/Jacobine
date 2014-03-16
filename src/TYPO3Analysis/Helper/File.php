@@ -76,6 +76,46 @@ class File
 
         fclose($filePathHandle);
 
+        return $this->exists();
+    }
+
+    /**
+     * Checks if the file exists
+     *
+     * @return bool
+     */
+    public function exists()
+    {
         return file_exists($this->getFile());
+    }
+
+    /**
+     * Returns the MD5 hash of the file content
+     *
+     * @return string
+     */
+    public function getMd5OfFile()
+    {
+        return md5_file($this->getFile());
+    }
+
+    /**
+     * Renames a file
+     *
+     * @param string $to
+     * @return bool
+     */
+    public function rename($to)
+    {
+        $result = false;
+        if ($this->exists() === true) {
+            $result = rename($this->getFile(), $to);
+        }
+
+        if ($result) {
+            $this->setFile($to);
+        }
+
+        return $result;
     }
 }
