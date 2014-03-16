@@ -18,6 +18,28 @@ use Symfony\Component\Yaml\Yaml;
 use TYPO3Analysis\Helper\AMQPFactory;
 use TYPO3Analysis\Helper\MessageQueue;
 
+/**
+ * Class GitwebCommand
+ *
+ * Command to send the first message to the message broker to crawl a
+ * Gitweb Server (https://git.wiki.kernel.org/index.php/Gitweb).
+ *
+ * Only a message to crawl such a server will be created and sent to a message broker.
+ * With this message a chain of crawling messages is triggered:
+ *
+ * GitwebCommand
+ *      |-> Consumer: Crawler\\Gitweb
+ *              |-> Consumer: Download\\Git
+ *
+ * Usage:
+ *  php console crawler:gitweb [--project=ProjectName]
+ *
+ * e.g. to start crawling of the TYPO3 Gitweb server
+ *  php console crawler:gitweb --project=TYPO3
+ *
+ * @package TYPO3Analysis\Command
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class GitwebCommand extends Command
 {
 
@@ -40,21 +62,21 @@ class GitwebCommand extends Command
      *
      * @var array
      */
-    protected $config = array();
+    protected $config = [];
 
     /**
      * MessageQueue connection
      *
      * @var \TYPO3Analysis\Helper\MessageQueue
      */
-    protected $messageQueue = null;
+    protected $messageQueue;
 
     /**
      * Project
      *
      * @var string
      */
-    protected $project = null;
+    protected $project;
 
     /**
      * Configures the current command.
@@ -64,14 +86,14 @@ class GitwebCommand extends Command
     protected function configure()
     {
         $this->setName('crawler:gitweb')
-            ->setDescription('Adds a Gitweb page to message queue to crawl this.')
-            ->addOption(
+             ->setDescription('Adds a Gitweb page to message queue to crawl this.')
+             ->addOption(
                 'project',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Chose the project (for configuration, etc.).',
+                'Choose the project (for configuration, etc.).',
                 'TYPO3'
-            );
+             );
     }
 
     /**

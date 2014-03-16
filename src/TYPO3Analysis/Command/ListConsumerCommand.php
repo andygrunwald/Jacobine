@@ -15,6 +15,21 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Class ListConsumerCommand
+ *
+ * Command to list all available consumer which can be used to get some messages (tasks) done.
+ * This command does not execute something. It will only output a list of usable consumer.
+ *
+ * A consumer must be a file in directory TYPO3Analysis/Consumer.
+ * Further more a consumer must extend the TYPO3Analysis\Consumer\ConsumerAbstract class.
+ *
+ * Usage:
+ *  php console analysis:list-consumer
+ *
+ * @package TYPO3Analysis\Command
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class ListConsumerCommand extends Command
 {
 
@@ -37,7 +52,7 @@ class ListConsumerCommand extends Command
      *
      * @var String
      */
-    protected $consumerPath = null;
+    protected $consumerPath;
 
     /**
      * Configures the current command.
@@ -47,7 +62,7 @@ class ListConsumerCommand extends Command
     protected function configure()
     {
         $this->setName('analysis:list-consumer')
-            ->setDescription('Lists all available consumer');
+             ->setDescription('Lists all available consumer');
     }
 
     /**
@@ -98,7 +113,6 @@ class ListConsumerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $path = $this->getConsumerPath();
         $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 

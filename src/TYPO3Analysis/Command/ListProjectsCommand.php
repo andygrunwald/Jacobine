@@ -15,6 +15,26 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Class ListProjectsCommand
+ *
+ * Command to list all projects which are valid configured.
+ * This command does not execute something. It will only output a list of configured projects.
+ *
+ * A project must be a fulfill some requirements.
+ * This requirements will be checked in isProjectConfigValid().
+ * E.g.
+ *      Database must be configured
+ *      RabbitMQ-Exchange must be configured
+ *
+ * To check if your new project is configured correct, just configure it and execute this command.
+ *
+ * Usage:
+ *  php console analysis:list-projects
+ *
+ * @package TYPO3Analysis\Command
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class ListProjectsCommand extends Command
 {
 
@@ -23,7 +43,7 @@ class ListProjectsCommand extends Command
      *
      * @var array
      */
-    protected $config = array();
+    protected $config = [];
 
     /**
      * Configures the current command.
@@ -33,7 +53,7 @@ class ListProjectsCommand extends Command
     protected function configure()
     {
         $this->setName('analysis:list-projects')
-            ->setDescription('Lists all available and configured projects');
+             ->setDescription('Lists all available and configured projects');
     }
 
     /**

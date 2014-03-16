@@ -19,6 +19,22 @@ use TYPO3Analysis\Helper\Database;
 use TYPO3Analysis\Helper\DatabaseFactory;
 use TYPO3Analysis\Helper\MessageQueue;
 
+/**
+ * Class GetTYPO3OrgCommand
+ *
+ * Command to get the JSON stream from http://get.typo3.org/.
+ * This stream contains information about releases of the TYPO3 CMS
+ * e.g. Name of release, version number, status (development, beta, stable), download url, ...
+ *
+ * This commands parses the JSON information, adds the various versions to the database
+ * and sends one message per release to the message broker to download it :)
+ *
+ * Usage:
+ *  php console typo3:get.typo3.org
+ *
+ * @package TYPO3Analysis\Command
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class GetTYPO3OrgCommand extends Command
 {
 
@@ -48,28 +64,28 @@ class GetTYPO3OrgCommand extends Command
      *
      * @var array
      */
-    protected $config = array();
+    protected $config = [];
 
     /**
      * HTTP Client
      *
      * @var \Buzz\Browser
      */
-    protected $browser = null;
+    protected $browser;
 
     /**
      * Database connection
      *
      * @var \TYPO3Analysis\Helper\Database
      */
-    protected $database = null;
+    protected $database;
 
     /**
      * MessageQueue connection
      *
      * @var \TYPO3Analysis\Helper\MessageQueue
      */
-    protected $messageQueue = null;
+    protected $messageQueue;
 
     /**
      * Configures the current command.

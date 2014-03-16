@@ -18,18 +18,40 @@ use Symfony\Component\Yaml\Yaml;
 use TYPO3Analysis\Helper\AMQPFactory;
 use TYPO3Analysis\Helper\MessageQueue;
 
+/**
+ * Class GerritCommand
+ *
+ * Command to send the first message to the message broker to crawl a
+ * Gerrit Code Review Server (https://code.google.com/p/gerrit/).
+ *
+ * Only a message to crawl such a server will be created and sent to a message broker.
+ * With this message a chain of crawling messages is triggered:
+ *
+ * GerritCommand
+ *      |-> Consumer: Crawler\\Gerrit
+ *              |-> Consumer: Crawler\\GerritProject
+ *
+ * Usage:
+ *  php console crawler:gerrit [--project=ProjectName]
+ *
+ * e.g. to start crawling of the TYPO3 Gerrit server
+ *  php console crawler:gerrit --project=TYPO3
+ *
+ * @package TYPO3Analysis\Command
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class GerritCommand extends Command
 {
 
     /**
-     * Message Queue Queue
+     * Queue for the message queue
      *
      * @var string
      */
     const QUEUE = 'crawler.gerrit';
 
     /**
-     * Message Queue routing
+     * Routing key for the message queue
      *
      * @var string
      */
@@ -40,21 +62,21 @@ class GerritCommand extends Command
      *
      * @var array
      */
-    protected $config = array();
+    protected $config = [];
 
     /**
      * MessageQueue connection
      *
      * @var \TYPO3Analysis\Helper\MessageQueue
      */
-    protected $messageQueue = null;
+    protected $messageQueue;
 
     /**
      * Project
      *
      * @var string
      */
-    protected $project = null;
+    protected $project;
 
     /**
      * Configures the current command.
@@ -64,14 +86,14 @@ class GerritCommand extends Command
     protected function configure()
     {
         $this->setName('crawler:gerrit')
-            ->setDescription('Adds a Gerrit review system to message queue to crawl this.')
-            ->addOption(
+             ->setDescription('Adds a Gerrit review system to message queue to crawl it.')
+             ->addOption(
                 'project',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Chose the project (for configuration, etc.).',
+                'Choose the project (for configuration, etc.).',
                 'TYPO3'
-            );
+             );
     }
 
     /**

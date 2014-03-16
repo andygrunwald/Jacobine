@@ -26,6 +26,24 @@ use TYPO3Analysis\Helper\DatabaseFactory;
 use TYPO3Analysis\Helper\MessageQueue;
 use TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler;
 
+/**
+ * Class ConsumerCommand
+ *
+ * This command is to start a single consumer to receive messages from a message queue broker.
+ * The message queue broker must support the AMQP standard.
+ *
+ * Every consumer can be started via this ConsumerCommand.
+ * This class reflects the single entry point for every consumer.
+ *
+ * Usage:
+ *  php console analysis:consumer ConsumerName [--project=ProjectName]
+ *
+ * e.g. to start the Download HTTP consumer
+ *  php console analysis:consumer Download\\HTTP --project=TYPO3
+ *
+ * @package TYPO3Analysis\Command
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class ConsumerCommand extends Command
 {
 
@@ -34,28 +52,28 @@ class ConsumerCommand extends Command
      *
      * @var \TYPO3Analysis\Helper\MessageQueue
      */
-    protected $messageQueue = null;
+    protected $messageQueue;
 
     /**
      * Database connection
      *
      * @var \TYPO3Analysis\Helper\Database
      */
-    protected $database = null;
+    protected $database;
 
     /**
      * Config
      *
      * @var array
      */
-    protected $config = array();
+    protected $config = [];
 
     /**
      * Project
      *
      * @var string
      */
-    protected $project = null;
+    protected $project;
 
     /**
      * Configures the current command.
@@ -65,15 +83,15 @@ class ConsumerCommand extends Command
     protected function configure()
     {
         $this->setName('analysis:consumer')
-            ->setDescription('Generic task for message queue consumer')
-            ->addOption(
+             ->setDescription('Generic task for message queue consumer')
+             ->addOption(
                 'project',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Chose the project (for configuration, etc.).',
+                'Choose the project (for configuration, etc.).',
                 'TYPO3'
-            )
-            ->addArgument('consumer', InputArgument::REQUIRED, 'Part namespace of consumer');
+             )
+             ->addArgument('consumer', InputArgument::REQUIRED, 'Part namespace of consumer');
     }
 
     /**
