@@ -69,9 +69,7 @@ class HTTP extends ConsumerAbstract
         }
 
         $targetTempDir = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        // @todo find a better way for the filename ... Download-Prefix in project config?
-        // in $messageData->Project you can find the project
-        $fileName = 'typo3_' . $record['version'] . '.tar.gz';
+        $fileName = $messageData->filenamePrefix . $record['version'] . $messageData->filenamePostfix;
         $downloadFile = new File($targetTempDir . $fileName);
 
         $config = $this->getConfig();

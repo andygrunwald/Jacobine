@@ -158,7 +158,9 @@ class GetTYPO3OrgCommand extends Command
                 if (!$versionRecord['downloaded']) {
                     $message = array(
                         'project' => 'TYPO3',
-                        'versionId' => $versionRecord['id']
+                        'versionId' => $versionRecord['id'],
+                        'filenamePrefix' => 'typo3_',
+                        'filenamePostfix' => '.tar.gz',
                     );
                     $this->messageQueue->sendMessage($message, 'TYPO3', self::QUEUE, self::ROUTING);
                 }
