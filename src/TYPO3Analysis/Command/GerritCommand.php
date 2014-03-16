@@ -88,11 +88,11 @@ class GerritCommand extends Command
         $this->setName('crawler:gerrit')
              ->setDescription('Adds a Gerrit review system to message queue to crawl it.')
              ->addOption(
-                'project',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Choose the project (for configuration, etc.).',
-                'TYPO3'
+                 'project',
+                 null,
+                 InputOption::VALUE_OPTIONAL,
+                 'Choose the project (for configuration, etc.).',
+                 'TYPO3'
              );
     }
 

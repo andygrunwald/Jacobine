@@ -85,11 +85,11 @@ class ConsumerCommand extends Command
         $this->setName('analysis:consumer')
              ->setDescription('Generic task for message queue consumer')
              ->addOption(
-                'project',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Choose the project (for configuration, etc.).',
-                'TYPO3'
+                 'project',
+                 null,
+                 InputOption::VALUE_OPTIONAL,
+                 'Choose the project (for configuration, etc.).',
+                 'TYPO3'
              )
              ->addArgument('consumer', InputArgument::REQUIRED, 'Part namespace of consumer');
     }

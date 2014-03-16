@@ -88,11 +88,11 @@ class NNTPCommand extends Command
         $this->setName('crawler:nntp')
              ->setDescription('Adds a NNTP server to message queue to crawl this.')
              ->addOption(
-                'project',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Choose the project (for configuration, etc.).',
-                'TYPO3'
+                 'project',
+                 null,
+                 InputOption::VALUE_OPTIONAL,
+                 'Choose the project (for configuration, etc.).',
+                 'TYPO3'
              );
     }
 
