@@ -12,6 +12,25 @@ namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class PHPLoc
+ *
+ * A consumer to execute PHPLOC (https://github.com/sebastianbergmann/phploc).
+ * PHPLOC measured a PHP project very fast with some more general metrics like lines of code or num of classes.
+ * This metrics will be saved in the database in the phploc table.
+ *
+ * Message format (json encoded):
+ *  [
+ *      directory: Absolute path to folder which will be analyzed. E.g. /var/www/my/sourcecode
+ *      versionId: Version ID to get the regarding version record from version database table
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Analysis\\PHPLoc
+ *
+ * @package TYPO3Analysis\Consumer\Analysis
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class PHPLoc extends ConsumerAbstract
 {
 

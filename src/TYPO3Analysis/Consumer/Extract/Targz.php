@@ -12,6 +12,25 @@ namespace TYPO3Analysis\Consumer\Extract;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class Targz
+ *
+ * A consumer to extract a tar.gz archive.
+ *
+ * TODO Refactor the targz extract consumer to use Phar extract and not a system call.
+ *
+ * Message format (json encoded):
+ *  [
+ *      versionId: ID of a version record in the database. A succesful download will be flagged
+ *      filename: Name of the file which will be extracted
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Extract\\Targz
+ *
+ * @package TYPO3Analysis\Consumer\Extract
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class Targz extends ConsumerAbstract
 {
 

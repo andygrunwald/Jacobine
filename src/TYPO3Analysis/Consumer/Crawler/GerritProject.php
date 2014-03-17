@@ -12,6 +12,36 @@ namespace TYPO3Analysis\Consumer\Crawler;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class GerritProject
+ *
+ * A consumer to execute Gerrie (https://github.com/andygrunwald/Gerrie).
+ * Gerrie is a project written in PHP to crawl data from a Gerrit Code Review server.
+ * The crawled data will be saved in a (configured) database.
+ *
+ * This consumer is part of "message chain".
+ * This consumer is responsible to receive all changesets + dependencies of a single project from a Gerrit server
+ * and store them into a database which will be configured in Gerries config file.
+ * The chain is:
+ *
+ * GerritCommand
+ *      |-> Consumer: Crawler\\Gerrit
+ *              |-> Consumer: Crawler\\GerritProject
+ *
+ * Message format (json encoded):
+ *  [
+ *      configFile: Absolute path to a Gerrie config file which will be used. E.g. /var/www/my/Gerrie/config
+ *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *      serverId: Server id of Gerrit server stored in Gerries database. Returned by Gerrie::proceedServer()
+ *      projectId: Project id of Gerrit server stored in Gerries database. Returned by Gerrie::importProject()
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Crawler\\GerritProject
+ *
+ * @package TYPO3Analysis\Consumer\Crawler
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class GerritProject extends ConsumerAbstract
 {
 

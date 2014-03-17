@@ -8,17 +8,42 @@
  * file that was distributed with this source code.
  */
 
-/**
- * Some of the logic (communication with NNTP server and transformation to utf8) of this class
- * is based on the work of dkd (Ingo Renner / @irnnr)
- * Thx to dkd (Olivier Dobberkau / @T3RevNeverEnd) to publish the code!
- *
- * @link https://github.com/dkd/solrnntp/blob/master/scheduler/class.tx_solrnntp_scheduler_indextask.php
- */
 namespace TYPO3Analysis\Consumer\Crawler;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class NNTPGroup
+ *
+ * A consumer to crawl a single group of a NNTP Server (http://en.wikipedia.org/wiki/Network_News_Transfer_Protocol).
+ *
+ * This consumer is part of "message chain".
+ * This consumer is responsible to receive all messages from a single group of a NNTP server
+ * and store them in the database.
+ *
+ * Some of the logic (communication with NNTP server and transformation to utf8) of this class
+ * is based on the work of dkd (https://www.dkd.de/) and Ingo Renner (@irnnr)
+ * Thx to dkd, specially Olivier Dobberkau (@T3RevNeverEnd) for code publishing to github and Ingo for coding <3
+ *
+ * The chain is:
+ *
+ * NNTPCommand
+ *      |-> Consumer: Crawler\\NNTP
+ *              |-> Consumer: Crawler\\NNTPGroup
+ *
+ * Message format (json encoded):
+ *  [
+ *      groupId: ID of NNTP group stored in the database
+ *      host: Host of the NNTP-Server
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Crawler\\NNTPGroup
+ *
+ * @package TYPO3Analysis\Consumer\Crawler
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ * @link https://github.com/dkd/solrnntp/blob/master/scheduler/class.tx_solrnntp_scheduler_indextask.php
+ */
 class NNTPGroup extends ConsumerAbstract
 {
 

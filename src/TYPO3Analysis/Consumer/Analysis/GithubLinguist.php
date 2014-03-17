@@ -12,6 +12,29 @@ namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class GithubLinguist
+ *
+ * A consumer to execute githubs linguist (https://github.com/github/linguist).
+ * linguist is a tool to detect used programing languages in a project (e.g. php, css and javascript).
+ *
+ * linguist is written in Ruby.
+ * We have to execute linguist via a external command, because we can`t speak from PHP to Ruby libs directly.
+ *
+ * TODO: Idea -> Port this consumer from PHP to Ruby. With this we can get rid of the system command.
+ *
+ * Message format (json encoded):
+ *  [
+ *      directory: Absolute path to folder which will be analyzed. E.g. /var/www/my/sourcecode
+ *      versionId: Version ID to get the regarding version record from version database table
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Analysis\\GithubLinguist
+ *
+ * @package TYPO3Analysis\Consumer\Analysis
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class GithubLinguist extends ConsumerAbstract
 {
 

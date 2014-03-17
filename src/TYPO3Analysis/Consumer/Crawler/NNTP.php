@@ -12,6 +12,32 @@ namespace TYPO3Analysis\Consumer\Crawler;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class NNTP
+ *
+ * A consumer to crawl a NNTP Server (http://en.wikipedia.org/wiki/Network_News_Transfer_Protocol).
+ *
+ * This consumer is part of "message chain".
+ * This consumer is responsible to receive all groups from a single NNTP server,
+ * store the group in the database and create a seperate message for each NNTP group.
+ * The chain is:
+ *
+ * NNTPCommand
+ *      |-> Consumer: Crawler\\NNTP
+ *              |-> Consumer: Crawler\\NNTPGroup
+ *
+ * Message format (json encoded):
+ *  [
+ *      config: Config array which contains the Host of the NNTP-Server
+ *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Crawler\\NNTP
+ *
+ * @package TYPO3Analysis\Consumer\Crawler
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class NNTP extends ConsumerAbstract
 {
 

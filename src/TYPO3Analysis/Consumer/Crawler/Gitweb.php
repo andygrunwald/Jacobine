@@ -13,6 +13,25 @@ namespace TYPO3Analysis\Consumer\Crawler;
 use Symfony\Component\DomCrawler\Crawler;
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class Gitweb
+ *
+ * A consumer to crawl a Gitweb Server (https://git.wiki.kernel.org/index.php/Gitweb).
+ * Every (git) project which is on the given Gitweb server will be stored in the gitweb database table.
+ * Further more a message to download the git repository will be created.
+ *
+ * Message format (json encoded):
+ *  [
+ *      url: URL of the Gitweb server. E.g. http://git.typo3.org/
+ *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Crawler\\Gitweb
+ *
+ * @package TYPO3Analysis\Consumer\Crawler
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class Gitweb extends ConsumerAbstract
 {
 
@@ -21,7 +40,7 @@ class Gitweb extends ConsumerAbstract
      *
      * @var \Buzz\Browser
      */
-    protected $browser = null;
+    protected $browser;
 
     /**
      * Gets a description of the consumer

@@ -12,6 +12,25 @@ namespace TYPO3Analysis\Consumer\Download;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class Git
+ *
+ * A consumer to download a git repository.
+ *
+ * TODO Refactor the git download consumer to download a single git without a database id
+ *
+ * Message format (json encoded):
+ *  [
+ *      id: ID of a gitweb record in the database to receive the git url
+ *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Download\\Git
+ *
+ * @package TYPO3Analysis\Consumer\Download
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class Git extends ConsumerAbstract
 {
 

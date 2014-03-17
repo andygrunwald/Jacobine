@@ -12,6 +12,25 @@ namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class Filesize
+ *
+ * A consumer to measure the filefize of given filename.
+ * The filesize will be written back into the regarding version record of version database table.
+ * This is the reason why a versionId is necessary in message.
+ *
+ * Message format (json encoded):
+ *  [
+ *      versionId: Version ID to get the regarding version record from version database table
+ *      filename: Filename to measure the filesize of
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Analysis\\Filesize
+ *
+ * @package TYPO3Analysis\Consumer\Analysis
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class Filesize extends ConsumerAbstract
 {
 

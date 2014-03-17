@@ -12,6 +12,30 @@ namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class CVSAnaly
+ *
+ * A consumer to execute CVSAnaly (https://github.com/MetricsGrimoire/CVSAnalY).
+ * CVSAnaly is a tool to analyze the history of a version control system (e.g. subversion or git).
+ *
+ * CVSAnaly is written in Python.
+ * We have to execute CVSAnaly via a external command, because we can`t speak from PHP to Python libs directly.
+ * Currently we can only execute this consumer once, because CVSAnaly is not ready to run concurrent.
+ *
+ * TODO: Idea -> Port this consumer from PHP to Python. With this we can get rid of the system command.
+ *
+ * Message format (json encoded):
+ *  [
+ *      project: Project key from config. E.g. TYPO3
+ *      checkoutDir: Absolute path to folder which will be analyzed. E.g. /var/www/my/checkout
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Analysis\\CVSAnaly
+ *
+ * @package TYPO3Analysis\Consumer\Analysis
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class CVSAnaly extends ConsumerAbstract
 {
 

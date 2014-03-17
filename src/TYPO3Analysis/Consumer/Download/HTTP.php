@@ -13,6 +13,27 @@ namespace TYPO3Analysis\Consumer\Download;
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 use TYPO3Analysis\Helper\File;
 
+/**
+ * Class HTTP
+ *
+ * A consumer to download a HTTP resource.
+ *
+ * TODO Refactor the HTTP download consumer to download a single http resource without a database id
+ *
+ * Message format (json encoded):
+ *  [
+ *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *      versionId: ID of a version record in the database. A succesful download will be flagged
+ *      filenamePrefix: Prefix which will be added to the filename if the file is downloaded
+ *      filenamePostfix: Postfix which will be added to the filename if the file is downloaded
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Download\\HTTP
+ *
+ * @package TYPO3Analysis\Consumer\Download
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class HTTP extends ConsumerAbstract
 {
 

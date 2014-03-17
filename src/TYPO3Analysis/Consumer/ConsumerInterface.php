@@ -10,6 +10,16 @@
 
 namespace TYPO3Analysis\Consumer;
 
+/**
+ * Interface ConsumerInterface
+ *
+ * Interface of a single consumer.
+ * Every consumer must implement this interface.
+ * With this it is possible to start this consumer via our consumer command `php console analysis:consumer CONSUMERNAME`
+ *
+ * @package TYPO3Analysis\Consumer
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 interface ConsumerInterface
 {
 

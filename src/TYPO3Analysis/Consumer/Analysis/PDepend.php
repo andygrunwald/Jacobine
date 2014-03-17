@@ -12,6 +12,26 @@ namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 
+/**
+ * Class PDepend
+ *
+ * A consumer to execute pDepend (https://github.com/pdepend/pdepend).
+ * pDepend is a PHP port of javas design quality and metrics tool JDepend (http://clarkware.com/software/JDepend.html).
+ *
+ * We use this to generate the overview pyramide and generate and save various metrics per class.
+ *
+ * Message format (json encoded):
+ *  [
+ *      directory: Absolute path to folder which will be analyzed. E.g. /var/www/my/sourcecode
+ *      versionId: Version ID to get the regarding version record from version database table
+ *  ]
+ *
+ * Usage:
+ *  php console analysis:consumer Analysis\\PDepend
+ *
+ * @package TYPO3Analysis\Consumer\Analysis
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class PDepend extends ConsumerAbstract
 {
 

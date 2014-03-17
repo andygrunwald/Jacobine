@@ -10,6 +10,15 @@
 
 namespace TYPO3Analysis\Consumer;
 
+/**
+ * Class ConsumerAbstract
+ *
+ * Base implementation to fit the ConsumerInterface.
+ * In general many setter, getter and basic message handling like acknowledgement are implemented.
+ *
+ * @package TYPO3Analysis\Consumer
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 abstract class ConsumerAbstract implements ConsumerInterface
 {
 
@@ -39,35 +48,35 @@ abstract class ConsumerAbstract implements ConsumerInterface
      *
      * @var \TYPO3Analysis\Helper\Database
      */
-    private $database = null;
+    private $database;
 
     /**
      * Config
      *
      * @var array
      */
-    private $config = array();
+    private $config = [];
 
     /**
      * MessageQueue connection
      *
      * @var \TYPO3Analysis\Helper\MessageQueue
      */
-    private $messageQueue = null;
+    private $messageQueue;
 
     /**
      * Logger
      *
      * @var \Monolog\Logger
      */
-    private $logger = null;
+    private $logger;
 
     /**
      * Message of consumer
      *
      * @var \stdClass
      */
-    private $message = null;
+    private $message;
 
     /**
      * Sets the message
