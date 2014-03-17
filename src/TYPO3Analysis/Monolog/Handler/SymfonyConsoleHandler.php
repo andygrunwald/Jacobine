@@ -8,14 +8,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- * This source code was originally written by Vitaliy Zhukv.
- * He tried to submit this as PR to Monolog.
- * His sourcecode was slightly modified to fits TYPO3Analyis needs.
- * Thanks to Vitaliy!
- *
- * @link https://github.com/Seldaek/monolog/pull/156
- */
 namespace TYPO3Analysis\Monolog\Handler;
 
 use Monolog\Handler\AbstractProcessingHandler;
@@ -23,8 +15,20 @@ use Monolog\Logger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Handler sending logs to Symfony/Console output
+ * Class SymfonyConsoleHandler
  *
+ * Monolog handler to send log lines via Symfony/Console.
+ * This class is really useful during development and debugging.
+ *
+ * This source code was originally written by Vitaliy Zhukv.
+ * He tried to submit this as PR to Monolog.
+ * His sourcecode was slightly modified to fits TYPO3Analyis needs.
+ * Thanks to Vitaliy!
+ *
+ * @link https://github.com/Seldaek/monolog/pull/156
+ *
+ * @package TYPO3Analysis\Monolog\Handler
+ * @author Andy Grunwald <andygrunwald@gmail.com>
  * @author Vitaliy Zhukv <zhuk2205@gmail.com>
  */
 class SymfonyConsoleHandler extends AbstractProcessingHandler
