@@ -13,6 +13,14 @@ namespace TYPO3Analysis\Tests\Monolog\Handler;
 use TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler;
 use Monolog\Logger;
 
+/**
+ * Class SymfonyConsoleHandlerTest
+ *
+ * Unit test class for \TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler
+ *
+ * @package TYPO3Analysis\Tests\Monolog\Handler
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
 {
 

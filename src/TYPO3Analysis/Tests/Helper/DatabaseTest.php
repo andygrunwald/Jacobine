@@ -14,6 +14,14 @@ use PHPUnit_Extensions_Database_DataSet_IDataSet;
 use PHPUnit_Extensions_Database_DB_IDatabaseConnection;
 use TYPO3Analysis\Helper\Database;
 
+/**
+ * Class DatabaseTest
+ *
+ * Unit test class for \TYPO3Analysis\Helper\Database
+ *
+ * @package TYPO3Analysis\Tests\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 {
 

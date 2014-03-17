@@ -13,6 +13,14 @@ namespace TYPO3Analysis\Tests\Consumer\Extract;
 use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
 use TYPO3Analysis\Consumer\Extract\Targz;
 
+/**
+ * Class TargzTest
+ *
+ * Unit test class for \TYPO3Analysis\Consumer\Extract\Targz
+ *
+ * @package TYPO3Analysis\Tests\Consumer\Extract
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class TargzTest extends ConsumerTestAbstract
 {
 

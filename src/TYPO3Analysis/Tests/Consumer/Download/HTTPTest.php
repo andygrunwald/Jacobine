@@ -13,6 +13,14 @@ namespace TYPO3Analysis\Tests\Consumer\Download;
 use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
 use TYPO3Analysis\Consumer\Download\HTTP;
 
+/**
+ * Class HTTPTest
+ *
+ * Unit test class \TYPO3Analysis\Consumer\Download\HTTP
+ *
+ * @package TYPO3Analysis\Tests\Consumer\Download
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class HTTPTest extends ConsumerTestAbstract
 {
 

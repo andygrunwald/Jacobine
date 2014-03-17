@@ -12,6 +12,14 @@ namespace TYPO3Analysis\Tests\Helper;
 
 use TYPO3Analysis\Helper\MessageQueue;
 
+/**
+ * Class MessageQueueTest
+ *
+ * Unit test class for \TYPO3Analysis\Helper\MessageQueue
+ *
+ * @package TYPO3Analysis\Tests\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class MessageQueueTest extends \PHPUnit_Framework_TestCase
 {
 

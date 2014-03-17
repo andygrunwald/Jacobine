@@ -13,6 +13,14 @@ namespace TYPO3Analysis\Tests\Consumer\Crawler;
 use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
 use TYPO3Analysis\Consumer\Crawler\NNTP;
 
+/**
+ * Class NNTPTest
+ *
+ * Unit test class for \TYPO3Analysis\Consumer\Crawler\NNTP
+ *
+ * @package TYPO3Analysis\Tests\Consumer\Crawler
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class NNTPTest extends ConsumerTestAbstract
 {
 

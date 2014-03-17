@@ -12,6 +12,14 @@ namespace TYPO3Analysis\Tests\Helper;
 
 use TYPO3Analysis\Helper\DatabaseFactory;
 
+/**
+ * Class DatabaseFactoryTest
+ *
+ * Unit test class for \TYPO3Analysis\Helper\DatabaseFactory
+ *
+ * @package TYPO3Analysis\Tests\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class DatabaseFactoryTest extends \PHPUnit_Framework_TestCase
 {
 

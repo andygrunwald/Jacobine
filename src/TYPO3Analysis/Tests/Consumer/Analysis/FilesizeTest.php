@@ -13,6 +13,14 @@ namespace TYPO3Analysis\Tests\Consumer\Analysis;
 use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
 use TYPO3Analysis\Consumer\Analysis\Filesize;
 
+/**
+ * Class FilesizeTest
+ *
+ * Unit test class for \TYPO3Analysis\Consumer\Analysis\Filesize
+ *
+ * @package TYPO3Analysis\Tests\Consumer\Analysis
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class FilesizeTest extends ConsumerTestAbstract
 {
 

@@ -10,6 +10,17 @@
 
 namespace TYPO3Analysis\Tests\Consumer;
 
+/**
+ * Class ConsumerTestAbstract
+ *
+ * Abstract consumer test class for consumer unit tests.
+ * Every consumer unit test extends this class.
+ * They just initialize the consumer.
+ * Due to the inheritance all tests in this class will be executed for every consumer.
+ *
+ * @package TYPO3Analysis\Tests\Consumer
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
 {
 

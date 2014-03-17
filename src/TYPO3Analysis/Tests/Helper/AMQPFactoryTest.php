@@ -12,6 +12,14 @@ namespace TYPO3Analysis\Tests\Helper;
 
 use TYPO3Analysis\Helper\AMQPFactory;
 
+/**
+ * Class AMQPFactoryTest
+ *
+ * Unit test class for \TYPO3Analysis\Helper\AMQPFactory
+ *
+ * @package TYPO3Analysis\Tests\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class AMQPFactoryTest extends \PHPUnit_Framework_TestCase
 {
 

@@ -13,6 +13,14 @@ namespace TYPO3Analysis\Tests\Consumer\Download;
 use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
 use TYPO3Analysis\Consumer\Download\Git;
 
+/**
+ * Class GitTest
+ *
+ * Unit test class for \TYPO3Analysis\Consumer\Download\Git
+ *
+ * @package TYPO3Analysis\Tests\Consumer\Download
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class GitTest extends ConsumerTestAbstract
 {
 

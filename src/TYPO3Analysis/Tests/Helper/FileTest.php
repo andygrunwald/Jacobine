@@ -12,8 +12,15 @@ namespace TYPO3Analysis\Tests\Helper;
 
 use org\bovigo\vfs\vfsStream;
 use TYPO3Analysis\Helper\File;
-use org\bovigo\vfs\vfsStreamFile;
 
+/**
+ * Class FileTest
+ *
+ * Unit test class for \TYPO3Analysis\Helper\File
+ *
+ * @package TYPO3Analysis\Tests\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class FileTest extends \PHPUnit_Framework_TestCase
 {
 

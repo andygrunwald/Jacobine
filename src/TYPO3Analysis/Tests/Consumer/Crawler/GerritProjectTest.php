@@ -13,6 +13,14 @@ namespace TYPO3Analysis\Tests\Consumer\Crawler;
 use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
 use TYPO3Analysis\Consumer\Crawler\GerritProject;
 
+/**
+ * Class GerritProjectTest
+ *
+ * Unit test class for \TYPO3Analysis\Consumer\Crawler\GerritProject
+ *
+ * @package TYPO3Analysis\Tests\Consumer\Crawler
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class GerritProjectTest extends ConsumerTestAbstract
 {
 
