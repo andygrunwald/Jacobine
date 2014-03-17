@@ -10,6 +10,18 @@
 
 namespace TYPO3Analysis\Helper;
 
+/**
+ * Class File
+ *
+ * Basic file abstraction.
+ * Offers some basic functionality like renaming, md5 hashing or downloading.
+ *
+ * TODO Implement symfony filesystem component
+ * @link https://github.com/symfony/Filesystem
+ *
+ * @package TYPO3Analysis\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class File
 {
 

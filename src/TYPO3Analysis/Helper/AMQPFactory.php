@@ -13,6 +13,15 @@ namespace TYPO3Analysis\Helper;
 use PhpAmqpLib\Connection\AMQPConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
+/**
+ * Class AMQPFactory
+ *
+ * Factory to create a AMQP connection and a AMQP message.
+ * This factory is used in many commands. The created connections are used in our MessageQueue abstraction.
+ *
+ * @package TYPO3Analysis\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class AMQPFactory
 {
 

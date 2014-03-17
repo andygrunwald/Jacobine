@@ -10,6 +10,17 @@
 
 namespace TYPO3Analysis\Helper;
 
+/**
+ * Class MessageQueue
+ *
+ * Message queue abstraction.
+ * In theory we can talk to every message queue broker which supports AMQP.
+ * But in the normal case we use RabbitMQ.
+ * This class offers exchange, queue, binding, channel and message handling.
+ *
+ * @package TYPO3Analysis\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class MessageQueue
 {
 

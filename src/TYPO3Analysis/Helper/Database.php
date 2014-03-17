@@ -10,6 +10,17 @@
 
 namespace TYPO3Analysis\Helper;
 
+/**
+ * Class Database
+ *
+ * Database abstraction.
+ * The connections will be created by DatabaseFactory class.
+ * This class offers the basic abstraction for select, insert, update and delete statements.
+ * All statements are executed via PreparedStatements to avoid possible sql injections.
+ *
+ * @package TYPO3Analysis\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class Database
 {
 

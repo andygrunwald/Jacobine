@@ -10,6 +10,17 @@
 
 namespace TYPO3Analysis\Helper;
 
+/**
+ * Class DatabaseFactory
+ *
+ * Factory to create a database connection.
+ * This factory is injected into our database abstraction.
+ * This is necessary, because we need to be able to reconnect every time.
+ * During runtime this factory will be used to create new database connections.
+ *
+ * @package TYPO3Analysis\Helper
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ */
 class DatabaseFactory
 {
 
