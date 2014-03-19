@@ -87,7 +87,7 @@ class CVSAnaly extends ConsumerAbstract
         );
 
         try {
-            $extensions = $this->getCVSAnalyExtensions($this->getConfig());
+            $extensions = $this->getCVSAnalyExtensions();
         } catch (\Exception $e) {
             $context = array(
                 'dir' => $messageData->checkoutDir
@@ -155,10 +155,9 @@ class CVSAnaly extends ConsumerAbstract
     /**
      * Returns all active and usable extensions of CVSAnaly
      *
-     * @param array $config
      * @return string
      */
-    private function getCVSAnalyExtensions($config)
+    private function getCVSAnalyExtensions()
     {
         // TODO Take care of this ... configure extensions or make this work!
         // Hardcoded extensions, because some extensions may not work correct
