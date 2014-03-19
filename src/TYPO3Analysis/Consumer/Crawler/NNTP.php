@@ -151,7 +151,7 @@ class NNTP extends ConsumerAbstract
             'groupId' => $groupId,
         );
 
-        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'crawler.nntpgroup', 'crawler.nntpgroup');
+        $this->getMessageQueue()->sendExtendedMessage($message, 'TYPO3', 'crawler.nntpgroup', 'crawler.nntpgroup');
     }
 
     /**

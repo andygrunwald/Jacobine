@@ -81,7 +81,7 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
     public function testSendMessageWithAString()
     {
         $message = 'This is a small message';
-        $this->messageQueue->sendMessage($message);
+        $this->messageQueue->sendExtendedMessage($message);
     }
 
     public function testSendMessageWithAnArray()
@@ -90,7 +90,7 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
             'Value 1',
             'Important value 2'
         ];
-        $this->messageQueue->sendMessage($message);
+        $this->messageQueue->sendExtendedMessage($message);
     }
 
     public function testSendMessageWithAnArrayAndExchange()
@@ -103,7 +103,7 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
         $exchangeOptions = $this->defaultExchangeOptions;
         $exchangeOptions['name'] = 'logging';
 
-        $this->messageQueue->sendMessage($message, $exchangeOptions);
+        $this->messageQueue->sendExtendedMessage($message, $exchangeOptions);
     }
 
     public function testSendMessageWithAnArrayAndExchangeAndQueue()
@@ -119,7 +119,7 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
         $queueOptions = $this->defaultQueueOptions;
         $queueOptions['name'] = 'logging';
 
-        $this->messageQueue->sendMessage($message, $exchangeOptions, $queueOptions);
+        $this->messageQueue->sendExtendedMessage($message, $exchangeOptions, $queueOptions);
     }
 
     public function testSendMessageWithAnArrayAndExchangeAndQueueAndRouting()
@@ -137,6 +137,6 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
 
         $routing = 'logging.error';
 
-        $this->messageQueue->sendMessage($message, $exchangeOptions, $queueOptions, $routing);
+        $this->messageQueue->sendExtendedMessage($message, $exchangeOptions, $queueOptions, $routing);
     }
 }

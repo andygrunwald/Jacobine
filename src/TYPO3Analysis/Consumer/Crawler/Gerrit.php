@@ -152,7 +152,10 @@ class Gerrit extends ConsumerAbstract
             'configFile' => $configFile
         );
 
-        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'crawler.gerritproject', 'crawler.gerritproject');
+        // TODO adjust every sendMessage-Call
+        // TODO add "sendSimpleMessage" without queue + declare parameter
+        // TODO Fix unit tests
+        $this->getMessageQueue()->sendExtendedMessage($message, 'TYPO3', 'crawler.gerritproject', 'crawler.gerritproject');
     }
 
     /**

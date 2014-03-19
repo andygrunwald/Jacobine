@@ -174,7 +174,7 @@ class GitwebCommand extends Command
         );
 
         $exchange = ['name' => $projectConfig['RabbitMQ']['Exchange']];
-        $this->messageQueue->sendMessage($message, $exchange, [], self::ROUTING, true);
+        $this->messageQueue->sendExtendedMessage($message, $exchange, [], self::ROUTING, true);
         return null;
     }
 }

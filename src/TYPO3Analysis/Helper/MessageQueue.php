@@ -177,20 +177,24 @@ class MessageQueue
     }
 
     /**
-     * Sends a new message to message queue server
+     * Sends a message to message queue broker.
+     *
+     * With the usage of this method it is important that the delivered message will alive.
+     * The exchange and the queue will be created if they do not exists before the message will be send.
+     *
+     * If it is not important that those elements exists please use $this->sendSimpleMessage().
+     *
+     * TODO use this method!
      *
      * @param mixed $message
      * @param array $exchangeOptions
      * @param array $queueOptions
      * @param string $routing
      * @param bool $doNotDeclare If false exchange and message will be declared, if true the message will be just sent
+     * @return void
      */
-    public function sendMessage($message, array $exchangeOptions, $queueOptions, $routing = '', $doNotDeclare = false)
+    public function sendExtendedMessage($message, array $exchangeOptions, $queueOptions, $routing, $doNotDeclare = false)
     {
-        if (is_array($message) === true) {
-            $message = json_encode($message);
-        }
-
         if ($doNotDeclare === false && $exchangeOptions) {
             $this->declareExchange($exchangeOptions);
         }
@@ -199,9 +203,46 @@ class MessageQueue
             $this->declareQueue($queueOptions);
         }
 
+        $this->sendSimpleMessage($message, $exchangeOptions['name'], $routing);
+    }
+
+    /**
+     * Sends a simple message to the message queue broker.
+     *
+     * With the usage of this method it is irrelevant if the exchange, queue and / or binding exists.
+     * If those elements won`t exists the message will be lost.
+     * If you want to be save that the message won`t be lost, please use $this->sendExtendedMessage()
+     * to send a message.
+     *
+     * TODO Use sendSimpleMessage!
+     *
+     * @param mixed $message
+     * @param string $exchangeName
+     * @param string $routing
+     * @return void
+     */
+    public function sendSimpleMessage($message, $exchangeName, $routing)
+    {
+        $message = $this->encodeMessage($message);
+
         $message = $this->factory->createMessage($message, ['content_type' => 'text/plain']);
         /* @var \PhpAmqpLib\Message\AMQPMessage $message */
-        $this->getChannel()->basic_publish($message, $exchangeOptions['name'], $routing);
+        $this->getChannel()->basic_publish($message, $exchangeName, $routing);
+    }
+
+    /**
+     * Transforms a message into a string, if it is an array
+     *
+     * @param mixed $message
+     * @return string
+     */
+    protected function encodeMessage($message)
+    {
+        if (is_array($message) === true) {
+            $message = json_encode($message);
+        }
+
+        return $message;
     }
 
     /**

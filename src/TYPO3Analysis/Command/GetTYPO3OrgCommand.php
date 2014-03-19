@@ -184,7 +184,7 @@ class GetTYPO3OrgCommand extends Command
                     );
 
                     $exchange = ['name' => self::EXCHANGE];
-                    $this->messageQueue->sendMessage($message, $exchange, [], self::ROUTING, true);
+                    $this->messageQueue->sendExtendedMessage($message, $exchange, [], self::ROUTING, true);
                 }
             }
         }

@@ -179,7 +179,7 @@ class Gitweb extends ConsumerAbstract
             'id' => $id
         );
 
-        $this->getMessageQueue()->sendMessage($message, 'TYPO3', 'download.git', 'download.git');
+        $this->getMessageQueue()->sendExtendedMessage($message, 'TYPO3', 'download.git', 'download.git');
     }
 
     /**
