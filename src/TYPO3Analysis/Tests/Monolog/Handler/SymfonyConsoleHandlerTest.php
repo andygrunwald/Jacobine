@@ -54,10 +54,14 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
      */
     protected function getIdentityFormatter()
     {
+        $formatterMockCallback = function ($record)
+        {
+            return $record['message'];
+        };
         $formatter = $this->getMock('Monolog\\Formatter\\FormatterInterface');
         $formatter->expects($this->any())
             ->method('format')
-            ->will($this->returnCallback(function ($record) { return $record['message']; }));
+            ->will($this->returnCallback($formatterMockCallback));
 
         return $formatter;
     }
@@ -66,10 +70,14 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $formatterMock = null;
         if ($addFormatterMock === true) {
+            $formatterMockCallback = function ($record)
+            {
+                return $record;
+            };
             $formatterMock = $this->getMock('\Symfony\Component\Console\Formatter\OutputFormatterInterface');
             $formatterMock->expects($this->any())
                 ->method('format')
-                ->will($this->returnCallback(function ($record) { return $record; }));
+                ->will($this->returnCallback($formatterMockCallback));
 
             $formatterMock->expects($this->any())
                 ->method('hasStyle')
