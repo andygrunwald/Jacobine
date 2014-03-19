@@ -327,8 +327,10 @@ abstract class ConsumerAbstract implements ConsumerInterface
      */
     public function initialize()
     {
-        $this->setQueueOptions($this->getMessageQueue()->getDefaultQueueOptions());
-        $this->setExchangeOptions($this->getMessageQueue()->getDefaultExchangeOptions());
+        $messageQueue = $this->getMessageQueue();
+
+        $this->setQueueOptions($messageQueue->getDefaultQueueOptions());
+        $this->setExchangeOptions($messageQueue->getDefaultExchangeOptions());
     }
 
     /**
