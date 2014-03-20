@@ -175,7 +175,7 @@ class GithubLinguist extends ConsumerAbstract
 
             if (!$insertedId) {
                 $message = 'Insert of language failed';
-                $this->getLogger($message, $language);
+                $this->getLogger()->critical($message, $language);
                 throw new \Exception($message, 1368805993);
             }
         }
