@@ -246,6 +246,7 @@ class GetTYPO3OrgCommand extends Command
     private function getReleaseInformation()
     {
         $response = $this->browser->get(static::JSON_FILE_URL);
+        /** @var \Buzz\Message\Response $response */
         if ($response->isOk() !== true) {
             return false;
         }

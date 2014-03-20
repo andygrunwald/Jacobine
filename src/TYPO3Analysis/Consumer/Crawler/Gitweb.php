@@ -146,7 +146,7 @@ class Gitweb extends ConsumerAbstract
     {
         $this->getLogger()->info('Requesting url', array('url' => $url));
         $response = $browser->get($url);
-        /* @var $response \Buzz\Message\Response */
+        /** @var \Buzz\Message\Response $response */
 
         if ($response->getStatusCode() !== 200) {
             $context = array(
