@@ -192,8 +192,8 @@ class HTTP extends ConsumerAbstract
             'filename' => $file
         );
 
-        $this->getMessageQueue()->sendExtendedMessage($message, 'TYPO3', 'extract.targz', 'extract.targz');
-        $this->getMessageQueue()->sendExtendedMessage($message, 'TYPO3', 'analysis.filesize', 'analysis.filesize');
+        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'extract.targz');
+        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.filesize');
     }
 
     /**

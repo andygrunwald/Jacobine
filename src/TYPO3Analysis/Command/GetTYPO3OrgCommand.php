@@ -183,8 +183,7 @@ class GetTYPO3OrgCommand extends Command
                         'filenamePostfix' => '.tar.gz',
                     );
 
-                    $exchange = ['name' => self::EXCHANGE];
-                    $this->messageQueue->sendExtendedMessage($message, $exchange, [], self::ROUTING, true);
+                    $this->messageQueue->sendSimpleMessage($message, self::EXCHANGE, self::ROUTING);
                 }
             }
         }

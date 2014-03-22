@@ -134,7 +134,7 @@ class Git extends ConsumerAbstract
             'checkoutDir' => $dir
         );
 
-        $this->getMessageQueue()->sendExtendedMessage($message, 'TYPO3', 'analysis.cvsanaly', 'analysis.cvsanaly');
+        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.cvsanaly');
     }
 
     /**

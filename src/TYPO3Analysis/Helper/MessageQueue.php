@@ -184,8 +184,6 @@ class MessageQueue
      *
      * If it is not important that those elements exists please use $this->sendSimpleMessage().
      *
-     * TODO use this method!
-     *
      * @param mixed $message
      * @param array $exchangeOptions
      * @param array $queueOptions
@@ -213,8 +211,6 @@ class MessageQueue
      * If those elements won`t exists the message will be lost.
      * If you want to be save that the message won`t be lost, please use $this->sendExtendedMessage()
      * to send a message.
-     *
-     * TODO Use sendSimpleMessage!
      *
      * @param mixed $message
      * @param string $exchangeName

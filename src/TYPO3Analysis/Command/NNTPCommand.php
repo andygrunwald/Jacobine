@@ -171,8 +171,7 @@ class NNTPCommand extends Command
             'config' => $nntpConfig
         );
 
-        $exchange = ['name' => $projectConfig['RabbitMQ']['Exchange']];
-        $this->messageQueue->sendExtendedMessage($message, $exchange, [], self::ROUTING, true);
+        $this->messageQueue->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], self::ROUTING);
         return null;
     }
 }
