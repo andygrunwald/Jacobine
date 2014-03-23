@@ -95,6 +95,6 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
             }
         }
 
-        $this->consoleOutput->writeln($writeText);
+        $this->consoleOutput->write($writeText);
     }
 }
