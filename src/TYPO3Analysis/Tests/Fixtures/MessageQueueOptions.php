@@ -19,7 +19,8 @@ namespace TYPO3Analysis\Tests\Fixtures;
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 
-class MessageQueueOptions {
+class MessageQueueOptions
+{
 
     /**
      * Default queue options
