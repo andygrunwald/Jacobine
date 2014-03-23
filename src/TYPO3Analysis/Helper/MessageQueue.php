@@ -63,7 +63,7 @@ class MessageQueue
         'passive' => false,
         'durable' => false,
         'exclusive' => false,
-        'auto_delete' => true,
+        'auto_delete' => false,
         'nowait' => false,
         'arguments' => null,
         'ticket' => null
@@ -79,7 +79,7 @@ class MessageQueue
         'type' => 'topic',
         'passive' => false,
         'durable' => false,
-        'auto_delete' => true,
+        'auto_delete' => false,
         'internal' => false,
         'nowait' => false,
         'arguments' => null,
