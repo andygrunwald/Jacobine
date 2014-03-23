@@ -29,6 +29,33 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
      */
     protected $consumer;
 
+    /**
+     * Returns a complete mock object of the message queue
+     *
+     * @param int $defaultOptionsCall Integer how many times the get*DefaultOptions method will be called
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    protected function getMessageQueueMock($defaultOptionsCall = 1)
+    {
+        $messageQueueOptions = new \TYPO3Analysis\Tests\Fixtures\MessageQueueOptions();
+
+        $amqpConnectionMock = $this->getMock('\PhpAmqpLib\Connection\AMQPConnection', [], [], '', false);
+        $amqpFactoryMock = $this->getMock('\TYPO3Analysis\Helper\AMQPFactory', ['createMessage']);
+
+        $constructorArgs = [$amqpConnectionMock, $amqpFactoryMock];
+        $messageQueueMock = $this->getMock('\TYPO3Analysis\Helper\MessageQueue', [], $constructorArgs);
+
+        $messageQueueMock->expects($this->exactly($defaultOptionsCall))
+                         ->method('getDefaultQueueOptions')
+                         ->will($this->returnValue($messageQueueOptions->defaultQueueOptions));
+
+        $messageQueueMock->expects($this->exactly($defaultOptionsCall))
+                         ->method('getDefaultExchangeOptions')
+                         ->will($this->returnValue($messageQueueOptions->defaultExchangeOptions));
+
+        return $messageQueueMock;
+    }
+
     public function testConsumerGotDescription()
     {
         $description = $this->consumer->getDescription();
@@ -39,13 +66,17 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
 
     public function testConsumerInitializeWithQueueAndRouting()
     {
+        $messageQueueMock = $this->getMessageQueueMock();
+        $this->consumer->setMessageQueue($messageQueueMock);
+
         $this->consumer->initialize();
 
-        $queue = $this->consumer->getQueue();
+        $queueOptions = $this->consumer->getQueueOptions();
         $routing = $this->consumer->getRouting();
 
-        $this->assertInternalType('string', $queue);
-        $this->assertTrue(strlen($queue) > 0);
+        $this->assertInternalType('array', $queueOptions);
+        $this->assertArrayHasKey('name', $queueOptions);
+        $this->assertNotEmpty($queueOptions['name']);
 
         $this->assertInternalType('string', $routing);
         $this->assertTrue(strlen($routing) > 0);
@@ -63,14 +94,43 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         $this->assertSame($message, $this->consumer->getMessage());
     }
 
-    public function testExchangeGetterAndSetter()
+    public function testExchangeOptionsGetterAndSetter()
     {
-        $this->assertEmpty($this->consumer->getExchange());
+        $this->assertEmpty($this->consumer->getExchangeOptions());
 
-        $exchange = 'EXCHANGE';
-        $this->consumer->setExchange($exchange);
+        $exchangeOptions = ['name' => 'EXCHANGE'];
+        $this->consumer->setExchangeOptions($exchangeOptions);
 
-        $this->assertSame($exchange, $this->consumer->getExchange());
+        $this->assertSame($exchangeOptions, $this->consumer->getExchangeOptions());
+    }
+
+    public function testSingleExchangeOptionGetterAndSetter()
+    {
+        $this->assertEmpty($this->consumer->getExchangeOptions());
+
+        $this->consumer->setExchangeOption('name', 'EXCHANGE');
+
+        $exchangeOptions = $this->consumer->getExchangeOptions();
+
+        $this->assertInternalType('array', $exchangeOptions);
+        $this->assertArrayHasKey('name', $exchangeOptions);
+        $this->assertNotEmpty($exchangeOptions['name']);
+    }
+
+    public function testEnableDeadlettering()
+    {
+        $this->assertFalse($this->consumer->isDeadLetteringEnabled());
+        $this->consumer->enableDeadLettering();
+        $this->assertTrue($this->consumer->isDeadLetteringEnabled());
+    }
+
+    public function testDisableDeadLettering()
+    {
+        $this->assertFalse($this->consumer->isDeadLetteringEnabled());
+        $this->consumer->enableDeadLettering();
+        $this->assertTrue($this->consumer->isDeadLetteringEnabled());
+        $this->consumer->disableDeadLettering();
+        $this->assertFalse($this->consumer->isDeadLetteringEnabled());
     }
 
     public function testConsumerTag()
@@ -99,10 +159,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
     {
         $this->assertNull($this->consumer->getMessageQueue());
 
-        $amqpConnectionMock = $this->getMock('\PhpAmqpLib\Connection\AMQPConnection', [], [], '', false);
-        $amqpFactoryMock = $this->getMock('\TYPO3Analysis\Helper\AMQPFactory', ['createMessage']);
-        $constructorArgs = [$amqpConnectionMock, $amqpFactoryMock];
-        $messageQueueMock = $this->getMock('\TYPO3Analysis\Helper\MessageQueue', [], $constructorArgs);
+        $messageQueueMock = $this->getMessageQueueMock(0);
 
         $this->consumer->setMessageQueue($messageQueueMock);
 

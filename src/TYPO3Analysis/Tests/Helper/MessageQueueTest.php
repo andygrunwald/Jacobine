@@ -28,34 +28,6 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
      */
     protected $messageQueue;
 
-    protected $defaultQueueOptions = [
-        'name' => '',
-        'passive' => false,
-        'durable' => false,
-        'exclusive' => false,
-        'auto_delete' => true,
-        'nowait' => false,
-        'arguments' => null,
-        'ticket' => null
-    ];
-
-    /**
-     * Default exchange options
-     *
-     * @var array
-     */
-    protected $defaultExchangeOptions = [
-        'name' => '',
-        'type' => 'topic',
-        'passive' => false,
-        'durable' => false,
-        'auto_delete' => true,
-        'internal' => false,
-        'nowait' => false,
-        'arguments' => null,
-        'ticket' => null
-    ];
-
     public function setUp()
     {
         $amqpChannelMock = $this->getMock('\PhpAmqpLib\Channel\AMQPChannel', [], [], '', false);
@@ -73,66 +45,59 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
         $factoryMock = $this->getMock('\TYPO3Analysis\Helper\AMQPFactory', ['createMessage']);
         $factoryMock->expects($this->once())
                     ->method('createMessage')
+        // add check if string or something is incoming
                     ->will($this->returnValue($amqpMessageMock));
 
         $this->messageQueue = new MessageQueue($amqpConnectionMock, $factoryMock);
     }
 
-    public function testSendMessageWithAString()
+    public function testSendSimpleMessageWithAString()
     {
         $message = 'This is a small message';
-        $this->messageQueue->sendExtendedMessage($message);
+        $exchange = 'TEST';
+        $routing = 'test.routing';
+
+        $this->messageQueue->sendSimpleMessage($message, $exchange, $routing);
     }
 
-    public function testSendMessageWithAnArray()
+    public function testSendSimpleMessageWithAnArray()
     {
         $message = [
             'Value 1',
             'Important value 2'
         ];
-        $this->messageQueue->sendExtendedMessage($message);
+        $exchange = 'TEST';
+        $routing = 'test.routing';
+
+        $this->messageQueue->sendSimpleMessage($message, $exchange, $routing);
     }
 
-    public function testSendMessageWithAnArrayAndExchange()
+    public function testSendExtendedMessageWithAString()
     {
-        $message = [
-            'Value 1',
-            'Important value 2'
-        ];
+        $message = 'Important string message';
 
-        $exchangeOptions = $this->defaultExchangeOptions;
+        $exchangeOptions = $this->messageQueue->getDefaultExchangeOptions();
         $exchangeOptions['name'] = 'logging';
 
-        $this->messageQueue->sendExtendedMessage($message, $exchangeOptions);
-    }
-
-    public function testSendMessageWithAnArrayAndExchangeAndQueue()
-    {
-        $message = [
-            'Value 1',
-            'Important value 2'
-        ];
-
-        $exchangeOptions = $this->defaultExchangeOptions;
-        $exchangeOptions['name'] = 'logging';
-
-        $queueOptions = $this->defaultQueueOptions;
+        $queueOptions = $this->messageQueue->getDefaultQueueOptions();
         $queueOptions['name'] = 'logging';
 
-        $this->messageQueue->sendExtendedMessage($message, $exchangeOptions, $queueOptions);
+        $routing = 'logging.routing';
+
+        $this->messageQueue->sendExtendedMessage($message, $exchangeOptions, $queueOptions, $routing);
     }
 
-    public function testSendMessageWithAnArrayAndExchangeAndQueueAndRouting()
+    public function testSendExtendedMessageWithAnArray()
     {
         $message = [
             'Value 1',
             'Important value 2'
         ];
 
-        $exchangeOptions = $this->defaultExchangeOptions;
+        $exchangeOptions = $this->messageQueue->getDefaultExchangeOptions();
         $exchangeOptions['name'] = 'logging';
 
-        $queueOptions = $this->defaultQueueOptions;
+        $queueOptions = $this->messageQueue->getDefaultQueueOptions();
         $queueOptions['name'] = 'logging';
 
         $routing = 'logging.error';

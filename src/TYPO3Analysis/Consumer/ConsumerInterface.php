@@ -190,4 +190,25 @@ interface ConsumerInterface
      * @return \stdClass
      */
     public function getMessage();
+
+    /**
+     * Enable dead lettering
+     *
+     * @return void
+     */
+    public function enableDeadLettering();
+
+    /**
+     * Checks if dead lettering is enabled
+     *
+     * @return boolean
+     */
+    public function isDeadLetteringEnabled();
+
+    /**
+     * Disable dead lettering
+     *
+     * @return void
+     */
+    public function disableDeadLettering();
 }

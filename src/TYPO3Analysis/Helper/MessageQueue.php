@@ -188,18 +188,12 @@ class MessageQueue
      * @param array $exchangeOptions
      * @param array $queueOptions
      * @param string $routing
-     * @param bool $doNotDeclare If false exchange and message will be declared, if true the message will be just sent
      * @return void
      */
-    public function sendExtendedMessage($message, array $exchangeOptions, $queueOptions, $routing, $doNotDeclare = false)
+    public function sendExtendedMessage($message, array $exchangeOptions, array $queueOptions, $routing)
     {
-        if ($doNotDeclare === false && $exchangeOptions) {
-            $this->declareExchange($exchangeOptions);
-        }
-
-        if ($doNotDeclare === false && $queueOptions) {
-            $this->declareQueue($queueOptions);
-        }
+        $this->declareExchange($exchangeOptions);
+        $this->declareQueue($queueOptions);
 
         $this->sendSimpleMessage($message, $exchangeOptions['name'], $routing);
     }
@@ -255,13 +249,11 @@ class MessageQueue
      */
     public function basicConsume(array $exchangeOptions, array $queueOptions, $deadLettering, $routing, $consumerTag, array $callback)
     {
-
         // Declare all needed stuff regarding dead lettering
         if ($deadLettering) {
             // Setup dead letter exchange
             $deadLetterExchangeOptions = $exchangeOptions;
             $deadLetterExchangeOptions['name'] .= '.deadletter';
-            //$deadLetterExchangeOptions['type'] = 'direct';
             $this->declareExchange($deadLetterExchangeOptions);
 
             // Setup dead letter queue
