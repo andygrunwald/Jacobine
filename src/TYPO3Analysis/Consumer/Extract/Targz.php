@@ -122,7 +122,7 @@ class Targz extends ConsumerAbstract
         $command = 'tar -xzf ' . escapeshellarg($messageData->filename) . ' -C ' . escapeshellarg($targetFolder);
 
         try {
-            $this->executeCommand($command);
+            $this->executeCommand($command, false);
         } catch (\Exception $e) {
             $context = array(
                 'command' => $command,

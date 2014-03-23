@@ -160,11 +160,11 @@ class Git extends ConsumerAbstract
 
             $command = escapeshellcmd($git);
             $command .= ' checkout master';
-            $this->executeCommand($command);
+            $this->executeCommand($command, false);
 
             $command = escapeshellcmd($git);
             $command .= ' pull';
-            $pullOutput = $this->executeCommand($command);
+            $pullOutput = $this->executeCommand($command, false);
 
         } else {
             $this->getLogger()->info('No "master" branch detected', $context);
@@ -185,7 +185,7 @@ class Git extends ConsumerAbstract
 
         $command = escapeshellcmd($git);
         $command .= ' branch';
-        $output = $this->executeCommand($command);
+        $output = $this->executeCommand($command, false);
 
         foreach ($output as $branchName) {
             // Remove the "*" which means that the current branch is chosen
@@ -225,7 +225,7 @@ class Git extends ConsumerAbstract
         );
         $this->getLogger()->info('Checkout git repository', $context);
 
-        return $this->executeCommand($command);
+        return $this->executeCommand($command, false);
     }
 
     /**

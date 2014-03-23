@@ -108,7 +108,7 @@ class PHPLoc extends ConsumerAbstract
         $this->getLogger()->info('Start analyzing with PHPLoc', array('directory' => $dirToAnalyze));
 
         try {
-            $this->executeCommand($command);
+            $this->executeCommand($command, false);
         } catch (\Exception $e) {
             $this->rejectMessage($this->getMessage());
             return;

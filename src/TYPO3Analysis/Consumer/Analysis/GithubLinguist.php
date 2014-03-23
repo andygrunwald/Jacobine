@@ -102,7 +102,7 @@ class GithubLinguist extends ConsumerAbstract
         $this->getLogger()->info('Analyze with github-linguist', array('directory' => $dirToAnalyze));
 
         try {
-            $output = $this->executeCommand($command);
+            $output = $this->executeCommand($command, false);
         } catch (\Exception $e) {
             $this->rejectMessage($this->getMessage());
             return;
