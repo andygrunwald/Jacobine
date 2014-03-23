@@ -17,8 +17,6 @@ use TYPO3Analysis\Consumer\ConsumerAbstract;
  *
  * A consumer to extract a tar.gz archive.
  *
- * TODO Refactor the targz extract consumer to use Phar extract and not a system call.
- *
  * Message format (json encoded):
  *  [
  *      versionId: ID of a version record in the database. A succesful download will be flagged
@@ -119,8 +117,10 @@ class Targz extends ConsumerAbstract
         );
         $this->getLogger()->info('Extracting file', $context);
 
+        // We didnt use the \PharData class to decompress + extract, because
+        // a) it is much more slower (performance) than a tar system call
+        // b) it eats much more PHP memory which is not useful in a message based env
         $command = 'tar -xzf ' . escapeshellarg($messageData->filename) . ' -C ' . escapeshellarg($targetFolder);
-
         try {
             $this->executeCommand($command, false);
         } catch (\Exception $e) {
