@@ -10,9 +10,9 @@
 
 namespace TYPO3Analysis\Consumer\Extract;
 
-use Symfony\Component\Process\ProcessUtils;
 use TYPO3Analysis\Consumer\ConsumerAbstract;
 use TYPO3Analysis\Helper\ProcessFactory;
+use Symfony\Component\Process\ProcessUtils;
 
 /**
  * Class Targz
@@ -221,9 +221,7 @@ class Targz extends ConsumerAbstract
         $exception = null;
         try {
             $process->run();
-        } catch (\Exception $e) {
-            $exception = $e;
-        }
+        } catch (\Exception $exception) {}
 
         return [$process, $exception];
     }
