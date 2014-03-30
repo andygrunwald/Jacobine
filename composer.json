@@ -1,4 +1,22 @@
 {
+    "name": "andygrunwald/TYPO3-Analytics",
+    "description": "Base package for a big and awesome analysis suite to crawl and analyse various data of software development.",
+    "keywords": ["analysis", "software repository mining", "data mining", "messaging", "knowledge"],
+    "homepage": "https://github.com/andygrunwald/TYPO3-Analytics",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andy Grunwald",
+            "email": "andygrunwald@gmail.com",
+            "homepage": "http://andygrunwald.com/"
+        }
+    ],
+    "support": {
+        "email": "andygrunwald@gmail.com",
+        "issues": "https://github.com/andygrunwald/TYPO3-Analytics/issues",
+        "source": "https://github.com/andygrunwald/TYPO3-Analytics.git"
+    },
     "repositories": [
         {
             "type": "vcs",
