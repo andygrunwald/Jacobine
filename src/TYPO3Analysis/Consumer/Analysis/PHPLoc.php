@@ -11,6 +11,8 @@
 namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
+use TYPO3Analysis\Helper\ProcessFactory;
+use Symfony\Component\Process\ProcessUtils;
 
 /**
  * Class PHPLoc
@@ -90,26 +92,15 @@ class PHPLoc extends ConsumerAbstract
             return;
         }
 
-        $dirToAnalyze = rtrim($messageData->directory, DIRECTORY_SEPARATOR);
-        $pathParts = explode(DIRECTORY_SEPARATOR, $dirToAnalyze);
-        $dirName = array_pop($pathParts);
-        $xmlFile = 'phploc-' . $dirName . '.xml';
-        $xmlFile = implode(DIRECTORY_SEPARATOR, $pathParts) . DIRECTORY_SEPARATOR . $xmlFile;
-
-        // Execute PHPLoc
-        $config = $this->getConfig();
-        $filePattern = $config['Application']['PHPLoc']['FilePattern'];
-        $command = $config['Application']['PHPLoc']['Binary'];
-        $command .= ' --count-tests --names ' . escapeshellarg($filePattern);
-        $command .= ' --log-xml ' . escapeshellarg($xmlFile) . ' ' . escapeshellarg(
-            $dirToAnalyze . DIRECTORY_SEPARATOR
-        );
-
-        $this->getLogger()->info('Start analyzing with PHPLoc', array('directory' => $dirToAnalyze));
-
-        try {
-            $this->executeCommand($command, false);
-        } catch (\Exception $e) {
+        /** @var \Symfony\Component\Process\Process $process */
+        list($process, $exception, $xmlFile) = $this->executePHPLoc($messageData->directory);
+        if ($exception !== null || $process->isSuccessful() === false) {
+            $context = array(
+                'command' => $process->getCommandLine(),
+                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
+                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
+            );
+            $this->getLogger()->critical('PHPLoc command failed', $context);
             $this->rejectMessage($this->getMessage());
             return;
         }
@@ -257,5 +248,47 @@ class PHPLoc extends ConsumerAbstract
         }
 
         return $row;
+    }
+
+    /**
+     * Starts a analysis of a given $dirToAnalyze with PHPLoc
+     *
+     * @param string $dirToAnalyze Directory which should be analyzed by PHPLoc
+     * @return array [
+     *                  0 => Symfony Process object,
+     *                  1 => Exception if one was thrown otherwise null,
+     *                  2 => xml result file of PHPLoc
+     *               ]
+     */
+    private function executePHPLoc($dirToAnalyze)
+    {
+        $dirToAnalyze = rtrim($dirToAnalyze, DIRECTORY_SEPARATOR);
+        $pathParts = explode(DIRECTORY_SEPARATOR, $dirToAnalyze);
+        $dirName = array_pop($pathParts);
+        $xmlFile = 'phploc-' . $dirName . '.xml';
+        $xmlFile = implode(DIRECTORY_SEPARATOR, $pathParts) . DIRECTORY_SEPARATOR . $xmlFile;
+
+        $config = $this->getConfig();
+        $filePattern = $config['Application']['PHPLoc']['FilePattern'];
+
+        $filePattern = ProcessUtils::escapeArgument($filePattern);
+        $escapedXmlFile = ProcessUtils::escapeArgument($xmlFile);
+        $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze . DIRECTORY_SEPARATOR);
+
+        $command = $config['Application']['PHPLoc']['Binary'];
+        $command .= ' --count-tests --names ' . $filePattern;
+        $command .= ' --log-xml ' . $escapedXmlFile . ' ' . $dirToAnalyze;
+
+        $this->getLogger()->info('Start analyzing with PHPLoc', array('directory' => $dirToAnalyze));
+
+        $processFactory = new ProcessFactory();
+        $process = $processFactory->createProcess($command);
+
+        $exception = null;
+        try {
+            $process->run();
+        } catch (\Exception $exception) {}
+
+        return [$process, $exception, $xmlFile];
     }
 }
