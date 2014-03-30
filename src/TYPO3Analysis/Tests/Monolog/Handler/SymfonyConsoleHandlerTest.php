@@ -88,7 +88,7 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($formatterMock));
 
         $outputMock->expects($this->once())
-            ->method('writeln')
+            ->method('write')
             ->with($this->equalTo($writeLineMessage));
 
         return $outputMock;
