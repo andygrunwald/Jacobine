@@ -19,6 +19,7 @@
         "symfony/console": "2.4.*",
         "symfony/finder": "2.4.*",
         "symfony/dom-crawler": "2.4.*",
+        "symfony/process": "2.4.*",
         "phploc/phploc": "2.0.*",
         "pdepend/pdepend": "1.1.*",
         "monolog/monolog": "1.8.*",

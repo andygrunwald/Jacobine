@@ -10,7 +10,9 @@
 
 namespace TYPO3Analysis\Consumer\Extract;
 
+use Symfony\Component\Process\ProcessUtils;
 use TYPO3Analysis\Consumer\ConsumerAbstract;
+use TYPO3Analysis\Helper\ProcessFactory;
 
 /**
  * Class Targz
@@ -111,22 +113,13 @@ class Targz extends ConsumerAbstract
             return;
         }
 
-        $context = array(
-            'filename' => $messageData->filename,
-            'targetFolder' => $targetFolder
-        );
-        $this->getLogger()->info('Extracting file', $context);
-
-        // We didnt use the \PharData class to decompress + extract, because
-        // a) it is much more slower (performance) than a tar system call
-        // b) it eats much more PHP memory which is not useful in a message based env
-        $command = 'tar -xzf ' . escapeshellarg($messageData->filename) . ' -C ' . escapeshellarg($targetFolder);
-        try {
-            $this->executeCommand($command, false);
-        } catch (\Exception $e) {
+        /** @var \Symfony\Component\Process\Process $process */
+        list($process, $exception) = $this->extractArchive($messageData->filename, $targetFolder);
+        if ($exception !== null || $process->isSuccessful() === false) {
             $context = array(
-                'command' => $command,
-                'message' => $e->getMessage()
+                'command' => $process->getCommandLine(),
+                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
+                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
             );
             $this->getLogger()->critical('Extract command failed', $context);
             $this->rejectMessage($this->getMessage());
@@ -198,5 +191,40 @@ class Targz extends ConsumerAbstract
         $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.phploc');
         $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.pdepend');
         $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.linguist');
+    }
+
+    /**
+     * Unpacks a single $archive in a specified $target folder
+     *
+     * @param string $archive tar.gz archive which should be extracted
+     * @param string $target Target folder where the $archive will be extracted
+     * @return array [0 => Symfony Process object, 1 => Exception if one was thrown otherwise null]
+     */
+    private function extractArchive($archive, $target)
+    {
+        $context = array(
+            'filename' => $archive,
+            'targetFolder' => $target
+        );
+        $this->getLogger()->info('Extracting file', $context);
+
+        // We didnt use the \PharData class to decompress + extract, because
+        // a) it is much more slower (performance) than a tar system call
+        // b) it eats much more PHP memory which is not useful in a message based env
+        $archive = ProcessUtils::escapeArgument($archive);
+        $target = ProcessUtils::escapeArgument($target);
+        $command = 'tar -xzf ' . $archive . ' -C ' . $target;
+
+        $processFactory = new ProcessFactory();
+        $process = $processFactory->createProcess($command);
+
+        $exception = null;
+        try {
+            $process->run();
+        } catch (\Exception $e) {
+            $exception = $e;
+        }
+
+        return [$process, $exception];
     }
 }
