@@ -11,6 +11,8 @@
 namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
+use TYPO3Analysis\Helper\ProcessFactory;
+use Symfony\Component\Process\ProcessUtils;
 
 /**
  * Class PDepend
@@ -82,19 +84,10 @@ class PDepend extends ConsumerAbstract
         }
 
         $dirToAnalyze = rtrim($messageData->directory, DIRECTORY_SEPARATOR);
-        $pathParts = explode(DIRECTORY_SEPARATOR, $dirToAnalyze);
-        $dirName = array_pop($pathParts);
-
-        $basePath = implode(DIRECTORY_SEPARATOR, $pathParts) . DIRECTORY_SEPARATOR;
-        $jDependChartFile = $basePath . 'jdepend-chart-' . $dirName . '.svg';
-        $jDependXmlFile = $basePath . 'jdepend-xml-' . $dirName . '.xml';
-        $overviewPyramidFile = $basePath . 'overview-pyramid-' . $dirName . '.svg';
-        $summaryXmlFile = $basePath . 'summary-xml-' . $dirName . '.xml';
+        $analysisFiles = $this->generateAnalysisFilenames($dirToAnalyze);
 
         // If there was already a pDepend run, all files must be exist. If yes, exit here
-        if (file_exists($jDependChartFile) === true && file_exists($jDependXmlFile) === true
-            && file_exists($overviewPyramidFile) === true && file_exists($summaryXmlFile) === true
-        ) {
+        if ($this->doesAnalysisFilesAlreadyExists($analysisFiles) === true) {
             $context = array(
                 'versionId' => $messageData->versionId,
                 'directory' => $messageData->directory
@@ -104,37 +97,21 @@ class PDepend extends ConsumerAbstract
             return;
         }
 
-        // Execute pDepend
-        $config = $this->getConfig();
-        $filePattern = $config['Application']['PDepend']['FilePattern'];
-        $command = $config['Application']['PDepend']['Binary'];
-        $command .= ' --jdepend-chart=' . escapeshellarg($jDependChartFile);
-        $command .= ' --jdepend-xml=' . escapeshellarg($jDependXmlFile);
-        $command .= ' --overview-pyramid=' . escapeshellarg($overviewPyramidFile);
-        $command .= ' --summary-xml=' . escapeshellarg($summaryXmlFile);
-        $command .= ' --suffix=' . escapeshellarg($filePattern);
-        $command .= ' --coderank-mode=inheritance,property,method ' . escapeshellarg(
-            $dirToAnalyze . DIRECTORY_SEPARATOR
-        );
-
-        $context = array('directory' => $dirToAnalyze);
-        $this->getLogger()->info('Start analyzing with pDepend', $context);
-
-        try {
-            $this->executeCommand($command, false);
-        } catch (\Exception $e) {
+        /** @var \Symfony\Component\Process\Process $process */
+        list($process, $exception) = $this->executePDepend($dirToAnalyze, $analysisFiles);
+        if ($exception !== null || $process->isSuccessful() === false) {
+            $context = array(
+                'command' => $process->getCommandLine(),
+                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
+                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
+            );
+            $this->getLogger()->critical('pDepend command failed', $context);
             $this->rejectMessage($this->getMessage());
             return;
         }
 
-        if (file_exists($jDependChartFile) !== true || file_exists($jDependXmlFile) !== true
-            || file_exists($overviewPyramidFile) !== true || file_exists($summaryXmlFile) !== true
-        ) {
-            $context['jDependChart'] = $jDependChartFile;
-            $context['jDependXml'] = $jDependXmlFile;
-            $context['overviewPyramid'] = $overviewPyramidFile;
-            $context['summaryXml'] = $summaryXmlFile;
-
+        if ($this->doesMinimumOneAnalysisFileNotExists($analysisFiles) === true) {
+            $context = $analysisFiles;
             $this->getLogger()->critical('pDepend analysis result files does not exist!', $context);
             $this->rejectMessage($message);
             return;
@@ -145,5 +122,116 @@ class PDepend extends ConsumerAbstract
         $this->acknowledgeMessage($message);
 
         $this->getLogger()->info('Finish processing message', (array)$messageData);
+    }
+
+    /**
+     * Generates file names of result files for pDepend like the jDepend chart or xml file.
+     *
+     * @param string $dirToAnalyze Directory which should be analyzed by pDepend
+     * @return array
+     */
+    private function generateAnalysisFilenames($dirToAnalyze)
+    {
+        $pathParts = explode(DIRECTORY_SEPARATOR, $dirToAnalyze);
+        $dirName = array_pop($pathParts);
+        $basePath = implode(DIRECTORY_SEPARATOR, $pathParts) . DIRECTORY_SEPARATOR;
+
+        $files = [
+            'jDependChartFile' => $basePath . 'jdepend-chart-' . $dirName . '.svg',
+            'jDependXmlFile' => $basePath . 'jdepend-xml-' . $dirName . '.xml',
+            'overviewPyramidFile' => $basePath . 'overview-pyramid-' . $dirName . '.svg',
+            'summaryXmlFile' => $basePath . 'summary-xml-' . $dirName . '.xml'
+        ];
+
+        return $files;
+    }
+
+    /**
+     * Checks if all result analysis files already exists.
+     * Returns true if the files already exists. False otherwise.
+     *
+     * @param array $files
+     * @return bool
+     */
+    private function doesAnalysisFilesAlreadyExists(array $files)
+    {
+        $result = (
+            file_exists($files['jDependChartFile']) === true
+            && file_exists($files['jDependXmlFile']) === true
+            && file_exists($files['overviewPyramidFile']) === true
+            && file_exists($files['summaryXmlFile']) === true
+        );
+
+        return $result;
+    }
+
+    /**
+     * Checks if minimum one result analysis file does not exists.
+     * Returns true if minimum one file is missing. False otherwise.
+     *
+     * @param array $files
+     * @return bool
+     */
+    private function doesMinimumOneAnalysisFileNotExists(array $files)
+    {
+        $result = (
+            file_exists($files['jDependChartFile']) !== true
+            || file_exists($files['jDependXmlFile']) !== true
+            || file_exists($files['overviewPyramidFile']) !== true
+            || file_exists($files['summaryXmlFile']) !== true
+        );
+
+        return $result;
+    }
+
+    /**
+     * Starts a analysis of a given $dirToAnalyze with pDepend
+     *
+     * @param string $dirToAnalyze Directory which should be analyzed by pDepend
+     * @param array $analysisFiles
+     * @return array [
+     *                  0 => Symfony Process object,
+     *                  1 => Exception if one was thrown otherwise null
+     *               ]
+     */
+    private function executePDepend($dirToAnalyze, array $analysisFiles)
+    {
+        $config = $this->getConfig();
+        $filePattern = $config['Application']['PDepend']['FilePattern'];
+        $filePattern = ProcessUtils::escapeArgument($filePattern);
+
+        $analysisFiles['jDependChartFile'] = ProcessUtils::escapeArgument($analysisFiles['jDependChartFile']);
+        $analysisFiles['jDependXmlFile'] = ProcessUtils::escapeArgument($analysisFiles['jDependXmlFile']);
+        $analysisFiles['overviewPyramidFile'] = ProcessUtils::escapeArgument($analysisFiles['overviewPyramidFile']);
+        $analysisFiles['summaryXmlFile'] = ProcessUtils::escapeArgument($analysisFiles['summaryXmlFile']);
+
+        $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze . DIRECTORY_SEPARATOR);
+
+        // Execute pDepend
+        $command = $config['Application']['PDepend']['Binary'];
+        $command .= ' --jdepend-chart=' . $analysisFiles['jDependChartFile'];
+        $command .= ' --jdepend-xml=' . $analysisFiles['jDependXmlFile'];
+        $command .= ' --overview-pyramid=' . $analysisFiles['overviewPyramidFile'];
+        $command .= ' --summary-xml=' . $analysisFiles['summaryXmlFile'];
+        $command .= ' --suffix=' . $filePattern;
+        $command .= ' --coderank-mode=inheritance,property,method ' . $dirToAnalyze;
+
+        $context = [
+            'directory' => $dirToAnalyze,
+            'command' => $command
+        ];
+        $this->getLogger()->info('Start analyzing with pDepend', $context);
+
+        // Disable process timeout, because pDepend should take a while
+        $processTimeout = null;
+        $processFactory = new ProcessFactory();
+        $process = $processFactory->createProcess($command, $processTimeout);
+
+        $exception = null;
+        try {
+            $process->run();
+        } catch (\Exception $exception) {}
+
+        return [$process, $exception];
     }
 }

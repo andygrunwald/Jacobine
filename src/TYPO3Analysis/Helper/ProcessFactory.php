@@ -34,11 +34,16 @@ class ProcessFactory
      * Maybe this method implementation should be changed to create a new Symfony\Component\Process\ProcessBuilder.
      *
      * @param string $command Command which will be executed.
+     * @param int $timeout The timeout in seconds or null to disable
      * @return \Symfony\Component\Process\Process
      */
-    public function createProcess($command)
+    public function createProcess($command, $timeout = 60)
     {
-        $process = new Process($command);
+        $cwd = null;
+        $env = null;
+        $stdin = null;
+
+        $process = new Process($command, $cwd, $env, $stdin, $timeout);
         return $process;
     }
 }
