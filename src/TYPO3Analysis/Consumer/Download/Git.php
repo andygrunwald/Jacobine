@@ -11,6 +11,8 @@
 namespace TYPO3Analysis\Consumer\Download;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
+use TYPO3Analysis\Helper\ProcessFactory;
+use Symfony\Component\Process\ProcessUtils;
 
 /**
  * Class Git
@@ -74,7 +76,7 @@ class Git extends ConsumerAbstract
         $this->getLogger()->info('Receiving message', (array) $messageData);
 
         $record = $this->getGitwebFromDatabase($messageData->id);
-        $context = array('id' => $messageData->id);
+        $context = ['id' => $messageData->id];
 
         // If the record does not exists in the database exit here
         if ($record === false) {
@@ -88,24 +90,29 @@ class Git extends ConsumerAbstract
         $checkoutPath = $projectConfig['GitCheckoutPath'];
         $checkoutPath = rtrim($checkoutPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
-        $search = array('/', '.git', '.');
-        $replace = array('_', '', '-');
+        $search = ['/', '.git', '.'];
+        $replace = ['_', '', '-'];
         $checkoutPath .= str_replace($search, $replace, $record['name']);
 
         $gitDirInCheckoutPath = $checkoutPath . DIRECTORY_SEPARATOR . '.git';
 
-        try {
-            if (is_dir($checkoutPath) === true && is_dir($gitDirInCheckoutPath) === true) {
-                $this->gitUpdate($config['Application']['Git']['Binary'], $checkoutPath);
-            } else {
-                $this->gitClone($config['Application']['Git']['Binary'], $record['git'], $checkoutPath);
-            }
-        } catch (\Exception $e) {
-            $context = array(
-                'dir' => $checkoutPath,
-                'message' => $e->getMessage()
-            );
-            $this->getLogger()->error('Git clone / pull failed', $context);
+        $gitExecutable = escapeshellcmd($config['Application']['Git']['Binary']);
+
+        /** @var \Symfony\Component\Process\Process $process */
+        if (is_dir($checkoutPath) === true && is_dir($gitDirInCheckoutPath) === true) {
+            list($process, $exception) = $this->executeGitUpdate($gitExecutable, $checkoutPath);
+        } else {
+            list($process, $exception) = $this->executeGitClone($gitExecutable, $record['git'], $checkoutPath);
+        }
+
+        if ($exception !== null || $process->isSuccessful() === false) {
+            $cmdLine = (($process instanceof \Symfony\Component\Process\Process) ? $process->getCommandLine(): null);
+            $context = [
+                'command' => $cmdLine,
+                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
+                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
+            ];
+            $this->getLogger()->error('git clone / pull failed', $context);
             $this->rejectMessage($this->getMessage());
             return;
         }
@@ -128,11 +135,11 @@ class Git extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $id, $dir)
     {
-        $message = array(
+        $message = [
             'project' => $project,
             'gitwebId' => $id,
             'checkoutDir' => $dir
-        );
+        ];
 
         $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.cvsanaly');
     }
@@ -144,33 +151,35 @@ class Git extends ConsumerAbstract
      * @param string $checkoutPath
      * @return array
      */
-    private function gitUpdate($git, $checkoutPath)
+    private function executeGitUpdate($git, $checkoutPath)
     {
-        $pullOutput = array();
         chdir($checkoutPath);
 
-        $context = array(
+        $context = [
             'dir' => $checkoutPath
-        );
+        ];
         $this->getLogger()->info('Updating git repository', $context);
 
         // Empty repositories must not have a master branch
         if ($this->hasRepositoryAMasterBranch($git) === true) {
-            $this->getLogger()->info('"master" branch detected', $context);
+            $this->getLogger()->info('"master" branch detected, pull it!', $context);
 
-            $command = escapeshellcmd($git);
-            $command .= ' checkout master';
-            $this->executeCommand($command, false);
+            $command = $git . ' checkout master';
+            $this->executeGitCommand($command);
 
-            $command = escapeshellcmd($git);
-            $command .= ' pull';
-            $pullOutput = $this->executeCommand($command, false);
+            $command = $git . ' pull';
+            $commandReturn = $this->executeGitCommand($command);
 
         } else {
-            $this->getLogger()->info('No "master" branch detected', $context);
+            $logMessage = 'No "master" branch detected';
+            $this->getLogger()->info($logMessage, $context);
+            $commandReturn = [
+                null,
+                new \RuntimeException($logMessage, 1396805966)
+            ];
         }
 
-        return $pullOutput;
+        return $commandReturn;
     }
 
     /**
@@ -182,10 +191,22 @@ class Git extends ConsumerAbstract
     private function hasRepositoryAMasterBranch($git)
     {
         $result = false;
+        $command = $git . ' branch';
 
-        $command = escapeshellcmd($git);
-        $command .= ' branch';
-        $output = $this->executeCommand($command, false);
+        /** @var \Symfony\Component\Process\Process $process */
+        list($process, $exception) = $this->executeGitCommand($command);
+        if ($exception !== null) {
+            $context = [
+                'command' => $process->getCommandLine(),
+                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
+                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
+            ];
+            $this->getLogger()->error('git branch of ' . __METHOD__ . ' failed', $context);
+            return $result;
+        }
+
+        $output = $process->getOutput();
+        $output = explode(chr(10), $output);
 
         foreach ($output as $branchName) {
             // Remove the "*" which means that the current branch is chosen
@@ -210,22 +231,22 @@ class Git extends ConsumerAbstract
      * @param string $checkoutPath
      * @return array
      */
-    private function gitClone($git, $repository, $checkoutPath)
+    private function executeGitClone($git, $repository, $checkoutPath)
     {
-        mkdir($checkoutPath, 0777, true);
-
-        $command = escapeshellcmd($git);
-        $command .= ' clone --recursive';
-        $command .= ' ' . escapeshellarg($repository);
-        $command .= ' ' . escapeshellarg($checkoutPath);
-
-        $context = array(
+        $context = [
             'git' => $repository,
             'dir' => $checkoutPath
-        );
+        ];
         $this->getLogger()->info('Checkout git repository', $context);
 
-        return $this->executeCommand($command, false);
+        // TODO What the fuck? I have to be drunken. Fix this to a right chmod
+        mkdir($checkoutPath, 0777, true);
+
+        $repository = ProcessUtils::escapeArgument($repository);
+        $checkoutPath = ProcessUtils::escapeArgument($checkoutPath);
+        $command = $git . ' clone --recursive ' . $repository . ' ' . $checkoutPath;
+
+        return $this->executeGitCommand($command);
     }
 
     /**
@@ -236,8 +257,8 @@ class Git extends ConsumerAbstract
      */
     private function getGitwebFromDatabase($id)
     {
-        $fields = array('id', 'name', 'git');
-        $rows = $this->getDatabase()->getRecords($fields, 'gitweb', array('id' => $id), '', '', 1);
+        $fields = ['id', 'name', 'git'];
+        $rows = $this->getDatabase()->getRecords($fields, 'gitweb', ['id' => $id], '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -246,5 +267,34 @@ class Git extends ConsumerAbstract
         }
 
         return $row;
+    }
+
+    /**
+     * Executes a single command for git consumer
+     *
+     * TODO Extract this piece of code (+ error logging) into a own method
+     *      The other consumers has to be adjusted again
+     *
+     * @param string $command
+     * @return array [
+     *                  0 => Symfony Process object,
+     *                  1 => Exception if one was thrown otherwise null
+     *               ]
+     */
+    private function executeGitCommand($command)
+    {
+        $timeout = null;
+        $processFactory = new ProcessFactory();
+        $process = $processFactory->createProcess($command, $timeout);
+
+        $exception = null;
+        try {
+            $process->run();
+        } catch (\Exception $exception) {
+            // This catch section is empty, because we got an error handling in the caller area
+            // We check not only the exception. We use the result command of the process as well
+        }
+
+        return [$process, $exception];
     }
 }
