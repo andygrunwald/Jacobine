@@ -10,7 +10,7 @@
 
 namespace TYPO3Analysis\Helper;
 
-use Symfony\Component\Process\ProcessBuilder;
+use \Symfony\Component\Process\Process;
 
 /**
  * Class ProcessFactory
@@ -40,13 +40,7 @@ class ProcessFactory
      */
     public function createProcess($command, $timeout = 60, $workingDir = null)
     {
-        $processBuilder = new ProcessBuilder([$command]);
-        $processBuilder->setTimeout($timeout);
-
-        if ($workingDir) {
-            $processBuilder->setWorkingDirectory($workingDir);
-        }
-
-        return $processBuilder->getProcess();
+        $process = new Process($command, $workingDir, null, null, $timeout);
+        return $process;
     }
 }

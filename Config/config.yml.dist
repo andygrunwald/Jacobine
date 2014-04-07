@@ -35,7 +35,7 @@ Application:
     Binary: /var/www/analysis/vendor/pdepend/pdepend/src/bin/pdepend
     FilePattern: "php,inc"
   CVSAnaly:
-    Binary: /var/www/analysis/tools/MetricsGrimoire/CVSAnalY/cvsanaly2
+    Binary: /usr/local/bin/cvsanaly2
   GithubLinguist:
     WorkingDir: /var/www/analysis/tools/github-linguist
 

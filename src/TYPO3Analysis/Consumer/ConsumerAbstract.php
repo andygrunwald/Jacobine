@@ -417,7 +417,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
      *
      * @return string
      */
-    private function getUserCommandPart()
+    protected function getUserCommandPart()
     {
         $userInformation = posix_getpwuid(posix_geteuid());
         $username = $userInformation['name'];
