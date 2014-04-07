@@ -40,7 +40,7 @@ class ProcessFactory
      */
     public function createProcess($command, $timeout = 60, $workingDir = null)
     {
-        $processBuilder = new ProcessBuilder();
+        $processBuilder = new ProcessBuilder([$command]);
         $processBuilder->setTimeout($timeout);
 
         if ($workingDir) {
