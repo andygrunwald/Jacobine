@@ -153,22 +153,20 @@ class Git extends ConsumerAbstract
      */
     private function executeGitUpdate($git, $checkoutPath)
     {
-        chdir($checkoutPath);
-
         $context = [
             'dir' => $checkoutPath
         ];
         $this->getLogger()->info('Updating git repository', $context);
 
         // Empty repositories must not have a master branch
-        if ($this->hasRepositoryAMasterBranch($git) === true) {
+        if ($this->hasRepositoryAMasterBranch($git, $checkoutPath) === true) {
             $this->getLogger()->info('"master" branch detected, pull it!', $context);
 
             $command = $git . ' checkout master';
-            $this->executeGitCommand($command);
+            $this->executeGitCommand($command, $checkoutPath);
 
             $command = $git . ' pull';
-            $commandReturn = $this->executeGitCommand($command);
+            $commandReturn = $this->executeGitCommand($command, $checkoutPath);
 
         } else {
             $logMessage = 'No "master" branch detected';
@@ -186,15 +184,16 @@ class Git extends ConsumerAbstract
      * Checks if the git repository got a master branch
      *
      * @param string $git
+     * @param string|null $checkoutPath The working directory to use the working dir of the current PHP process
      * @return bool
      */
-    private function hasRepositoryAMasterBranch($git)
+    private function hasRepositoryAMasterBranch($git, $checkoutPath)
     {
         $result = false;
         $command = $git . ' branch';
 
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->executeGitCommand($command);
+        list($process, $exception) = $this->executeGitCommand($command, $checkoutPath);
         if ($exception !== null) {
             $context = [
                 'command' => $process->getCommandLine(),
@@ -246,7 +245,7 @@ class Git extends ConsumerAbstract
         $checkoutPath = ProcessUtils::escapeArgument($checkoutPath);
         $command = $git . ' clone --recursive ' . $repository . ' ' . $checkoutPath;
 
-        return $this->executeGitCommand($command);
+        return $this->executeGitCommand($command, null);
     }
 
     /**
@@ -276,16 +275,17 @@ class Git extends ConsumerAbstract
      *      The other consumers has to be adjusted again
      *
      * @param string $command
+     * @param string|null $checkoutPath The working directory to use the working dir of the current PHP process
      * @return array [
      *                  0 => Symfony Process object,
      *                  1 => Exception if one was thrown otherwise null
      *               ]
      */
-    private function executeGitCommand($command)
+    private function executeGitCommand($command, $checkoutPath)
     {
         $timeout = null;
         $processFactory = new ProcessFactory();
-        $process = $processFactory->createProcess($command, $timeout);
+        $process = $processFactory->createProcess($command, $timeout, $checkoutPath);
 
         $exception = null;
         try {

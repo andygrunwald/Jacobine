@@ -10,7 +10,7 @@
 
 namespace TYPO3Analysis\Helper;
 
-use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * Class ProcessFactory
@@ -35,15 +35,18 @@ class ProcessFactory
      *
      * @param string $command Command which will be executed.
      * @param int $timeout The timeout in seconds or null to disable
+     * @param string|null $workingDir The working directory or null to use the working dir of the current PHP process
      * @return \Symfony\Component\Process\Process
      */
-    public function createProcess($command, $timeout = 60)
+    public function createProcess($command, $timeout = 60, $workingDir = null)
     {
-        $cwd = null;
-        $env = null;
-        $stdin = null;
+        $processBuilder = new ProcessBuilder();
+        $processBuilder->setTimeout($timeout);
 
-        $process = new Process($command, $cwd, $env, $stdin, $timeout);
-        return $process;
+        if ($workingDir) {
+            $processBuilder->setWorkingDirectory($workingDir);
+        }
+
+        return $processBuilder->getProcess();
     }
 }

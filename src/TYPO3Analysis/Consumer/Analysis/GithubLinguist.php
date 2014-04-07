@@ -218,8 +218,6 @@ class GithubLinguist extends ConsumerAbstract
     private function executeGithubLinguist($dirToAnalyze)
     {
         $config = $this->getConfig();
-        $workingDir = $config['Application']['GithubLinguist']['WorkingDir'];
-        chdir($workingDir);
 
         // Execute github-linguist
         $dirToAnalyze = rtrim($dirToAnalyze, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -238,10 +236,12 @@ class GithubLinguist extends ConsumerAbstract
         // @link https://github.com/github/linguist/issues/353
         $command = 'bundle exec linguist ' . $dirToAnalyze;
 
+        $workingDir = $config['Application']['GithubLinguist']['WorkingDir'];
+
         // Disable process timeout, because pDepend should take a while
         $processTimeout = null;
         $processFactory = new ProcessFactory();
-        $process = $processFactory->createProcess($command, $processTimeout);
+        $process = $processFactory->createProcess($command, $processTimeout, $workingDir);
 
         $exception = null;
         try {
