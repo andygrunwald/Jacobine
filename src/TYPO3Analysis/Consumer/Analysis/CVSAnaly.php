@@ -11,6 +11,8 @@
 namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
+use TYPO3Analysis\Helper\ProcessFactory;
+use Symfony\Component\Process\ProcessUtils;
 
 /**
  * Class CVSAnaly
@@ -85,36 +87,16 @@ class CVSAnaly extends ConsumerAbstract
             return;
         }
 
-        $this->getLogger()->info(
-            'Start analyzing directory with CVSAnaly',
-            array('directory' => $messageData->checkoutDir)
-        );
-
-        try {
-            $extensions = $this->getCVSAnalyExtensions();
-        } catch (\Exception $e) {
+        /** @var \Symfony\Component\Process\Process $process */
+        list($process, $exception) = $this->executeCVSAnaly($messageData->checkoutDir, $messageData->project);
+        if ($exception !== null || $process->isSuccessful() === false) {
             $context = array(
-                'dir' => $messageData->checkoutDir
+                'command' => $process->getCommandLine(),
+                'output' => $process->getOutput(),
+                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
+                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
             );
-            $this->getLogger()->error('CVSAnaly extensions can not be received', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
-        }
-
-        $command = $this->buildCVSAnalyCommand(
-            $this->getConfig(),
-            $messageData->project,
-            $messageData->checkoutDir,
-            $extensions
-        );
-        try {
-            $this->executeCommand($command, true, array('PYTHONPATH'));
-        } catch (\Exception $e) {
-            $context = array(
-                'dir' => $messageData->checkoutDir,
-                'message' => $e->getMessage()
-            );
-            $this->getLogger()->error('CVSAnaly command failed', $context);
+            $this->getLogger()->critical('CVSAnaly command failed', $context);
             $this->rejectMessage($this->getMessage());
             return;
         }
@@ -141,15 +123,15 @@ class CVSAnaly extends ConsumerAbstract
         $configFile .= $projectConfig['CVSAnaly']['ConfigFile'];
 
         $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
-        $command .= ' --config-file ' . escapeshellarg($configFile);
-        $command .= ' --db-driver ' . escapeshellarg('mysql');
-        $command .= ' --db-hostname ' . escapeshellarg($config['MySQL']['Host']);
-        $command .= ' --db-user ' . escapeshellarg($config['MySQL']['Username']);
-        $command .= ' --db-password ' . escapeshellarg($config['MySQL']['Password']);
-        $command .= ' --db-database ' . escapeshellarg($projectConfig['MySQL']['Database']);
-        $command .= ' --extensions ' . escapeshellarg($extensions);
+        $command .= ' --config-file ' . ProcessUtils::escapeArgument($configFile);
+        $command .= ' --db-driver ' . ProcessUtils::escapeArgument('mysql');
+        $command .= ' --db-hostname ' . ProcessUtils::escapeArgument($config['MySQL']['Host']);
+        $command .= ' --db-user ' . ProcessUtils::escapeArgument($config['MySQL']['Username']);
+        $command .= ' --db-password ' . ProcessUtils::escapeArgument($config['MySQL']['Password']);
+        $command .= ' --db-database ' . ProcessUtils::escapeArgument($projectConfig['MySQL']['Database']);
+        $command .= ' --extensions ' . ProcessUtils::escapeArgument($extensions);
         $command .= ' --metrics-all';
-        $command .= ' ' . escapeshellarg($directory);
+        $command .= ' ' . ProcessUtils::escapeArgument($directory);
 
         return $command;
     }
@@ -179,5 +161,35 @@ class CVSAnaly extends ConsumerAbstract
         }
 
         return $extensions;
+    }
+
+    /**
+     * Starts a analysis of a given $checkoutDir with CVSAnaly
+     *
+     * @param string $checkoutDir Directory which should be analyzed by github linguist
+     * @param string $project Project which will be analyzed. Needed to catch the right configuration file
+     * @return array [
+     *                  0 => Symfony Process object,
+     *                  1 => Exception if one was thrown otherwise null
+     *               ]
+     */
+    private function executeCVSAnaly($checkoutDir, $project)
+    {
+        $this->getLogger()->info('Start analyzing directory with CVSAnaly', ['directory' => $checkoutDir]);
+
+        $extensions = $this->getCVSAnalyExtensions();
+        $command = $this->buildCVSAnalyCommand($this->getConfig(), $project, $checkoutDir, $extensions);
+        // TODO Very evil part of source code ... sudo command. We have to get rid of it!
+        // To reach this goal we have to refactor CVSAnaly a little bit :(
+        //$command = $this->getUserCommandPart() . ' ' . $command;
+
+        $processFactory = new ProcessFactory();
+        $process = $processFactory->createProcess($command, null);
+        $exception = null;
+        try {
+            $process->run();
+        } catch (\Exception $exception) {}
+
+        return [$process, $exception];
     }
 }

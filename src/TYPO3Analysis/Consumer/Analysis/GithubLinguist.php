@@ -11,6 +11,8 @@
 namespace TYPO3Analysis\Consumer\Analysis;
 
 use TYPO3Analysis\Consumer\ConsumerAbstract;
+use TYPO3Analysis\Helper\ProcessFactory;
+use Symfony\Component\Process\ProcessUtils;
 
 /**
  * Class GithubLinguist
@@ -91,24 +93,23 @@ class GithubLinguist extends ConsumerAbstract
             return;
         }
 
-        $config = $this->getConfig();
-        $workingDir = $config['Application']['GithubLinguist']['WorkingDir'];
-        chdir($workingDir);
-
-        // Execute github-linguist
-        $dirToAnalyze = rtrim($messageData->directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $command = 'bundle exec linguist ' . escapeshellarg($dirToAnalyze);
-
-        $this->getLogger()->info('Analyze with github-linguist', array('directory' => $dirToAnalyze));
-
-        try {
-            $output = $this->executeCommand($command, false);
-        } catch (\Exception $e) {
+        /** @var \Symfony\Component\Process\Process $process */
+        list($process, $exception) = $this->executeGithubLinguist($messageData->directory);
+        if ($exception !== null || $process->isSuccessful() === false) {
+            $context = array(
+                'command' => $process->getCommandLine(),
+                'output' => $process->getOutput(),
+                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
+                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
+            );
+            $this->getLogger()->critical('github-linguist command failed', $context);
             $this->rejectMessage($this->getMessage());
             return;
         }
 
-        if ($output === array()) {
+        $output = $process->getOutput();
+
+        if ($output === []) {
             $msg = 'github-linguist returns no result';
             $this->getLogger()->critical($msg);
             $this->rejectMessage($this->getMessage());
@@ -203,5 +204,50 @@ class GithubLinguist extends ConsumerAbstract
             $msg = sprintf('Delete of linguist records for version %s failed', $versionId);
             throw new \Exception($msg, 1368805543);
         }
+    }
+
+    /**
+     * Starts a analysis of a given $dirToAnalyze with github linguist
+     *
+     * @param string $dirToAnalyze Directory which should be analyzed by github linguist
+     * @return array [
+     *                  0 => Symfony Process object,
+     *                  1 => Exception if one was thrown otherwise null
+     *               ]
+     */
+    private function executeGithubLinguist($dirToAnalyze)
+    {
+        $config = $this->getConfig();
+
+        // Execute github-linguist
+        $dirToAnalyze = rtrim($dirToAnalyze, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze);
+        $this->getLogger()->info('Analyze with github-linguist', ['directory' => $dirToAnalyze]);
+
+        // TODO fix this ruby command!
+        // This command is "broken" with ruby 1.9 (tested with ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-linux])
+        // Maybe execute bundle via rvm?
+        //
+        // /.../github-linguist/lib/linguist/generated.rb:41:in `split': invalid byte sequence in US-ASCII (ArgumentError)
+        // curl -L https://get.rvm.io | bash -s stable
+        // source /home/vagrant/.rvm/scripts/rvm
+        //
+        // @link http://stackoverflow.com/questions/6583815/how-to-run-bundle-exec-from-a-specific-ruby-version-using-rvm-when-shell-envir
+        // @link https://github.com/github/linguist/issues/353
+        $command = 'bundle exec linguist ' . $dirToAnalyze;
+
+        $workingDir = $config['Application']['GithubLinguist']['WorkingDir'];
+
+        // Disable process timeout, because pDepend should take a while
+        $processTimeout = null;
+        $processFactory = new ProcessFactory();
+        $process = $processFactory->createProcess($command, $processTimeout, $workingDir);
+
+        $exception = null;
+        try {
+            $process->run();
+        } catch (\Exception $exception) {}
+
+        return [$process, $exception];
     }
 }
