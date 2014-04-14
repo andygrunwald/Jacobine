@@ -211,8 +211,9 @@ class Targz extends ConsumerAbstract
         $target = ProcessUtils::escapeArgument($target);
         $command = 'tar -xzf ' . $archive . ' -C ' . $target;
 
+        $timeout = 600; // Timeout of 10 minutes
         $processFactory = new ProcessFactory();
-        $process = $processFactory->createProcess($command);
+        $process = $processFactory->createProcess($command, $timeout);
 
         $exception = null;
         try {
