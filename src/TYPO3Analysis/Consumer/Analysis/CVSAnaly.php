@@ -183,7 +183,10 @@ class CVSAnaly extends ConsumerAbstract
         $exception = null;
         try {
             $process->run();
-        } catch (\Exception $exception) {}
+        } catch (\Exception $exception) {
+            // This catch section is empty, because we got an error handling in the caller area
+            // We check not only the exception. We use the result command of the process as well
+        }
 
         return [$process, $exception];
     }
