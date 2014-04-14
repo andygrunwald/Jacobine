@@ -2,6 +2,7 @@
 .idea
 
 Config/config.yml
+Config/cvsanaly-config
 Config/gerrit-review.typo3.org.yml
 Config/id_rsa
 Config/id_rsa.pub
