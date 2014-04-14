@@ -123,7 +123,7 @@ class Targz extends ConsumerAbstract
         }
 
         // Set the correct access rights. 0777 is a bit to much ;)
-        chmod($targetFolder, 0755);
+        chmod($targetFolder, 0744);
 
         // Store in the database, that a file is extracted ;)
         $this->setVersionAsExtractedInDatabase($messageData->versionId);

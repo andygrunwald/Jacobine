@@ -146,8 +146,7 @@ class HTTP extends ConsumerAbstract
         }
 
         if (is_dir($targetDir) === false) {
-            // TODO What the fuck? Was i drunken?!
-            mkdir($targetDir, 0777, true);
+            mkdir($targetDir, 0744, true);
         }
 
         $downloadFile->rename($targetFile->getFile());

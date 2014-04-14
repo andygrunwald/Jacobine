@@ -238,8 +238,7 @@ class Git extends ConsumerAbstract
         ];
         $this->getLogger()->info('Checkout git repository', $context);
 
-        // TODO What the fuck? I have to be drunken. Fix this to a right chmod
-        mkdir($checkoutPath, 0777, true);
+        mkdir($checkoutPath, 0744, true);
 
         $repository = ProcessUtils::escapeArgument($repository);
         $checkoutPath = ProcessUtils::escapeArgument($checkoutPath);
