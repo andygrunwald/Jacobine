@@ -98,21 +98,20 @@ class Git extends ConsumerAbstract
 
         $gitExecutable = escapeshellcmd($config['Application']['Git']['Binary']);
 
+        $action = '';
         /** @var \Symfony\Component\Process\Process $process */
         if (is_dir($checkoutPath) === true && is_dir($gitDirInCheckoutPath) === true) {
+            $action = 'pull';
             list($process, $exception) = $this->executeGitUpdate($gitExecutable, $checkoutPath);
         } else {
+            $action = 'clone';
             list($process, $exception) = $this->executeGitClone($gitExecutable, $record['git'], $checkoutPath);
         }
 
         if ($exception !== null || $process->isSuccessful() === false) {
-            $cmdLine = (($process instanceof \Symfony\Component\Process\Process) ? $process->getCommandLine(): null);
-            $context = [
-                'command' => $cmdLine,
-                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
-                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
-            ];
-            $this->getLogger()->error('git clone / pull failed', $context);
+            $context = $this->getContextOfCommand($process, $exception);
+            $logMessage = sprintf('git %s failed', $action);
+            $this->getLogger()->error($logMessage, $context);
             $this->rejectMessage($this->getMessage());
             return;
         }

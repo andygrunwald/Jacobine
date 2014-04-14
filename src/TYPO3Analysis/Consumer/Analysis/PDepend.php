@@ -100,11 +100,7 @@ class PDepend extends ConsumerAbstract
         /** @var \Symfony\Component\Process\Process $process */
         list($process, $exception) = $this->executePDepend($dirToAnalyze, $analysisFiles);
         if ($exception !== null || $process->isSuccessful() === false) {
-            $context = array(
-                'command' => $process->getCommandLine(),
-                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
-                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
-            );
+            $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('pDepend command failed', $context);
             $this->rejectMessage($this->getMessage());
             return;

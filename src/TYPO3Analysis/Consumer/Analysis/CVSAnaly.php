@@ -90,14 +90,7 @@ class CVSAnaly extends ConsumerAbstract
         /** @var \Symfony\Component\Process\Process $process */
         list($process, $exception) = $this->executeCVSAnaly($messageData->checkoutDir, $messageData->project);
         if ($exception !== null || $process->isSuccessful() === false) {
-            $context = array(
-                'command' => $process->getCommandLine(),
-                'output' => $process->getOutput(),
-                'isSuccessful' => var_export($process->isSuccessful(), true),
-                'exitCode' => $process->getExitCode(),
-                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
-                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
-            );
+            $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('CVSAnaly command failed', $context);
             $this->rejectMessage($this->getMessage());
             return;

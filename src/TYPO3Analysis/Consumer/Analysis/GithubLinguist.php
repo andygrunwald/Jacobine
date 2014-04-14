@@ -96,12 +96,7 @@ class GithubLinguist extends ConsumerAbstract
         /** @var \Symfony\Component\Process\Process $process */
         list($process, $exception) = $this->executeGithubLinguist($messageData->directory);
         if ($exception !== null || $process->isSuccessful() === false) {
-            $context = array(
-                'command' => $process->getCommandLine(),
-                'output' => $process->getOutput(),
-                'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
-                'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
-            );
+            $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('github-linguist command failed', $context);
             $this->rejectMessage($this->getMessage());
             return;

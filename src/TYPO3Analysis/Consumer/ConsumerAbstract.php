@@ -369,4 +369,29 @@ abstract class ConsumerAbstract implements ConsumerInterface
 
         return $commandPart;
     }
+
+    /**
+     * Provides a context (e.g. for logging) of a executed command.
+     *
+     * @param \Symfony\Component\Process\Process $process
+     * @param \Exception $exception
+     * @return array
+     */
+    protected function getContextOfCommand(\Symfony\Component\Process\Process $process, \Exception $exception = null)
+    {
+        $command = (($process instanceof \Symfony\Component\Process\Process) ? $process->getCommandLine(): null);
+        $exceptionCode = (($exception instanceof \Exception) ? $exception->getCode(): 0);
+        $exceptionMessage = (($exception instanceof \Exception) ? $exception->getMessage(): '');
+
+        $context = [
+            'command' => $command,
+            'commandOutput' => $process->getOutput(),
+            'wasSuccessful' => var_export($process->isSuccessful(), true),
+            'exitCode' => $process->getExitCode(),
+            'exceptionCode' => $exceptionCode,
+            'exceptionMessage' => $exceptionMessage
+        ];
+
+        return $context;
+    }
 }
