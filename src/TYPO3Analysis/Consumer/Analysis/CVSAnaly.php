@@ -119,13 +119,10 @@ class CVSAnaly extends ConsumerAbstract
 
         $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
         $command .= ' --config-file ' . ProcessUtils::escapeArgument($configFile);
-        $command .= ' --db-driver ' . ProcessUtils::escapeArgument('mysql');
-        $command .= ' --db-hostname ' . ProcessUtils::escapeArgument($config['MySQL']['Host']);
         $command .= ' --db-user ' . ProcessUtils::escapeArgument($config['MySQL']['Username']);
         $command .= ' --db-password ' . ProcessUtils::escapeArgument($config['MySQL']['Password']);
         $command .= ' --db-database ' . ProcessUtils::escapeArgument($projectConfig['MySQL']['Database']);
         $command .= ' --extensions ' . ProcessUtils::escapeArgument($extensions);
-        $command .= ' --metrics-all';
         $command .= ' ' . ProcessUtils::escapeArgument($directory);
 
         return $command;

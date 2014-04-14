@@ -13,19 +13,18 @@ save_logfile = None
 
 # Writable path for CVSAnaly (e.g. cache, config, ...)
 writable_path = "/tmp"
-#writable_path = None
 
 ## Database parameters
-# db_driver = 'mysql'
+db_driver = 'mysql'
 # db_user = 'operator'
 # db_password = None
 # db_database = 'cvsanaly'
-# db_hostname = 'localhost'
+db_hostname = 'localhost'
 
 ## Extensions
 ## No extensions enable by default
 # extensions = ['Metrics', 'CommitsLOC']
 
 ## Metrics extension options
-# metrics_all = False
+metrics_all = True
 # metrics_noerr = False
