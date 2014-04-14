@@ -11,6 +11,10 @@ repo_logfile = None
 save_logfile = None
 #no_parse = False
 
+# Writable path for CVSAnaly (e.g. cache, config, ...)
+writable_path = "/tmp"
+#writable_path = None
+
 ## Database parameters
 # db_driver = 'mysql'
 # db_user = 'operator'
