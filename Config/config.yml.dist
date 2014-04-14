@@ -26,6 +26,9 @@ Logging:
         MinLogLevel: Error
 
 Application:
+  Tar:
+    Binary: /bin/tar
+    Timeout: 600
   Git:
     Binary: /usr/bin/git
   PHPLoc:

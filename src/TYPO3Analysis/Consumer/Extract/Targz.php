@@ -204,14 +204,17 @@ class Targz extends ConsumerAbstract
         );
         $this->getLogger()->info('Extracting file', $context);
 
+        $config = $this->getConfig();
+
         // We didnt use the \PharData class to decompress + extract, because
         // a) it is much more slower (performance) than a tar system call
         // b) it eats much more PHP memory which is not useful in a message based env
         $archive = ProcessUtils::escapeArgument($archive);
         $target = ProcessUtils::escapeArgument($target);
-        $command = 'tar -xzf ' . $archive . ' -C ' . $target;
+        $command = $config['Application']['Tar']['Binary'];
+        $command .= ' -xzf ' . $archive . ' -C ' . $target;
 
-        $timeout = 600; // Timeout of 10 minutes
+        $timeout = (int) $config['Application']['Tar']['Timeout'];
         $processFactory = new ProcessFactory();
         $process = $processFactory->createProcess($command, $timeout);
 
