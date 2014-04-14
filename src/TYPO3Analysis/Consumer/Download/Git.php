@@ -169,8 +169,9 @@ class Git extends ConsumerAbstract
             $commandReturn = $this->executeGitCommand($command, $checkoutPath);
 
         } else {
-            $logMessage = 'No "master" branch detected';
-            $this->getLogger()->info($logMessage, $context);
+            $logMessage = 'No "master" branch detected (checkout path "%s")';
+            $logMessage = sprintf($logMessage, $checkoutPath);
+            $this->getLogger()->error($logMessage, $context);
             $commandReturn = [
                 null,
                 new \RuntimeException($logMessage, 1396805966)
