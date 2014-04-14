@@ -356,21 +356,6 @@ abstract class ConsumerAbstract implements ConsumerInterface
     }
 
     /**
-     * Builds the command part to execute the command with the same user
-     * as this script
-     *
-     * @return string
-     */
-    protected function getUserCommandPart()
-    {
-        $userInformation = posix_getpwuid(posix_geteuid());
-        $username = $userInformation['name'];
-        $commandPart = 'sudo -u ' . escapeshellarg($username);
-
-        return $commandPart;
-    }
-
-    /**
      * Provides a context (e.g. for logging) of a executed command.
      *
      * @param \Symfony\Component\Process\Process $process

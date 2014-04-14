@@ -174,9 +174,6 @@ class CVSAnaly extends ConsumerAbstract
 
         $extensions = $this->getCVSAnalyExtensions();
         $command = $this->buildCVSAnalyCommand($this->getConfig(), $project, $checkoutDir, $extensions);
-        // TODO Very evil part of source code ... sudo command. We have to get rid of it!
-        // To reach this goal we have to refactor CVSAnaly a little bit :(
-        //$command = $this->getUserCommandPart() . ' ' . $command;
 
         $processFactory = new ProcessFactory();
         $process = $processFactory->createProcess($command, null);
