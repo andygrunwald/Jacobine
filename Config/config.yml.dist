@@ -64,3 +64,7 @@ Projects:
       ConfigFile: cvsanaly-config
     NNTP:
       Host: lists.typo3.org
+    Consumer:
+      Download\HTTP:
+        DownloadPrefix: typo3_
+        DownloadPostfix: .tar.gz
