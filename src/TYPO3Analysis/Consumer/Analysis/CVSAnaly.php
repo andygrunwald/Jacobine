@@ -93,6 +93,8 @@ class CVSAnaly extends ConsumerAbstract
             $context = array(
                 'command' => $process->getCommandLine(),
                 'output' => $process->getOutput(),
+                'isSuccessful' => var_export($process->isSuccessful(), true),
+                'exitCode' => $process->getExitCode(),
                 'code' => (($exception instanceof \Exception) ? $exception->getCode(): 0),
                 'message' => (($exception instanceof \Exception) ? $exception->getMessage(): '')
             );
