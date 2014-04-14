@@ -31,6 +31,7 @@ Application:
   PHPLoc:
     Binary: /var/www/analysis/vendor/phploc/phploc/composer/bin/phploc
     FilePattern: "*.php,*.inc"
+    Timeout: 1200
   PDepend:
     Binary: /var/www/analysis/vendor/pdepend/pdepend/src/bin/pdepend
     FilePattern: "php,inc"
