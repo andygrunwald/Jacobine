@@ -93,7 +93,7 @@ class PHPLoc extends ConsumerAbstract
         }
 
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception, $xmlFile) = $this->executePHPLoc($messageData->directory);
+        list($process, $exception) = $this->executePHPLoc($messageData->directory);
         if ($exception !== null || $process->isSuccessful() === false) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('PHPLoc command failed', $context);
@@ -101,14 +101,16 @@ class PHPLoc extends ConsumerAbstract
             return;
         }
 
-        if (file_exists($xmlFile) === false) {
-            $this->getLogger()->critical('phploc result file does not exist!', array('file' => $xmlFile));
+        $xmlOutput = $process->getOutput();
+        if (empty($xmlOutput) === true) {
+            $context = ['commandLine' => $process->getCommandLine()];
+            $this->getLogger()->critical('phploc does not returned a result', $context);
             $this->rejectMessage($message);
             return;
         }
 
         // Get PHPLoc results and save them
-        $phpLocResults = simplexml_load_file($xmlFile);
+        $phpLocResults = simplexml_load_string($xmlOutput);
         $this->storePhpLocDataInDatabase($messageData->versionId, $phpLocResults->children());
 
         $this->acknowledgeMessage($message);
@@ -259,21 +261,18 @@ class PHPLoc extends ConsumerAbstract
     private function executePHPLoc($dirToAnalyze)
     {
         $dirToAnalyze = rtrim($dirToAnalyze, DIRECTORY_SEPARATOR);
-        $pathParts = explode(DIRECTORY_SEPARATOR, $dirToAnalyze);
-        $dirName = array_pop($pathParts);
-        $xmlFile = 'phploc-' . $dirName . '.xml';
-        $xmlFile = implode(DIRECTORY_SEPARATOR, $pathParts) . DIRECTORY_SEPARATOR . $xmlFile;
+        $xmlOutput = 'php://stdout';
 
         $config = $this->getConfig();
         $filePattern = $config['Application']['PHPLoc']['FilePattern'];
 
         $filePattern = ProcessUtils::escapeArgument($filePattern);
-        $escapedXmlFile = ProcessUtils::escapeArgument($xmlFile);
+        $xmlOutput = ProcessUtils::escapeArgument($xmlOutput);
         $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze . DIRECTORY_SEPARATOR);
 
         $command = $config['Application']['PHPLoc']['Binary'];
-        $command .= ' --count-tests --names ' . $filePattern;
-        $command .= ' --log-xml ' . $escapedXmlFile . ' ' . $dirToAnalyze;
+        $command .= ' --count-tests --quiet --names ' . $filePattern;
+        $command .= ' --log-xml ' . $xmlOutput . ' ' . $dirToAnalyze;
 
         $this->getLogger()->info('Start analyzing with PHPLoc', array('directory' => $dirToAnalyze));
 
@@ -289,6 +288,6 @@ class PHPLoc extends ConsumerAbstract
             // We check not only the exception. We use the result command of the process as well
         }
 
-        return [$process, $exception, $xmlFile];
+        return [$process, $exception];
     }
 }
