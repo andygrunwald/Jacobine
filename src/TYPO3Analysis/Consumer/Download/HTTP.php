@@ -121,10 +121,9 @@ class HTTP extends ConsumerAbstract
 
         $context = array(
             'downloadUrl' => $record['url_tar'],
-            'targetFile' => $downloadFile->getFile()
+            'targetDownloadFile' => $downloadFile->getFile()
         );
         $this->getLogger()->info('Starting download', $context);
-
 
         $downloadResult = $downloadFile->download($record['url_tar'], $config['Various']['Downloads']['Timeout']);
         if (!$downloadResult) {
@@ -149,7 +148,18 @@ class HTTP extends ConsumerAbstract
             mkdir($targetDir, 0744, true);
         }
 
-        $downloadFile->rename($targetFile->getFile());
+        $context = array(
+            'oldFile' => $downloadFile->getFile(),
+            'newFile' => $targetFile->getFile()
+        );
+        $this->getLogger()->info('Rename downloaded file', $context);
+        $renameResult = $downloadFile->rename($targetFile->getFile());
+
+        if ($renameResult !== true) {
+            $this->getLogger()->critical('Rename operation failed. Rights issue?', $context);
+            $this->rejectMessage($this->getMessage());
+            return;
+        }
 
         // If the hashes are not equal, exit here
         $md5Hash = $downloadFile->getMd5OfFile();
