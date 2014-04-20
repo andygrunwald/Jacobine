@@ -98,7 +98,6 @@ class Git extends ConsumerAbstract
 
         $gitExecutable = escapeshellcmd($config['Application']['Git']['Binary']);
 
-        $action = '';
         /** @var \Symfony\Component\Process\Process $process */
         if (is_dir($checkoutPath) === true && is_dir($gitDirInCheckoutPath) === true) {
             $action = 'pull';
