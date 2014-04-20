@@ -103,6 +103,8 @@ class GithubLinguist extends ConsumerAbstract
         }
 
         $output = $process->getOutput();
+        $output = trim($output);
+        $output = explode(chr(10), $output);
 
         if ($output === []) {
             $msg = 'github-linguist returns no result';
