@@ -10,6 +10,8 @@
 
 namespace TYPO3Analysis\Tests\Consumer;
 
+use \TYPO3Analysis\Tests\Fixtures\MessageQueueOptions;
+
 /**
  * Class ConsumerTestAbstract
  *
@@ -37,7 +39,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
      */
     protected function getMessageQueueMock($defaultOptionsCall = 1)
     {
-        $messageQueueOptions = new \TYPO3Analysis\Tests\Fixtures\MessageQueueOptions();
+        $messageQueueOptions = new MessageQueueOptions();
 
         $amqpConnectionMock = $this->getMock('\PhpAmqpLib\Connection\AMQPConnection', [], [], '', false);
         $amqpFactoryMock = $this->getMock('\TYPO3Analysis\Helper\AMQPFactory', ['createMessage']);
