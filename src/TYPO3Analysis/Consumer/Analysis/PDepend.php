@@ -98,7 +98,7 @@ class PDepend extends ConsumerAbstract
         }
 
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->executePDepend($dirToAnalyze, $analysisFiles);
+        list($process, $exception) = $this->executePDepend($dirToAnalyze, $analysisFiles, $messageData->project);
         if ($exception !== null || $process->isSuccessful() === false) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('pDepend command failed', $context);
@@ -185,14 +185,19 @@ class PDepend extends ConsumerAbstract
      *
      * @param string $dirToAnalyze Directory which should be analyzed by pDepend
      * @param array $analysisFiles
+     * @param string $project
      * @return array [
      *                  0 => Symfony Process object,
      *                  1 => Exception if one was thrown otherwise null
      *               ]
      */
-    private function executePDepend($dirToAnalyze, array $analysisFiles)
+    private function executePDepend($dirToAnalyze, array $analysisFiles, $project)
     {
         $config = $this->getConfig();
+        $projectConfig = $config['Projects'][$project];
+        $configFile  = rtrim(dirname(CONFIG_FILE), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $configFile .= $projectConfig['PDepend']['ConfigFile'];
+
         $filePattern = $config['Application']['PDepend']['FilePattern'];
         $filePattern = ProcessUtils::escapeArgument($filePattern);
 
@@ -200,11 +205,13 @@ class PDepend extends ConsumerAbstract
         $analysisFiles['jDependXmlFile'] = ProcessUtils::escapeArgument($analysisFiles['jDependXmlFile']);
         $analysisFiles['overviewPyramidFile'] = ProcessUtils::escapeArgument($analysisFiles['overviewPyramidFile']);
         $analysisFiles['summaryXmlFile'] = ProcessUtils::escapeArgument($analysisFiles['summaryXmlFile']);
+        $pDependConfigFile = ProcessUtils::escapeArgument($configFile);
 
         $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze . DIRECTORY_SEPARATOR);
 
         // Execute pDepend
         $command = $config['Application']['PDepend']['Binary'];
+        $command .= ' --configuration=' . $pDependConfigFile;
         $command .= ' --jdepend-chart=' . $analysisFiles['jDependChartFile'];
         $command .= ' --jdepend-xml=' . $analysisFiles['jDependXmlFile'];
         $command .= ' --overview-pyramid=' . $analysisFiles['overviewPyramidFile'];
