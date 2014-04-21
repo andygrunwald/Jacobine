@@ -40,7 +40,7 @@
         "symfony/process": "2.4.*",
         "phploc/phploc": "2.0.*",
         "pdepend/pdepend": "1.1.*",
-        "monolog/monolog": "1.8.*",
+        "monolog/monolog": "1.9.*",
         "andygrunwald/gerrie": "dev-master",
         "pear-pear.php.net/Net_NNTP": "*"
     },
