@@ -41,7 +41,7 @@
         "phploc/phploc": "2.0.*",
         "pdepend/pdepend": "1.1.*",
         "monolog/monolog": "1.9.*",
-        "andygrunwald/gerrie": "dev-master",
+        "andygrunwald/gerrie": "v0.0.1",
         "pear-pear.php.net/Net_NNTP": "*"
     },
     "require-dev": {

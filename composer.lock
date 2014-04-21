@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "52f59345484fbd2900f90f8db85cae04",
+    "hash": "f15487e63e05ed715881a75461a1a8f5",
     "packages": [
         {
             "name": "andygrunwald/gerrie",
-            "version": "dev-master",
+            "version": "v0.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/andygrunwald/Gerrie.git",
-                "reference": "771b0b2ecace7816f6e13870cc1299af03124e26"
+                "reference": "6304bdd76f0901a948e17fa522b33230bf9e0f10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/771b0b2ecace7816f6e13870cc1299af03124e26",
-                "reference": "771b0b2ecace7816f6e13870cc1299af03124e26",
+                "url": "https://api.github.com/repos/andygrunwald/Gerrie/zipball/6304bdd76f0901a948e17fa522b33230bf9e0f10",
+                "reference": "6304bdd76f0901a948e17fa522b33230bf9e0f10",
                 "shasum": ""
             },
             "require": {
@@ -52,9 +52,9 @@
             ],
             "support": {
                 "issues": "https://github.com/andygrunwald/Gerrie/issues",
-                "source": "https://github.com/andygrunwald/Gerrie/tree/master"
+                "source": "https://github.com/andygrunwald/Gerrie/tree/v0.0.1"
             },
-            "time": "2014-03-06 13:01:39"
+            "time": "2013-12-27 18:30:28"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -1611,9 +1611,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "andygrunwald/gerrie": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": {
         "php": ">=5.4.0",
         "ext-curl": "*"
