@@ -1,15 +1,15 @@
-# TYPO3-Analytics 
+# Jacobine
 
 [![Build Status](https://travis-ci.org/andygrunwald/TYPO3-Analytics.png?branch=master)](https://travis-ci.org/andygrunwald/TYPO3-Analytics)
 [![Dependency Status](https://www.versioneye.com/user/projects/52ff3ba2ec1375bab100022a/badge.png)](https://www.versioneye.com/user/projects/52ff3ba2ec1375bab100022a)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/badges/quality-score.png?s=fa5eb02b03f8c63636e620caf8734c187769e3e2)](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/)
 [![Code Coverage](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/badges/coverage.png?s=10a00adba7915f1687f28cbdbcb77e97f90a96ae)](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/) 
 
-TYPO3-Analytics aims to take many different analysis on the [TYPO3](http://typo3org/) open source CMS and the community.
+Jacobine aims to take many different analysis on open source projects (source code, ecosystem and community).
 Analysis can be the size of the different versions in MB, the most active contributers, the atmosphere / mood of the communication in the community (e.g. twitter) or to combine many data sources to answer questions like "At which point in time is the most activity for contribution?" (just an example).
 
 All necessary application and library stack is bundled into a easy to use virtual machine.
-You can find the complete setup in the [vagrant setup repository](https://github.com/andygrunwald/TYPO3-Analytics-Vagrant).
+You can find the complete setup in the [vagrant setup repository](https://github.com/andygrunwald/Jacobine-Vagrant).
 
 *ATTENTION*:
 This project is highly under development and can be completely change during development.
@@ -54,7 +54,7 @@ To list all available consumers execute `php console analysis:list-consumer`.
 
 ## Contributing + Usage
 
-* Fork and clone it (`git clone https://github.com/andygrunwald/TYPO3-Analytics.git`)
+* Fork and clone it (`git clone https://github.com/andygrunwald/Jacobine.git`)
 * Create your feature branch (`git checkout -b my-new-feature`)
 * Make your changes (hack hack hack)
 * Commit your changes (`git commit -am 'Add some feature'`)
@@ -78,4 +78,4 @@ This project is released under the terms of the [MIT license](http://en.wikipedi
 
 If you got *any kind of* questions, feedback or want to drink a beer and talk about this project just contact me.
 Write me an email (written on my [Github-profile](https://github.com/andygrunwald)) or tweet me: [@andygrunwald](http://twitter.com/andygrunwald).
-And of course you can just [open an issue](https://github.com/andygrunwald/TYPO3-Analytics-Vagrant/issues) here at github.
+And of course you can just [open an issue](https://github.com/andygrunwald/Jacobine-Vagrant/issues) here at github.
