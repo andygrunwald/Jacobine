@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the TYPO3-Analytics package.
+ * This file is part of the Jacobine package.
  *
  * (c) Andreas Grunwald <andygrunwald@gmail.com>
  *
