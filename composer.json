@@ -1,8 +1,8 @@
 {
-    "name": "andygrunwald/TYPO3-Analytics",
+    "name": "andygrunwald/Jacobine",
     "description": "Base package for a big and awesome analysis suite to crawl and analyse various data of software development.",
     "keywords": ["analysis", "software repository mining", "data mining", "messaging", "knowledge"],
-    "homepage": "https://github.com/andygrunwald/TYPO3-Analytics",
+    "homepage": "https://github.com/andygrunwald/Jacobine",
     "type": "project",
     "license": "MIT",
     "authors": [
@@ -14,8 +14,8 @@
     ],
     "support": {
         "email": "andygrunwald@gmail.com",
-        "issues": "https://github.com/andygrunwald/TYPO3-Analytics/issues",
-        "source": "https://github.com/andygrunwald/TYPO3-Analytics.git"
+        "issues": "https://github.com/andygrunwald/Jacobine/issues",
+        "source": "https://github.com/andygrunwald/Jacobine.git"
     },
     "repositories": [
         {
