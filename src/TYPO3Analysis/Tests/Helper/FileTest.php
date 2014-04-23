@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Helper;
+namespace Jacobine\Tests\Helper;
 
 use org\bovigo\vfs\vfsStream;
-use TYPO3Analysis\Helper\File;
+use Jacobine\Helper\File;
 
 /**
  * Class FileTest
  *
  * Unit test class for \TYPO3Analysis\Helper\File
  *
- * @package TYPO3Analysis\Tests\Helper
+ * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class FileTest extends \PHPUnit_Framework_TestCase

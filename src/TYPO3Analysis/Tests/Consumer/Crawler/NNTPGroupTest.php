@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Consumer\Crawler;
+namespace Jacobine\Tests\Consumer\Crawler;
 
-use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
-use TYPO3Analysis\Consumer\Crawler\NNTPGroup;
+use Jacobine\Tests\Consumer\ConsumerTestAbstract;
+use Jacobine\Consumer\Crawler\NNTPGroup;
 
 /**
  * Class NNTPGroupTest
  *
  * Unit test class for \TYPO3Analysis\Consumer\Crawler\NNTPGroup
  *
- * @package TYPO3Analysis\Tests\Consumer\Crawler
+ * @package Jacobine\Tests\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class NNTPGroupTest extends ConsumerTestAbstract

@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Consumer\Extract;
+namespace Jacobine\Tests\Consumer\Extract;
 
-use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
-use TYPO3Analysis\Consumer\Extract\Targz;
+use Jacobine\Tests\Consumer\ConsumerTestAbstract;
+use Jacobine\Consumer\Extract\Targz;
 
 /**
  * Class TargzTest
  *
  * Unit test class for \TYPO3Analysis\Consumer\Extract\Targz
  *
- * @package TYPO3Analysis\Tests\Consumer\Extract
+ * @package Jacobine\Tests\Consumer\Extract
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class TargzTest extends ConsumerTestAbstract

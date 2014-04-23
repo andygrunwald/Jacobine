@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Consumer\Crawler;
+namespace Jacobine\Consumer\Crawler;
 
 use Symfony\Component\DomCrawler\Crawler;
-use TYPO3Analysis\Consumer\ConsumerAbstract;
+use Jacobine\Consumer\ConsumerAbstract;
 
 /**
  * Class Gitweb
@@ -29,7 +29,7 @@ use TYPO3Analysis\Consumer\ConsumerAbstract;
  * Usage:
  *  php console analysis:consumer Crawler\\Gitweb
  *
- * @package TYPO3Analysis\Consumer\Crawler
+ * @package Jacobine\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class Gitweb extends ConsumerAbstract

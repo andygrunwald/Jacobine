@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Consumer\Analysis;
+namespace Jacobine\Consumer\Analysis;
 
-use TYPO3Analysis\Consumer\ConsumerAbstract;
-use TYPO3Analysis\Helper\ProcessFactory;
+use Jacobine\Consumer\ConsumerAbstract;
+use Jacobine\Helper\ProcessFactory;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -35,7 +35,7 @@ use Symfony\Component\Process\ProcessUtils;
  * Usage:
  *  php console analysis:consumer Analysis\\CVSAnaly
  *
- * @package TYPO3Analysis\Consumer\Analysis
+ * @package Jacobine\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class CVSAnaly extends ConsumerAbstract

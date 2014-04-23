@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Consumer\Crawler;
+namespace Jacobine\Consumer\Crawler;
 
-use TYPO3Analysis\Consumer\ConsumerAbstract;
+use Jacobine\Consumer\ConsumerAbstract;
 
 /**
  * Class NNTPGroup
@@ -40,7 +40,7 @@ use TYPO3Analysis\Consumer\ConsumerAbstract;
  * Usage:
  *  php console analysis:consumer Crawler\\NNTPGroup
  *
- * @package TYPO3Analysis\Consumer\Crawler
+ * @package Jacobine\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>
  * @link https://github.com/dkd/solrnntp/blob/master/scheduler/class.tx_solrnntp_scheduler_indextask.php
  */

@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Monolog\Handler;
+namespace Jacobine\Tests\Monolog\Handler;
 
-use TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler;
+use Jacobine\Monolog\Handler\SymfonyConsoleHandler;
 use Monolog\Logger;
 
 /**
@@ -18,7 +18,7 @@ use Monolog\Logger;
  *
  * Unit test class for \TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler
  *
- * @package TYPO3Analysis\Tests\Monolog\Handler
+ * @package Jacobine\Tests\Monolog\Handler
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase

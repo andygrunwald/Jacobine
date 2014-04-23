@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Consumer;
+namespace Jacobine\Consumer;
 
 /**
  * Class ConsumerAbstract
@@ -16,7 +16,7 @@ namespace TYPO3Analysis\Consumer;
  * Base implementation to fit the ConsumerInterface.
  * In general many setter, getter and basic message handling like acknowledgement are implemented.
  *
- * @package TYPO3Analysis\Consumer
+ * @package Jacobine\Consumer
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 abstract class ConsumerAbstract implements ConsumerInterface

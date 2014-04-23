@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Consumer\Download;
+namespace Jacobine\Tests\Consumer\Download;
 
-use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
-use TYPO3Analysis\Consumer\Download\Git;
+use Jacobine\Tests\Consumer\ConsumerTestAbstract;
+use Jacobine\Consumer\Download\Git;
 
 /**
  * Class GitTest
  *
  * Unit test class for \TYPO3Analysis\Consumer\Download\Git
  *
- * @package TYPO3Analysis\Tests\Consumer\Download
+ * @package Jacobine\Tests\Consumer\Download
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class GitTest extends ConsumerTestAbstract

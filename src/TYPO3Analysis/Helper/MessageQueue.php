@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Helper;
+namespace Jacobine\Helper;
 
 /**
  * Class MessageQueue
@@ -18,7 +18,7 @@ namespace TYPO3Analysis\Helper;
  * But in the normal case we use RabbitMQ.
  * This class offers exchange, queue, binding, channel and message handling.
  *
- * @package TYPO3Analysis\Helper
+ * @package Jacobine\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class MessageQueue

@@ -8,15 +8,15 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Command;
+namespace Jacobine\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3Analysis\Helper\AMQPFactory;
-use TYPO3Analysis\Helper\MessageQueue;
+use Jacobine\Helper\AMQPFactory;
+use Jacobine\Helper\MessageQueue;
 
 /**
  * Class GerritCommand
@@ -37,7 +37,7 @@ use TYPO3Analysis\Helper\MessageQueue;
  * e.g. to start crawling of the TYPO3 Gerrit server
  *  php console crawler:gerrit --project=TYPO3
  *
- * @package TYPO3Analysis\Command
+ * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class GerritCommand extends Command

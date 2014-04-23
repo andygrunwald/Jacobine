@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Fixtures;
+namespace Jacobine\Tests\Fixtures;
 
 /**
  * Class MessageQueueOptions
  *
  * Fixture class to provide default options of \TYPO3Analysis\Helper\MessageQueue
  *
- * @package TYPO3Analysis\Tests\Fixtures
+ * @package Jacobine\Tests\Fixtures
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 

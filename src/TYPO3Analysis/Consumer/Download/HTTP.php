@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Consumer\Download;
+namespace Jacobine\Consumer\Download;
 
-use TYPO3Analysis\Consumer\ConsumerAbstract;
-use TYPO3Analysis\Helper\File;
+use Jacobine\Consumer\ConsumerAbstract;
+use Jacobine\Helper\File;
 
 /**
  * Class HTTP
@@ -31,7 +31,7 @@ use TYPO3Analysis\Helper\File;
  * Usage:
  *  php console analysis:consumer Download\\HTTP
  *
- * @package TYPO3Analysis\Consumer\Download
+ * @package Jacobine\Consumer\Download
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class HTTP extends ConsumerAbstract

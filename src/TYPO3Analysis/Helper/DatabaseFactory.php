@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Helper;
+namespace Jacobine\Helper;
 
 /**
  * Class DatabaseFactory
@@ -18,7 +18,7 @@ namespace TYPO3Analysis\Helper;
  * This is necessary, because we need to be able to reconnect every time.
  * During runtime this factory will be used to create new database connections.
  *
- * @package TYPO3Analysis\Helper
+ * @package Jacobine\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class DatabaseFactory

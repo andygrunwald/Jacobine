@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Consumer;
+namespace Jacobine\Tests\Consumer;
 
 use \TYPO3Analysis\Tests\Fixtures\MessageQueueOptions;
 
@@ -20,7 +20,7 @@ use \TYPO3Analysis\Tests\Fixtures\MessageQueueOptions;
  * They just initialize the consumer.
  * Due to the inheritance all tests in this class will be executed for every consumer.
  *
- * @package TYPO3Analysis\Tests\Consumer
+ * @package Jacobine\Tests\Consumer
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase

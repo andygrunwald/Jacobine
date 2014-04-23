@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Consumer;
+namespace Jacobine\Consumer;
 
 /**
  * Interface ConsumerInterface
@@ -17,7 +17,7 @@ namespace TYPO3Analysis\Consumer;
  * Every consumer must implement this interface.
  * With this it is possible to start this consumer via our consumer command `php console analysis:consumer CONSUMERNAME`
  *
- * @package TYPO3Analysis\Consumer
+ * @package Jacobine\Consumer
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 interface ConsumerInterface

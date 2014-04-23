@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Helper;
+namespace Jacobine\Helper;
 
 /**
  * Class File
@@ -19,7 +19,7 @@ namespace TYPO3Analysis\Helper;
  * TODO Implement symfony filesystem component
  * @link https://github.com/symfony/Filesystem
  *
- * @package TYPO3Analysis\Helper
+ * @package Jacobine\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class File

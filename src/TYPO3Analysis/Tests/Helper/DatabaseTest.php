@@ -8,18 +8,18 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Helper;
+namespace Jacobine\Tests\Helper;
 
 use PHPUnit_Extensions_Database_DataSet_IDataSet;
 use PHPUnit_Extensions_Database_DB_IDatabaseConnection;
-use TYPO3Analysis\Helper\Database;
+use Jacobine\Helper\Database;
 
 /**
  * Class DatabaseTest
  *
  * Unit test class for \TYPO3Analysis\Helper\Database
  *
- * @package TYPO3Analysis\Tests\Helper
+ * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase

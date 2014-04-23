@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Consumer\Download;
+namespace Jacobine\Tests\Consumer\Download;
 
-use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
-use TYPO3Analysis\Consumer\Download\HTTP;
+use Jacobine\Tests\Consumer\ConsumerTestAbstract;
+use Jacobine\Consumer\Download\HTTP;
 
 /**
  * Class HTTPTest
  *
  * Unit test class \TYPO3Analysis\Consumer\Download\HTTP
  *
- * @package TYPO3Analysis\Tests\Consumer\Download
+ * @package Jacobine\Tests\Consumer\Download
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class HTTPTest extends ConsumerTestAbstract

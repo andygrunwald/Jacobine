@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Consumer\Analysis;
+namespace Jacobine\Tests\Consumer\Analysis;
 
-use TYPO3Analysis\Tests\Consumer\ConsumerTestAbstract;
-use TYPO3Analysis\Consumer\Analysis\PHPLoc;
+use Jacobine\Tests\Consumer\ConsumerTestAbstract;
+use Jacobine\Consumer\Analysis\PHPLoc;
 
 /**
  * Class PHPLocTest
  *
  * Unit test class for \TYPO3Analysis\Consumer\Analysis\PHPLoc
  *
- * @package TYPO3Analysis\Tests\Consumer\Analysis
+ * @package Jacobine\Tests\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class PHPLocTest extends ConsumerTestAbstract

@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Helper;
+namespace Jacobine\Tests\Helper;
 
-use TYPO3Analysis\Helper\DatabaseFactory;
+use Jacobine\Helper\DatabaseFactory;
 
 /**
  * Class DatabaseFactoryTest
  *
  * Unit test class for \TYPO3Analysis\Helper\DatabaseFactory
  *
- * @package TYPO3Analysis\Tests\Helper
+ * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class DatabaseFactoryTest extends \PHPUnit_Framework_TestCase

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Command;
+namespace Jacobine\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -32,7 +32,7 @@ use Symfony\Component\Yaml\Yaml;
  * Usage:
  *  php console analysis:list-projects
  *
- * @package TYPO3Analysis\Command
+ * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class ListProjectsCommand extends Command

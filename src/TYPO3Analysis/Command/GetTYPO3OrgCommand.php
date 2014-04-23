@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Command;
+namespace Jacobine\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3Analysis\Helper\AMQPFactory;
-use TYPO3Analysis\Helper\Database;
-use TYPO3Analysis\Helper\DatabaseFactory;
-use TYPO3Analysis\Helper\MessageQueue;
+use Jacobine\Helper\AMQPFactory;
+use Jacobine\Helper\Database;
+use Jacobine\Helper\DatabaseFactory;
+use Jacobine\Helper\MessageQueue;
 
 /**
  * Class GetTYPO3OrgCommand
@@ -32,7 +32,7 @@ use TYPO3Analysis\Helper\MessageQueue;
  * Usage:
  *  php console typo3:get.typo3.org
  *
- * @package TYPO3Analysis\Command
+ * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class GetTYPO3OrgCommand extends Command

@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Consumer\Extract;
+namespace Jacobine\Consumer\Extract;
 
-use TYPO3Analysis\Consumer\ConsumerAbstract;
-use TYPO3Analysis\Helper\ProcessFactory;
+use Jacobine\Consumer\ConsumerAbstract;
+use Jacobine\Helper\ProcessFactory;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -28,7 +28,7 @@ use Symfony\Component\Process\ProcessUtils;
  * Usage:
  *  php console analysis:consumer Extract\\Targz
  *
- * @package TYPO3Analysis\Consumer\Extract
+ * @package Jacobine\Consumer\Extract
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class Targz extends ConsumerAbstract

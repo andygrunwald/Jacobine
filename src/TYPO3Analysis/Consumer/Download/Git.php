@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Consumer\Download;
+namespace Jacobine\Consumer\Download;
 
-use TYPO3Analysis\Consumer\ConsumerAbstract;
-use TYPO3Analysis\Helper\ProcessFactory;
+use Jacobine\Consumer\ConsumerAbstract;
+use Jacobine\Helper\ProcessFactory;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -30,7 +30,7 @@ use Symfony\Component\Process\ProcessUtils;
  * Usage:
  *  php console analysis:consumer Download\\Git
  *
- * @package TYPO3Analysis\Consumer\Download
+ * @package Jacobine\Consumer\Download
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class Git extends ConsumerAbstract

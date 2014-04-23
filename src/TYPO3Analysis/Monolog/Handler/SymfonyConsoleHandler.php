@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Monolog\Handler;
+namespace Jacobine\Monolog\Handler;
 
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
@@ -27,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @link https://github.com/Seldaek/monolog/pull/156
  *
- * @package TYPO3Analysis\Monolog\Handler
+ * @package Jacobine\Monolog\Handler
  * @author Andy Grunwald <andygrunwald@gmail.com>
  * @author Vitaliy Zhukv <zhuk2205@gmail.com>
  */

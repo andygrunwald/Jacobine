@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Command;
+namespace Jacobine\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,12 +22,12 @@ use Symfony\Component\Finder\Finder;
  * This command does not execute something. It will only output a list of usable consumer.
  *
  * A consumer must be a file in directory TYPO3Analysis/Consumer.
- * Further more a consumer must extend the TYPO3Analysis\Consumer\ConsumerAbstract class.
+ * Further more a consumer must extend the Jacobine\Consumer\ConsumerAbstract class.
  *
  * Usage:
  *  php console analysis:list-consumer
  *
- * @package TYPO3Analysis\Command
+ * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class ListConsumerCommand extends Command

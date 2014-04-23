@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Helper;
+namespace Jacobine\Helper;
 
 use \Symfony\Component\Process\Process;
 
@@ -18,7 +18,7 @@ use \Symfony\Component\Process\Process;
  * Factory to create a new system process (like calls with "system", "exec", ...).
  * This factory is used in many commands like CVSAnaly or GithubLinguist.
  *
- * @package TYPO3Analysis\Helper
+ * @package Jacobine\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class ProcessFactory

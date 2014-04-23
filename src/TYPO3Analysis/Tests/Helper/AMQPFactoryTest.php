@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Tests\Helper;
+namespace Jacobine\Tests\Helper;
 
-use TYPO3Analysis\Helper\AMQPFactory;
+use Jacobine\Helper\AMQPFactory;
 
 /**
  * Class AMQPFactoryTest
  *
  * Unit test class for \TYPO3Analysis\Helper\AMQPFactory
  *
- * @package TYPO3Analysis\Tests\Helper
+ * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class AMQPFactoryTest extends \PHPUnit_Framework_TestCase

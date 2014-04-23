@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Command;
+namespace Jacobine\Command;
 
 use Monolog\Logger;
 use Monolog\Processor\MemoryPeakUsageProcessor;
@@ -20,11 +20,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
-use TYPO3Analysis\Helper\AMQPFactory;
-use TYPO3Analysis\Helper\Database;
-use TYPO3Analysis\Helper\DatabaseFactory;
-use TYPO3Analysis\Helper\MessageQueue;
-use TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler;
+use Jacobine\Helper\AMQPFactory;
+use Jacobine\Helper\Database;
+use Jacobine\Helper\DatabaseFactory;
+use Jacobine\Helper\MessageQueue;
+use Jacobine\Monolog\Handler\SymfonyConsoleHandler;
 
 /**
  * Class ConsumerCommand
@@ -41,7 +41,7 @@ use TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler;
  * e.g. to start the Download HTTP consumer
  *  php console analysis:consumer Download\\HTTP --project=TYPO3
  *
- * @package TYPO3Analysis\Command
+ * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class ConsumerCommand extends Command

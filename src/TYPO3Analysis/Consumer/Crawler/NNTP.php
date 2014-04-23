@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Consumer\Crawler;
+namespace Jacobine\Consumer\Crawler;
 
-use TYPO3Analysis\Consumer\ConsumerAbstract;
+use Jacobine\Consumer\ConsumerAbstract;
 
 /**
  * Class NNTP
@@ -35,7 +35,7 @@ use TYPO3Analysis\Consumer\ConsumerAbstract;
  * Usage:
  *  php console analysis:consumer Crawler\\NNTP
  *
- * @package TYPO3Analysis\Consumer\Crawler
+ * @package Jacobine\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class NNTP extends ConsumerAbstract

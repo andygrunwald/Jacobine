@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace TYPO3Analysis\Helper;
+namespace Jacobine\Helper;
 
 /**
  * Class Database
@@ -18,7 +18,7 @@ namespace TYPO3Analysis\Helper;
  * This class offers the basic abstraction for select, insert, update and delete statements.
  * All statements are executed via PreparedStatements to avoid possible sql injections.
  *
- * @package TYPO3Analysis\Helper
+ * @package Jacobine\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class Database
