@@ -16,7 +16,7 @@ use Jacobine\Consumer\Download\HTTP;
 /**
  * Class HTTPTest
  *
- * Unit test class \TYPO3Analysis\Consumer\Download\HTTP
+ * Unit test class \Jacobine\Consumer\Download\HTTP
  *
  * @package Jacobine\Tests\Consumer\Download
  * @author Andy Grunwald <andygrunwald@gmail.com>

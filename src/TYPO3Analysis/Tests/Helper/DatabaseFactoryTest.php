@@ -15,7 +15,7 @@ use Jacobine\Helper\DatabaseFactory;
 /**
  * Class DatabaseFactoryTest
  *
- * Unit test class for \TYPO3Analysis\Helper\DatabaseFactory
+ * Unit test class for \Jacobine\Helper\DatabaseFactory
  *
  * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>

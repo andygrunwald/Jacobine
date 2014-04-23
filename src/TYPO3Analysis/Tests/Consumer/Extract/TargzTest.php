@@ -16,7 +16,7 @@ use Jacobine\Consumer\Extract\Targz;
 /**
  * Class TargzTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Extract\Targz
+ * Unit test class for \Jacobine\Consumer\Extract\Targz
  *
  * @package Jacobine\Tests\Consumer\Extract
  * @author Andy Grunwald <andygrunwald@gmail.com>

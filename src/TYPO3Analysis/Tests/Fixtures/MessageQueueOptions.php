@@ -13,7 +13,7 @@ namespace Jacobine\Tests\Fixtures;
 /**
  * Class MessageQueueOptions
  *
- * Fixture class to provide default options of \TYPO3Analysis\Helper\MessageQueue
+ * Fixture class to provide default options of \Jacobine\Helper\MessageQueue
  *
  * @package Jacobine\Tests\Fixtures
  * @author Andy Grunwald <andygrunwald@gmail.com>

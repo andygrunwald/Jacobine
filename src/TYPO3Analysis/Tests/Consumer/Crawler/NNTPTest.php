@@ -16,7 +16,7 @@ use Jacobine\Consumer\Crawler\NNTP;
 /**
  * Class NNTPTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Crawler\NNTP
+ * Unit test class for \Jacobine\Consumer\Crawler\NNTP
  *
  * @package Jacobine\Tests\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>

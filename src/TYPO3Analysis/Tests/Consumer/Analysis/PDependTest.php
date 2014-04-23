@@ -16,7 +16,7 @@ use Jacobine\Consumer\Analysis\PDepend;
 /**
  * Class PDependTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Analysis\PDepend
+ * Unit test class for \Jacobine\Consumer\Analysis\PDepend
  *
  * @package Jacobine\Tests\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>

@@ -16,7 +16,7 @@ use Jacobine\Consumer\Download\Git;
 /**
  * Class GitTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Download\Git
+ * Unit test class for \Jacobine\Consumer\Download\Git
  *
  * @package Jacobine\Tests\Consumer\Download
  * @author Andy Grunwald <andygrunwald@gmail.com>

@@ -50,14 +50,14 @@ class ConsumerCommand extends Command
     /**
      * MessageQueue connection
      *
-     * @var \TYPO3Analysis\Helper\MessageQueue
+     * @var \Jacobine\Helper\MessageQueue
      */
     protected $messageQueue;
 
     /**
      * Database connection
      *
-     * @var \TYPO3Analysis\Helper\Database
+     * @var \Jacobine\Helper\Database
      */
     protected $database;
 
@@ -137,7 +137,7 @@ class ConsumerCommand extends Command
      * Initialize the database connection
      *
      * @param array $parsedConfig
-     * @return \TYPO3Analysis\Helper\Database
+     * @return \Jacobine\Helper\Database
      * @throws \Exception
      */
     private function initializeDatabase($parsedConfig)
@@ -160,7 +160,7 @@ class ConsumerCommand extends Command
      * Initialize the message queue object
      *
      * @param array $parsedConfig
-     * @return \TYPO3Analysis\Helper\MessageQueue
+     * @return \Jacobine\Helper\MessageQueue
      */
     private function initializeMessageQueue($parsedConfig)
     {
@@ -254,7 +254,7 @@ class ConsumerCommand extends Command
 
             // Custom SymfonyConsoleHandler
             case 'SymfonyConsoleHandler':
-                $instance = new \TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler($output);
+                $instance = new \Jacobine\Monolog\Handler\SymfonyConsoleHandler($output);
                 break;
 
             // If there is another handler, skip it :(
@@ -278,7 +278,7 @@ class ConsumerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $consumerIdent = $input->getArgument('consumer');
-        $consumerToGet = '\\TYPO3Analysis\\Consumer\\' . $consumerIdent;
+        $consumerToGet = '\\Jacobine\\Consumer\\' . $consumerIdent;
 
         // If the consumer does not exists exit here
         if (class_exists($consumerToGet) === false) {
@@ -289,7 +289,7 @@ class ConsumerCommand extends Command
 
         // Create, initialize and start consumer
         $consumer = new $consumerToGet();
-        /* @var \TYPO3Analysis\Consumer\ConsumerAbstract $consumer */
+        /* @var \Jacobine\Consumer\ConsumerAbstract $consumer */
         $consumer->setConfig($this->config);
         $consumer->setDatabase($this->database);
         $consumer->setMessageQueue($this->messageQueue);

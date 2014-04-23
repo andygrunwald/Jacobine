@@ -15,7 +15,7 @@ use Jacobine\Helper\ProcessFactory;
 /**
  * Class ProcessFactoryTest
  *
- * Unit test class for \TYPO3Analysis\Helper\ProcessFactory
+ * Unit test class for \Jacobine\Helper\ProcessFactory
  *
  * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -24,7 +24,7 @@ class ProcessFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \TYPO3Analysis\Helper\ProcessFactory
+     * @var \Jacobine\Helper\ProcessFactory
      */
     protected $factory;
 

@@ -16,7 +16,7 @@ use Jacobine\Helper\File;
 /**
  * Class FileTest
  *
- * Unit test class for \TYPO3Analysis\Helper\File
+ * Unit test class for \Jacobine\Helper\File
  *
  * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>

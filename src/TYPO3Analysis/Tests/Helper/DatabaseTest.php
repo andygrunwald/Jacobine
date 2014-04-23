@@ -17,7 +17,7 @@ use Jacobine\Helper\Database;
 /**
  * Class DatabaseTest
  *
- * Unit test class for \TYPO3Analysis\Helper\Database
+ * Unit test class for \Jacobine\Helper\Database
  *
  * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -100,7 +100,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
      */
     protected function getDatabaseObject($databaseConnection)
     {
-        // Mock of \TYPO3Analysis\Helper\DatabaseFactory
+        // Mock of \Jacobine\Helper\DatabaseFactory
         $factory = $this->getMock('TYPO3Analysis\Helper\DatabaseFactory');
         $factory->expects($this->any())
                 ->method('create')

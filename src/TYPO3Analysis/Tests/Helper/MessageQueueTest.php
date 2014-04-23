@@ -15,7 +15,7 @@ use Jacobine\Helper\MessageQueue;
 /**
  * Class MessageQueueTest
  *
- * Unit test class for \TYPO3Analysis\Helper\MessageQueue
+ * Unit test class for \Jacobine\Helper\MessageQueue
  *
  * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -24,7 +24,7 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \TYPO3Analysis\Helper\MessageQueue
+     * @var \Jacobine\Helper\MessageQueue
      */
     protected $messageQueue;
 
@@ -42,7 +42,7 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
 
         $amqpMessageMock = $this->getMock('\PhpAmqpLib\Message\AMQPMessage');
 
-        $factoryMock = $this->getMock('\TYPO3Analysis\Helper\AMQPFactory', ['createMessage']);
+        $factoryMock = $this->getMock('\Jacobine\Helper\AMQPFactory', ['createMessage']);
         $factoryMock->expects($this->once())
                     ->method('createMessage')
         // add check if string or something is incoming

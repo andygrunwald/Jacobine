@@ -34,7 +34,7 @@ class Database
     /**
      * Database factory
      *
-     * @var \TYPO3Analysis\Helper\DatabaseFactory
+     * @var \Jacobine\Helper\DatabaseFactory
      */
     protected $factory = null;
 
@@ -61,7 +61,7 @@ class Database
      * @param string $username
      * @param string $password
      * @param string $database
-     * @return \TYPO3Analysis\Helper\Database
+     * @return \Jacobine\Helper\Database
      */
     public function __construct(DatabaseFactory $factory, $host, $port, $username, $password, $database)
     {

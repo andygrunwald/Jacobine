@@ -16,7 +16,7 @@ use Jacobine\Consumer\Crawler\Gitweb;
 /**
  * Class GitwebTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Crawler\Gitweb
+ * Unit test class for \Jacobine\Consumer\Crawler\Gitweb
  *
  * @package Jacobine\Tests\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>

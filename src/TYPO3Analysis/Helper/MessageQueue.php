@@ -90,8 +90,8 @@ class MessageQueue
      * Constructor to set up a connection to the RabbitMQ server
      *
      * @param \PhpAmqpLib\Connection\AMQPConnection $amqpConnection
-     * @param \TYPO3Analysis\Helper\AMQPFactory $amqpFactory
-     * @return \TYPO3Analysis\Helper\MessageQueue
+     * @param \Jacobine\Helper\AMQPFactory $amqpFactory
+     * @return \Jacobine\Helper\MessageQueue
      */
     public function __construct(\PhpAmqpLib\Connection\AMQPConnection $amqpConnection, AMQPFactory $amqpFactory)
     {

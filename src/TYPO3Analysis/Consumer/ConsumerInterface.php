@@ -119,14 +119,14 @@ interface ConsumerInterface
     /**
      * Gets the database
      *
-     * @return \TYPO3Analysis\Helper\Database
+     * @return \Jacobine\Helper\Database
      */
     public function getDatabase();
 
     /**
      * Sets the database
      *
-     * @param \TYPO3Analysis\Helper\Database $database
+     * @param \Jacobine\Helper\Database $database
      * @return void
      */
     public function setDatabase($database);
@@ -149,14 +149,14 @@ interface ConsumerInterface
     /**
      * Gets the message queue
      *
-     * @return \TYPO3Analysis\Helper\MessageQueue
+     * @return \Jacobine\Helper\MessageQueue
      */
     public function getMessageQueue();
 
     /**
      * Sets the message queue
      *
-     * @param \TYPO3Analysis\Helper\MessageQueue $messageQueue
+     * @param \Jacobine\Helper\MessageQueue $messageQueue
      * @return void
      */
     public function setMessageQueue($messageQueue);

@@ -55,7 +55,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Database connection
      *
-     * @var \TYPO3Analysis\Helper\Database
+     * @var \Jacobine\Helper\Database
      */
     private $database;
 
@@ -69,7 +69,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * MessageQueue connection
      *
-     * @var \TYPO3Analysis\Helper\MessageQueue
+     * @var \Jacobine\Helper\MessageQueue
      */
     private $messageQueue;
 
@@ -208,7 +208,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Gets the database
      *
-     * @return \TYPO3Analysis\Helper\Database
+     * @return \Jacobine\Helper\Database
      */
     public function getDatabase()
     {
@@ -218,7 +218,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Sets the database
      *
-     * @param \TYPO3Analysis\Helper\Database $database
+     * @param \Jacobine\Helper\Database $database
      * @return void
      */
     public function setDatabase($database)
@@ -250,7 +250,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Gets the message queue
      *
-     * @return \TYPO3Analysis\Helper\MessageQueue
+     * @return \Jacobine\Helper\MessageQueue
      */
     public function getMessageQueue()
     {
@@ -260,7 +260,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Sets the message queue
      *
-     * @param \TYPO3Analysis\Helper\MessageQueue $messageQueue
+     * @param \Jacobine\Helper\MessageQueue $messageQueue
      * @return void
      */
     public function setMessageQueue($messageQueue)

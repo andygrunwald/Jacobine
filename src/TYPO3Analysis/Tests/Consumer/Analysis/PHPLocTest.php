@@ -16,7 +16,7 @@ use Jacobine\Consumer\Analysis\PHPLoc;
 /**
  * Class PHPLocTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Analysis\PHPLoc
+ * Unit test class for \Jacobine\Consumer\Analysis\PHPLoc
  *
  * @package Jacobine\Tests\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>

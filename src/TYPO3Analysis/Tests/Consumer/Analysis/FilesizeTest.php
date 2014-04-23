@@ -16,7 +16,7 @@ use Jacobine\Consumer\Analysis\Filesize;
 /**
  * Class FilesizeTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Analysis\Filesize
+ * Unit test class for \Jacobine\Consumer\Analysis\Filesize
  *
  * @package Jacobine\Tests\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>

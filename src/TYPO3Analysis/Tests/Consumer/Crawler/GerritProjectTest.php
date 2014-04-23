@@ -16,7 +16,7 @@ use Jacobine\Consumer\Crawler\GerritProject;
 /**
  * Class GerritProjectTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Crawler\GerritProject
+ * Unit test class for \Jacobine\Consumer\Crawler\GerritProject
  *
  * @package Jacobine\Tests\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>

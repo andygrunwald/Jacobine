@@ -16,7 +16,7 @@ use Monolog\Logger;
 /**
  * Class SymfonyConsoleHandlerTest
  *
- * Unit test class for \TYPO3Analysis\Monolog\Handler\SymfonyConsoleHandler
+ * Unit test class for \Jacobine\Monolog\Handler\SymfonyConsoleHandler
  *
  * @package Jacobine\Tests\Monolog\Handler
  * @author Andy Grunwald <andygrunwald@gmail.com>

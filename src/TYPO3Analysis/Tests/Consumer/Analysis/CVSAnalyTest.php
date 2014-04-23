@@ -16,7 +16,7 @@ use Jacobine\Consumer\Analysis\CVSAnaly;
 /**
  * Class CVSAnalyTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Analysis\CVSAnaly
+ * Unit test class for \Jacobine\Consumer\Analysis\CVSAnaly
  *
  * @package Jacobine\Tests\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>

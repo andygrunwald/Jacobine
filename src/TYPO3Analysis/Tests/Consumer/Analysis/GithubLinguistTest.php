@@ -16,7 +16,7 @@ use Jacobine\Consumer\Analysis\GithubLinguist;
 /**
  * Class GithubLinguistTest
  *
- * Unit test class for \TYPO3Analysis\Consumer\Analysis\GithubLinguist
+ * Unit test class for \Jacobine\Consumer\Analysis\GithubLinguist
  *
  * @package Jacobine\Tests\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>

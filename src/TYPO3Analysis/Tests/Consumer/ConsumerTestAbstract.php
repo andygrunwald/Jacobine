@@ -10,7 +10,7 @@
 
 namespace Jacobine\Tests\Consumer;
 
-use \TYPO3Analysis\Tests\Fixtures\MessageQueueOptions;
+use \Jacobine\Tests\Fixtures\MessageQueueOptions;
 
 /**
  * Class ConsumerTestAbstract
@@ -27,7 +27,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \TYPO3Analysis\Consumer\ConsumerInterface
+     * @var \Jacobine\Consumer\ConsumerInterface
      */
     protected $consumer;
 
@@ -42,10 +42,10 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         $messageQueueOptions = new MessageQueueOptions();
 
         $amqpConnectionMock = $this->getMock('\PhpAmqpLib\Connection\AMQPConnection', [], [], '', false);
-        $amqpFactoryMock = $this->getMock('\TYPO3Analysis\Helper\AMQPFactory', ['createMessage']);
+        $amqpFactoryMock = $this->getMock('\Jacobine\Helper\AMQPFactory', ['createMessage']);
 
         $constructorArgs = [$amqpConnectionMock, $amqpFactoryMock];
-        $messageQueueMock = $this->getMock('\TYPO3Analysis\Helper\MessageQueue', [], $constructorArgs);
+        $messageQueueMock = $this->getMock('\Jacobine\Helper\MessageQueue', [], $constructorArgs);
 
         $messageQueueMock->expects($this->exactly($defaultOptionsCall))
                          ->method('getDefaultQueueOptions')
@@ -147,10 +147,10 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
     {
         $this->assertNull($this->consumer->getDatabase());
 
-        // Mock of \TYPO3Analysis\Helper\DatabaseFactory
+        // Mock of \Jacobine\Helper\DatabaseFactory
         $databaseFactoryMock = $this->getMock('TYPO3Analysis\Helper\DatabaseFactory');
         $constructorArgs = [$databaseFactoryMock, '', '', '', '', ''];
-        $databaseMock = $this->getMock('\TYPO3Analysis\Helper\Database', [], $constructorArgs);
+        $databaseMock = $this->getMock('\Jacobine\Helper\Database', [], $constructorArgs);
 
         $this->consumer->setDatabase($databaseMock);
 

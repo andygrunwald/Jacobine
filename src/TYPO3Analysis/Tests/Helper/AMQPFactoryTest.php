@@ -15,7 +15,7 @@ use Jacobine\Helper\AMQPFactory;
 /**
  * Class AMQPFactoryTest
  *
- * Unit test class for \TYPO3Analysis\Helper\AMQPFactory
+ * Unit test class for \Jacobine\Helper\AMQPFactory
  *
  * @package Jacobine\Tests\Helper
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -24,7 +24,7 @@ class AMQPFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \TYPO3Analysis\Helper\AMQPFactory
+     * @var \Jacobine\Helper\AMQPFactory
      */
     protected $factory;
 

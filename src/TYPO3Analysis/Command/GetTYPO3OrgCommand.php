@@ -76,14 +76,14 @@ class GetTYPO3OrgCommand extends Command
     /**
      * Database connection
      *
-     * @var \TYPO3Analysis\Helper\Database
+     * @var \Jacobine\Helper\Database
      */
     protected $database;
 
     /**
      * MessageQueue connection
      *
-     * @var \TYPO3Analysis\Helper\MessageQueue
+     * @var \Jacobine\Helper\MessageQueue
      */
     protected $messageQueue;
 

@@ -60,7 +60,7 @@ class GitwebCommand extends Command
     /**
      * MessageQueue connection
      *
-     * @var \TYPO3Analysis\Helper\MessageQueue
+     * @var \Jacobine\Helper\MessageQueue
      */
     protected $messageQueue;
 

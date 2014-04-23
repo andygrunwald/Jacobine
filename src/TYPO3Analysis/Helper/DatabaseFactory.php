@@ -33,7 +33,7 @@ class DatabaseFactory
      * @param string $username
      * @param string $password
      * @param string $database
-     * @return \TYPO3Analysis\Helper\Database
+     * @return \Jacobine\Helper\Database
      */
     public function create($driverName, $host, $port, $username, $password, $database)
     {
