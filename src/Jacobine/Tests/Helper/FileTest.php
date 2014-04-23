@@ -69,7 +69,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $content .= 'We just need some content.';
         $content .= 'And of course, we need always contributer.';
         $content .= 'If you want to improve this test suite, check our github repository and contribute!';
-        $content .= 'https://github.com/andygrunwald/TYPO3-Analytics';
+        $content .= 'https://github.com/andygrunwald/Jacobine';
 
         $vfs = vfsStream::setup('root', null, [$this->dummyFilename => $content]);
 
