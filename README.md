@@ -1,9 +1,9 @@
 # Jacobine
 
-[![Build Status](https://travis-ci.org/andygrunwald/TYPO3-Analytics.png?branch=master)](https://travis-ci.org/andygrunwald/TYPO3-Analytics)
+[![Build Status](https://travis-ci.org/andygrunwald/Jacobine.svg?branch=jacobine-rename)](https://travis-ci.org/andygrunwald/Jacobine)
 [![Dependency Status](https://www.versioneye.com/user/projects/52ff3ba2ec1375bab100022a/badge.png)](https://www.versioneye.com/user/projects/52ff3ba2ec1375bab100022a)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/badges/quality-score.png?s=fa5eb02b03f8c63636e620caf8734c187769e3e2)](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/)
-[![Code Coverage](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/badges/coverage.png?s=10a00adba7915f1687f28cbdbcb77e97f90a96ae)](https://scrutinizer-ci.com/g/andygrunwald/TYPO3-Analytics/) 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/badges/quality-score.png?s=ce1b08496df51dccb7fe58ba3ba084c13b5bccb1)](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/)
+[![Code Coverage](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/badges/coverage.png?s=3128770a021cc50d581865aad3fb6225407ee574)](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/)
 
 Jacobine aims to take many different analysis on open source projects (source code, ecosystem and community).
 Analysis can be the size of the different versions in MB, the most active contributers, the atmosphere / mood of the communication in the community (e.g. twitter) or to combine many data sources to answer questions like "At which point in time is the most activity for contribution?" (just an example).
