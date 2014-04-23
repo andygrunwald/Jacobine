@@ -75,7 +75,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
         $file = new File($vfs->getChild($this->dummyFilename)->url());
 
-        $this->assertEquals('9ce29d3b573eba5de16f0eab944e2e77', $file->getMd5OfFile());
+        $this->assertEquals('d65d3b0acd44e0446bf085f58f5fa6c2', $file->getMd5OfFile());
     }
 
     public function testRenameWithExistingFile()
