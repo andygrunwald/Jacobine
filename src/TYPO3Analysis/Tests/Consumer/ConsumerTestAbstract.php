@@ -148,7 +148,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->consumer->getDatabase());
 
         // Mock of \Jacobine\Helper\DatabaseFactory
-        $databaseFactoryMock = $this->getMock('TYPO3Analysis\Helper\DatabaseFactory');
+        $databaseFactoryMock = $this->getMock('Jacobine\Helper\DatabaseFactory');
         $constructorArgs = [$databaseFactoryMock, '', '', '', '', ''];
         $databaseMock = $this->getMock('\Jacobine\Helper\Database', [], $constructorArgs);
 

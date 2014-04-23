@@ -101,7 +101,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
     protected function getDatabaseObject($databaseConnection)
     {
         // Mock of \Jacobine\Helper\DatabaseFactory
-        $factory = $this->getMock('TYPO3Analysis\Helper\DatabaseFactory');
+        $factory = $this->getMock('Jacobine\Helper\DatabaseFactory');
         $factory->expects($this->any())
                 ->method('create')
                 ->will($this->returnValue($databaseConnection));

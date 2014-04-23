@@ -38,7 +38,7 @@ class ListConsumerCommand extends Command
      *
      * @var String
      */
-    const BASE_NAMESPACE = 'TYPO3Analysis\Consumer\\';
+    const BASE_NAMESPACE = 'Jacobine\Consumer\\';
 
     /**
      * Pad length for consumer name
@@ -135,7 +135,7 @@ class ListConsumerCommand extends Command
             $reflection = new \ReflectionClass($consumer);
 
             $parentClass = $reflection->getParentClass();
-            if ($parentClass === false || $parentClass->getName() !== 'TYPO3Analysis\Consumer\ConsumerAbstract') {
+            if ($parentClass === false || $parentClass->getName() !== 'Jacobine\Consumer\ConsumerAbstract') {
                 continue;
             }
 
