@@ -19,6 +19,6 @@ use Symfony\Component\ClassLoader\UniversalClassLoader;
 
 $loader = new UniversalClassLoader();
 $loader->registerNamespaces(array(
-    'TYPO3Analysis' => __DIR__ . '/src'
+    'Jacobine' => __DIR__ . '/src'
 ));
 $loader->register();
