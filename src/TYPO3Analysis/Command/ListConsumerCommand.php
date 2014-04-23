@@ -21,7 +21,7 @@ use Symfony\Component\Finder\Finder;
  * Command to list all available consumer which can be used to get some messages (tasks) done.
  * This command does not execute something. It will only output a list of usable consumer.
  *
- * A consumer must be a file in directory TYPO3Analysis/Consumer.
+ * A consumer must be a file in directory Jacobine/Consumer.
  * Further more a consumer must extend the Jacobine\Consumer\ConsumerAbstract class.
  *
  * Usage:
