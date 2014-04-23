@@ -12,16 +12,16 @@
          bootstrap="Bootstrap.php">
 
     <testsuites>
-        <testsuite name="TYPO3Analysis Test Suite">
-            <directory suffix="Test.php">./src/TYPO3Analysis/Tests/</directory>
+        <testsuite name="Jacobine Test Suite">
+            <directory suffix="Test.php">./src/Jacobine/Tests/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">./src/TYPO3Analysis/</directory>
+            <directory suffix=".php">./src/Jacobine/</directory>
             <exclude>
-                <directory>./src/TYPO3Analysis/Tests</directory>
+                <directory>./src/Jacobine/Tests</directory>
             </exclude>
         </whitelist>
     </filter>
