@@ -115,7 +115,7 @@ class PHPLoc extends ConsumerAbstract
 
         $this->acknowledgeMessage($message);
 
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**
@@ -128,97 +128,103 @@ class PHPLoc extends ConsumerAbstract
     private function storePhpLocDataInDatabase($versionId, $phpLocResults)
     {
         $data = array(
-            'version' => (int)$versionId,
-            'directories' => (int)$phpLocResults->directories,
+            'version' => (int) $versionId,
             // Directories
-            'files' => (int)$phpLocResults->files,
+            'directories' => (int) $phpLocResults->directories,
             // Files
-            'loc' => (int)$phpLocResults->loc,
-            // Lines of Code (LOC)
-            'cloc' => (int)$phpLocResults->cloc,
-            // Comment Lines of Code (CLOC)
-            'ncloc' => (int)$phpLocResults->ncloc,
-            // Non-Comment Lines of Code (NCLOC)
-            'ccn' => (int)$phpLocResults->ccn,
+            'files' => (int) $phpLocResults->files,
+            // Size > Lines of Code (LOC)
+            'loc' => (int) $phpLocResults->loc,
+            // Size > Comment Lines of Code (CLOC)
+            'cloc' => (int) $phpLocResults->cloc,
+            // Size > Non-Comment Lines of Code (NCLOC)
+            'ncloc' => (int) $phpLocResults->ncloc,
             // Cyclomatic Complexity
-            'ccn_methods' => (int)$phpLocResults->ccnMethods,
+            // Sum of the complexity of the whole application
+            // Value only in XML output of PHPLoc
+            // Used to calculate $count['ccnByLloc'] ($count['ccn'] / $count['lloc'];)
+            'ccn' => (int) $phpLocResults->ccn,
             // Cyclomatic Complexity of methods
-            'interfaces' => (int)$phpLocResults->interfaces,
-            // Interfaces
-            'traits' => (int)$phpLocResults->traits,
-            // Traits
-            'classes' => (int)$phpLocResults->classes,
-            // Classes
-            'abstract_classes' => (int)$phpLocResults->abstractClasses,
-            // Abstract classes
-            'concrete_classes' => (int)$phpLocResults->concreteClasses,
-            // Concrete classes
-            'anonymous_functions' => (int)$phpLocResults->anonymousFunctions,
-            // Anonymous functions
-            'functions' => (int)$phpLocResults->functions,
-            // Functions
-            'methods' => (int)$phpLocResults->methods,
-            // Methods
-            'public_methods' => (int)$phpLocResults->publicMethods,
-            // Public methods
-            'non_public_methods' => (int)$phpLocResults->nonPublicMethods,
-            // Non public methods
-            'non_static_methods' => (int)$phpLocResults->nonStaticMethods,
-            // Non static methods
-            'static_methods' => (int)$phpLocResults->staticMethods,
-            // Static methods
-            'constants' => (int)$phpLocResults->constants,
-            // Constants
-            'class_constants' => (int)$phpLocResults->classConstants,
-            // Class constants
-            'global_constants' => (int)$phpLocResults->globalConstants,
-            // Global constants
-            'test_classes' => (int)$phpLocResults->testClasses,
-            // Test classes
-            'test_methods' => (int)$phpLocResults->testMethods,
-            // Test methods
-            'ccn_by_lloc' => (double)$phpLocResults->ccnByLloc,
-            // Cyclomatic Complexity / LLOC
-            'ccn_by_nom' => (double)$phpLocResults->ccnByNom,
-            // Cyclomatic Complexity / Number of Methods
-            'namespaces' => (int)$phpLocResults->namespaces,
-            // Namespaces
-            'lloc' => (int)$phpLocResults->lloc,
-            // Logical Lines of Code (LLOC)
-            'lloc_classes' => (int)$phpLocResults->llocClasses,
-            // Logical Lines of Code (LLOC) in Classes
-            'lloc_functions' => (int)$phpLocResults->llocFunctions,
-            // Logical Lines of Code (LLOC) in Functions
-            'lloc_global' => (int)$phpLocResults->llocGlobal,
-            // Logical Lines of Code (LLOC) Not in classes or functions
-            'named_functions' => (int)$phpLocResults->namedFunctions,
-            // Named functions
-            'lloc_by_noc' => (double)$phpLocResults->llocByNoc,
-            // Logical Lines of Code (LLOC) - Classes - Average Class Length
-            'lloc_by_nom' => (double)$phpLocResults->llocByNom,
-            // Logical Lines of Code (LLOC) - Classes - Average Method Length
-            'lloc_by_nof' => (double)$phpLocResults->llocByNof,
-            // Logical Lines of Code (LLOC) - Functions - Average Function Length
-            'method_calls' => (int)$phpLocResults->methodCalls,
-            // Dependencies - Method Calls
-            'static_method_calls' => (int)$phpLocResults->staticMethodCalls,
-            // Dependencies - Method Calls (static methods)
-            'instance_method_calls' => (int)$phpLocResults->instanceMethodCalls,
-            // Dependencies - Method Calls (non static)
-            'attribute_accesses' => (int)$phpLocResults->attributeAccesses,
-            // Dependencies - Attribute Accesses
-            'static_attribute_accesses' => (int)$phpLocResults->staticAttributeAccesses,
-            // Dependencies - Attribute Accesses (static)
-            'instance_attribute_accesses' => (int)$phpLocResults->instanceAttributeAccesses,
-            // Dependencies - Attribute Accesses (non static)
-            'global_accesses' => (int)$phpLocResults->globalAccesses,
-            // Dependencies - Global Accesses
-            'global_variable_accesses' => (int)$phpLocResults->globalVariableAccesses,
-            // Dependencies - Global Accesses - Global Variables
-            'super_global_variable_accesses' => (int)$phpLocResults->superGlobalVariableAccesses,
-            // Dependencies - Global Accesses - Super-Global Variables
-            'global_constant_accesses' => (int)$phpLocResults->globalConstantAccesses,
-            // Dependencies - Global Accesses - Global Constants
+            // Sum of the complexity of all methods
+            // Value only in XML output of PHPLoc
+            // Used to calculate $count['ccnByNom'] ( = ($count['methods'] + $count['ccnMethods']) / $count['methods'];)
+            'ccn_methods' => (int) $phpLocResults->ccnMethods,
+            // Structure > Interfaces
+            'interfaces' => (int) $phpLocResults->interfaces,
+            // Structure > Traits
+            'traits' => (int) $phpLocResults->traits,
+            // Structure > Classes
+            'classes' => (int) $phpLocResults->classes,
+            // Structure > Classes > Abstract Classes
+            'abstract_classes' => (int) $phpLocResults->abstractClasses,
+            // Structure > Classes > Concrete Classes
+            'concrete_classes' => (int) $phpLocResults->concreteClasses,
+            // Structure > Functions > Anonymous Functions
+            'anonymous_functions' => (int) $phpLocResults->anonymousFunctions,
+            // Structure > Functions
+            'functions' => (int) $phpLocResults->functions,
+            // Structure > Methods
+            'methods' => (int) $phpLocResults->methods,
+            // Structure > Methods > Visibility > Public Method
+            'public_methods' => (int) $phpLocResults->publicMethods,
+            // Structure > Methods > Visibility > Non-Public Methods
+            'non_public_methods' => (int) $phpLocResults->nonPublicMethods,
+            // Structure > Methods > Scope > Non-Static Methods
+            'non_static_methods' => (int) $phpLocResults->nonStaticMethods,
+            // Structure > Methods > Scope > Static Methods
+            'static_methods' => (int) $phpLocResults->staticMethods,
+            // Structure > Constants
+            'constants' => (int) $phpLocResults->constants,
+            // Structure > Constants > Class Constants
+            'class_constants' => (int) $phpLocResults->classConstants,
+            // Structure > Constants > Global Constants
+            'global_constants' => (int) $phpLocResults->globalConstants,
+            // Tests > Classes
+            'test_classes' => (int) $phpLocResults->testClasses,
+            // Tests > Methods
+            'test_methods' => (int) $phpLocResults->testMethods,
+            // Complexity > Cyclomatic Complexity / LLOC
+            'ccn_by_lloc' => (double) $phpLocResults->ccnByLloc,
+            // Complexity > Cyclomatic Complexity / Number of Methods
+            'ccn_by_nom' => (double) $phpLocResults->ccnByNom,
+            // Structure > Namespaces
+            'namespaces' => (int) $phpLocResults->namespaces,
+            // Size > Logical Lines of Code (LLOC)
+            'lloc' => (int) $phpLocResults->lloc,
+            // Size > Logical Lines of Code (LLOC) > Classes
+            'lloc_classes' => (int) $phpLocResults->llocClasses,
+            // Size > Logical Lines of Code (LLOC) > Functions
+            'lloc_functions' => (int) $phpLocResults->llocFunctions,
+            // Size > Logical Lines of Code (LLOC) > Not in classes or functions
+            'lloc_global' => (int) $phpLocResults->llocGlobal,
+            // Structure > Functions > Named Functions
+            'named_functions' => (int) $phpLocResults->namedFunctions,
+            // Size > Logical Lines of Code (LLOC) > Classes > Average Class Length
+            'lloc_by_noc' => (double) $phpLocResults->llocByNoc,
+            // Size > Logical Lines of Code (LLOC) > Classes > Average Method Length
+            'lloc_by_nom' => (double) $phpLocResults->llocByNom,
+            // Size > Logical Lines of Code (LLOC) > Functions > Average Function Length
+            'lloc_by_nof' => (double) $phpLocResults->llocByNof,
+            // Dependencies > Method Calls
+            'method_calls' => (int) $phpLocResults->methodCalls,
+            // Dependencies > Method Calls > Static
+            'static_method_calls' => (int) $phpLocResults->staticMethodCalls,
+            // Dependencies > Method Calls > Non-Static
+            'instance_method_calls' => (int) $phpLocResults->instanceMethodCalls,
+            // Dependencies > Attribute Accesses
+            'attribute_accesses' => (int) $phpLocResults->attributeAccesses,
+            // Dependencies > Attribute Accesses > Static
+            'static_attribute_accesses' => (int) $phpLocResults->staticAttributeAccesses,
+            // Dependencies > Attribute Accesses > Non-Static
+            'instance_attribute_accesses' => (int) $phpLocResults->instanceAttributeAccesses,
+            // Dependencies > Global Accesses
+            'global_accesses' => (int) $phpLocResults->globalAccesses,
+            // Dependencies > Global Accesses > Global Variables
+            'global_variable_accesses' => (int) $phpLocResults->globalVariableAccesses,
+            // Dependencies > Global Accesses > Super-Global Variables
+            'super_global_variable_accesses' => (int) $phpLocResults->superGlobalVariableAccesses,
+            // Dependencies > Global Accesses > Global Constants
+            'global_constant_accesses' => (int) $phpLocResults->globalConstantAccesses,
         );
 
         $insertedId = $this->getDatabase()->insertRecord('phploc', $data);
