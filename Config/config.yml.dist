@@ -1,5 +1,5 @@
 RabbitMQ:
-  Host: localhost
+  Host: 192.168.33.55
   Port: 5672
   Username: analysis
   Password: analysis
