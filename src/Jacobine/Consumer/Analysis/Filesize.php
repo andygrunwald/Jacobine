@@ -64,49 +64,39 @@ class Filesize extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return void
      */
     protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-        $record = $this->getVersionFromDatabase($messageData->versionId);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $record = $this->getVersionFromDatabase($message->versionId);
 
         // If the record does not exists in the database exit here
         if ($record === false) {
-            $context = array('versionId' => $messageData->versionId);
+            $context = array('versionId' => $message->versionId);
             $this->getLogger()->critical('Record does not exist in version table', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('Record does not exist in version table', 1398885424);
         }
 
         // If the filesize is already saved exit here
         if (isset($record['size_tar']) === true && $record['size_tar']) {
-            $context = array('versionId' => $messageData->versionId);
+            $context = array('versionId' => $message->versionId);
             $this->getLogger()->info('Record marked as already analyzed', $context);
-            $this->acknowledgeMessage($message);
             return;
         }
 
         // If there is no file, exit here
-        if (file_exists($messageData->filename) !== true) {
-            $context = array('filename' => $messageData->filename);
+        if (file_exists($message->filename) !== true) {
+            $context = array('filename' => $message->filename);
             $this->getLogger()->critical('File does not exist', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('File does not exist', 1398885531);
         }
 
-        $this->getLogger()->info('Getting filesize', array('filename' => $messageData->filename));
-        $fileSize = filesize($messageData->filename);
+        $this->getLogger()->info('Getting filesize', array('filename' => $message->filename));
+        $fileSize = filesize($message->filename);
 
         // Update the 'downloaded' flag in database
         $this->saveFileSizeOfVersionInDatabase($record['id'], $fileSize);
-
-        $this->acknowledgeMessage($message);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
