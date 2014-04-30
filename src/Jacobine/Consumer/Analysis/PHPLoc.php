@@ -68,7 +68,7 @@ class PHPLoc extends ConsumerAbstract
      * @param \stdClass $message
      * @return void
      */
-    public function process($message)
+    protected function process($message)
     {
         $this->setMessage($message);
         $messageData = json_decode($message->body);

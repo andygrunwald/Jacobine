@@ -77,7 +77,7 @@ class GerritProject extends ConsumerAbstract
      * @param \stdClass $message
      * @return null|void
      */
-    public function process($message)
+    protected function process($message)
     {
         $this->setMessage($message);
         $messageData = json_decode($message->body);
