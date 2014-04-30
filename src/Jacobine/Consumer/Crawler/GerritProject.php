@@ -75,26 +75,21 @@ class GerritProject extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return null|void
      */
     protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
-        if (file_exists($messageData->configFile) === false) {
-            $context = array('file' => $messageData->configFile);
+        if (file_exists($message->configFile) === false) {
+            $context = array('file' => $message->configFile);
             $this->getLogger()->critical('Gerrit config file does not exist', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('Gerrit config file does not exist', 1398886991);
         }
 
-        $project = $messageData->project;
+        $project = $message->project;
 
         // Bootstrap Gerrie
-        $gerrieConfig = $this->initialGerrieConfig($messageData->configFile);
+        $gerrieConfig = $this->initialGerrieConfig($message->configFile);
         $databaseConfig = $gerrieConfig->getConfigurationValue('Database');
         $projectConfig = $gerrieConfig->getConfigurationValue('Gerrit.' . $project);
 
@@ -105,27 +100,20 @@ class GerritProject extends ConsumerAbstract
         $gerrie->setOutput($this->getLogger());
 
         $gerritHost = $gerrieDataService->getHost();
-        $gerritProject = $gerrie->getGerritProjectById($messageData->serverId, $messageData->projectId);
+        $gerritProject = $gerrie->getGerritProjectById($message->serverId, $message->projectId);
 
-        $context = array(
-            'serverId' => $messageData->serverId,
-            'projectId' => $messageData->projectId
-        );
+        $context = [
+            'serverId' => $message->serverId,
+            'projectId' => $message->projectId
+        ];
         if ($gerritProject === false) {
             $this->getLogger()->critical('Gerrit project does not exists in database', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('Gerrit project does not exists in database', 1398887300);
         }
 
         $this->getLogger()->info('Start importing of changesets for Gerrit project', $context);
-
         $gerrie->proceedChangesetsOfProject($gerritHost, $gerritProject);
-
         $this->getLogger()->info('Import of changesets for Gerrit project successful', $context);
-
-        $this->acknowledgeMessage($message);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
