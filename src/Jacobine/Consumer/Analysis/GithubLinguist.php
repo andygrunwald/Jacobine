@@ -70,6 +70,7 @@ class GithubLinguist extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return void
      */
     protected function process($message)
