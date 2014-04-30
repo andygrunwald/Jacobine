@@ -66,56 +66,41 @@ class PHPLoc extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return void
      */
     protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
         // If there is already a phploc record in database, exit here
-        if ($this->getPhpLocDataFromDatabase($messageData->versionId) !== false) {
-            $this->getLogger()->info(
-                'Record already analyzed with PHPLoc',
-                array('versionId' => $messageData->versionId)
-            );
-            $this->acknowledgeMessage($message);
+        if ($this->getPhpLocDataFromDatabase($message->versionId) !== false) {
+            $this->getLogger()->info('Record already analyzed with PHPLoc', ['versionId' => $message->versionId]);
             return;
         }
 
         // If there is no directory to analyse, exit here
-        if (is_dir($messageData->directory) !== true) {
-            $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
-            $this->rejectMessage($message);
-            return;
+        if (is_dir($message->directory) !== true) {
+            $this->getLogger()->critical('Directory does not exist', array('directory' => $message->directory));
+            throw new \Exception('Directory does not exist', 1398886624);
         }
 
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->executePHPLoc($messageData->directory);
+        list($process, $exception) = $this->executePHPLoc($message->directory);
         if ($exception !== null || $process->isSuccessful() === false) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('PHPLoc command failed', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('PHPLoc command failed', 1398886649);
         }
 
         $xmlOutput = $process->getOutput();
         if (empty($xmlOutput) === true) {
             $context = ['commandLine' => $process->getCommandLine()];
             $this->getLogger()->critical('phploc does not returned a result', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('phploc does not returned a result', 1398886673);
         }
 
         // Get PHPLoc results and save them
         $phpLocResults = simplexml_load_string($xmlOutput);
-        $this->storePhpLocDataInDatabase($messageData->versionId, $phpLocResults->children());
-
-        $this->acknowledgeMessage($message);
-
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->storePhpLocDataInDatabase($message->versionId, $phpLocResults->children());
     }
 
     /**
