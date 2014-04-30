@@ -74,32 +74,20 @@ class GithubLinguist extends ConsumerAbstract
      */
     protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
         // If there is no directory to analyse, exit here
-        if (is_dir($messageData->directory) !== true) {
-            $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
-            $this->rejectMessage($this->getMessage());
-            return;
+        if (is_dir($message->directory) !== true) {
+            $this->getLogger()->critical('Directory does not exist', array('directory' => $message->directory));
+            throw new \Exception('Directory does not exist', 1398885959);
         }
 
-        try {
-            $this->clearLinguistRecordsFromDatabase($messageData->versionId);
-        } catch (\Exception $e) {
-            $this->rejectMessage($message);
-            return;
-        }
+        $this->clearLinguistRecordsFromDatabase($message->versionId);
 
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->executeGithubLinguist($messageData->directory);
+        list($process, $exception) = $this->executeGithubLinguist($message->directory);
         if ($exception !== null || $process->isSuccessful() === false) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('github-linguist command failed', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('github-linguist command failed', 1398886051);
         }
 
         $output = $process->getOutput();
@@ -109,22 +97,13 @@ class GithubLinguist extends ConsumerAbstract
         if ($output === []) {
             $msg = 'github-linguist returns no result';
             $this->getLogger()->critical($msg);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception($msg, 1398886080);
         }
 
         $parsedResults = $this->parseGithubLinguistResults($output);
 
         // Store the github linguist results
-        try {
-            $this->storeLinguistDataInDatabase($messageData->versionId, $parsedResults);
-        } catch (\Exception $e) {
-            $this->rejectMessage($message);
-            return;
-        }
-
-        $this->acknowledgeMessage($message);
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
+        $this->storeLinguistDataInDatabase($message->versionId, $parsedResults);
     }
 
     /**
