@@ -375,7 +375,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
         // @TODO Refactore consumer to throw only exceptions
         // @TODO do we need a special kind of ConsumerException to handle a "data bag" for $context?
         try {
-            $this->process($message);
+            $this->process($messageData);
 
         } catch(\Exception $e) {
             $context = [
@@ -388,6 +388,9 @@ abstract class ConsumerAbstract implements ConsumerInterface
             $this->rejectMessage($message);
             return;
         }
+
+        $this->acknowledgeMessage($message);
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
     }
 
     /**
