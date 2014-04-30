@@ -73,26 +73,21 @@ class Gerrit extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return null|void
      */
     protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
-        if (file_exists($messageData->configFile) === false) {
-            $context = array('file' => $messageData->configFile);
+        if (file_exists($message->configFile) === false) {
+            $context = ['file' => $message->configFile];
             $this->getLogger()->critical('Gerrit config file does not exist', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('Gerrit config file does not exist', 1398886834);
         }
 
-        $project = $messageData->project;
+        $project = $message->project;
 
         // Bootstrap Gerrie
-        $gerrieConfig = $this->initialGerrieConfig($messageData->configFile);
+        $gerrieConfig = $this->initialGerrieConfig($message->configFile);
         $databaseConfig = $gerrieConfig->getConfigurationValue('Database');
         $projectConfig = $gerrieConfig->getConfigurationValue('Gerrit.' . $project);
 
@@ -109,7 +104,6 @@ class Gerrit extends ConsumerAbstract
 
         if ($projects === null) {
             $this->getLogger()->info('No projects available');
-            $this->acknowledgeMessage($message);
             return;
         }
 
@@ -122,16 +116,11 @@ class Gerrit extends ConsumerAbstract
                 'projectId' => $projectId
             );
             $this->getLogger()->info('Add project to message queue "crawler"', $context);
-            $this->addFurtherMessageToQueue($project, $gerritServerId, $projectId, $messageData->configFile);
+            $this->addFurtherMessageToQueue($project, $gerritServerId, $projectId, $message->configFile);
         }
 
         $this->getLogger()->info('Set correct project parent child relation');
-
         $gerrie->proceedProjectParentChildRelations($parentMapping);
-
-        $this->acknowledgeMessage($message);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
