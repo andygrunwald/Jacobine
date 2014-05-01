@@ -16,7 +16,17 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
-abstract class Kernel
+/**
+ * Class Kernel
+ *
+ * Base implementation to fit the KernelInterface.
+ * This is the base implementation of a Kernel to use in Jacobine.
+ *
+ * @package Jacobine\Application
+ * @author Andy Grunwald <andygrunwald@gmail.com>
+ * @author Markus Poerschke <markus@eluceo.de>
+ */
+abstract class Kernel implements KernelInterface
 {
     /**
      * Root directory of application
