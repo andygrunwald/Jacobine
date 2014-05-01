@@ -10,12 +10,21 @@
 
 namespace Jacobine\Application;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 abstract class Kernel
 {
     protected $rootDir;
     protected $booted = false;
+
+    /**
+     * @var ContainerBuilder
+     */
+    protected $container;
 
     /**
      * @var Application
@@ -56,7 +65,11 @@ abstract class Kernel
      */
     protected function initializeContainer()
     {
-        // TODO initialize the container
+        $this->container = new ContainerBuilder();
+
+        // load xml config
+        $loader = new XmlFileLoader($this->container, new FileLocator($this->getRootDir() . '/config'));
+        $loader->load('services.xml');
     }
 
     /**
@@ -68,10 +81,14 @@ abstract class Kernel
             return;
         }
 
-        // TODO fetch application from dependency container.
-        // TODO add commands as tagged services
+        $this->application = $this->container->get('console_application');
+        $commandServiceIds = $this->container->findTaggedServiceIds('jacobine.command');
 
-        $this->application = new Application();
+        foreach ($commandServiceIds as $serviceId => $options) {
+            /** @var Command $command */
+            $command = $this->container->get($serviceId);
+            $this->application->add($command);
+        }
     }
 
     /**

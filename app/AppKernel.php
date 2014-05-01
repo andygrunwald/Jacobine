@@ -10,16 +10,4 @@
 
 class AppKernel extends \Jacobine\Application\Kernel
 {
-    protected function initializeApplication()
-    {
-        parent::initializeApplication();
-
-        $this->application->add(new \Jacobine\Command\GetTYPO3OrgCommand());
-        $this->application->add(new \Jacobine\Command\ConsumerCommand());
-        $this->application->add(new \Jacobine\Command\ListConsumerCommand());
-        $this->application->add(new \Jacobine\Command\ListProjectsCommand());
-        $this->application->add(new \Jacobine\Command\GitwebCommand());
-        $this->application->add(new \Jacobine\Command\GerritCommand());
-        $this->application->add(new \Jacobine\Command\NNTPCommand());
-    }
 }
