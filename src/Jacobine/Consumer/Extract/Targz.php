@@ -104,6 +104,7 @@ class Targz extends ConsumerAbstract
         // Create folder first and change the target folder of tar command via -C
         // because typo3_src-4.6.0alpha1 does not contain a parent root in tar.
         // Version typo3_src-4.6.0alpha1 is different from other versions.
+        // TODO get rid of hardcoded strings like 'typo3_src-'
         $targetFolder = 'typo3_src-' . $record['version'] . DIRECTORY_SEPARATOR;
         mkdir($targetFolder);
 
@@ -178,15 +179,19 @@ class Targz extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $versionId, $directory)
     {
-        $message = array(
+        $config = $this->getConfig();
+        $projectConfig = $config['Projects'][$project];
+        $exchange = $projectConfig['RabbitMQ']['Exchange'];
+
+        $message = [
             'project' => $project,
             'versionId' => $versionId,
             'directory' => $directory
-        );
+        ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.phploc');
-        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.pdepend');
-        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.linguist');
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.phploc');
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.pdepend');
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.linguist');
     }
 
     /**
