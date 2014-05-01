@@ -145,13 +145,16 @@ class NNTP extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $host, $groupId)
     {
-        $message = array(
+        $config = $this->getConfig();
+        $projectConfig = $config['Projects'][$project];
+
+        $message = [
             'project' => $project,
             'host' => $host,
             'groupId' => $groupId,
-        );
+        ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'crawler.nntpgroup');
+        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'crawler.nntpgroup');
     }
 
     /**
