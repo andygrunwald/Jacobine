@@ -3,6 +3,7 @@
     
     <imports>
         <import resource="services/commands.xml"/>
+        <import resource="services/consumer.xml"/>
     </imports>
 
     <services>

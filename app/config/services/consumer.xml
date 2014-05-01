@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <services>
+        <!-- Analysis consumer -->
+        <service id="consumer.analysis.cvsanaly" class="Jacobine\Consumer\Analysis\CVSAnaly">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <service id="consumer.analysis.filesize" class="Jacobine\Consumer\Analysis\Filesize">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <service id="consumer.analysis.githublinguist" class="Jacobine\Consumer\Analysis\GithubLinguist">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <service id="consumer.analysis.pdepend" class="Jacobine\Consumer\Analysis\PDepend">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <service id="consumer.analysis.phploc" class="Jacobine\Consumer\Analysis\PHPLoc">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <!-- Crawler consumer -->
+        <service id="consumer.crawler.gerrit" class="Jacobine\Consumer\Crawler\Gerrit">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <service id="consumer.crawler.gerritproject" class="Jacobine\Consumer\Crawler\GerritProject">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <service id="consumer.crawler.gitweb" class="Jacobine\Consumer\Crawler\Gitweb">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <service id="consumer.crawler.nntp" class="Jacobine\Consumer\Crawler\NNTP">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <service id="consumer.crawler.nntpgroup" class="Jacobine\Consumer\Crawler\NNTPGroup">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <!-- Download consumer -->
+        <service id="consumer.download.git" class="Jacobine\Consumer\Download\Git">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <service id="consumer.download.http" class="Jacobine\Consumer\Download\HTTP">
+            <tag name="jacobine.consumer" />
+        </service>
+
+        <!-- Extract consumer -->
+        <service id="consumer.extract.targz" class="Jacobine\Consumer\Extract\Targz">
+            <tag name="jacobine.consumer" />
+        </service>
+    </services>
+
+</container>
