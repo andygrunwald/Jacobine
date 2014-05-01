@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     
     <imports>
         <import resource="services/commands.xml"/>
@@ -9,8 +7,7 @@
 
     <services>
         <!-- Jacobine Console Application -->
-        <service id="console_application"
-                 class="Symfony\Component\Console\Application"/>
+        <service id="console_application" class="Symfony\Component\Console\Application"/>
     </services>
 
 </container>
