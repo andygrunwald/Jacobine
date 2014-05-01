@@ -77,16 +77,13 @@ class NNTPGroup extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return null|void
      */
     protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-        $groupId = (int)$messageData->groupId;
-        $nntpHost = $messageData->host;
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $groupId = (int) $message->groupId;
+        $nntpHost = $message->host;
 
         $record = $this->getNNTPGroupFromDatabase($groupId);
 
@@ -94,8 +91,7 @@ class NNTPGroup extends ConsumerAbstract
         if ($record === false) {
             $context = array('groupId' => $groupId);
             $this->getLogger()->critical('Record does not exist in nntp_group table', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('Record does not exist in nntp_group table', 1398887817);
         }
 
         $groupName = $record['name'];
@@ -114,14 +110,13 @@ class NNTPGroup extends ConsumerAbstract
             $articleNumber = (int) $nntpClient->first();
         }
 
-        $this->getLogger()->info('Select NNTP article', array('article' => $articleNumber));
+        $this->getLogger()->info('Select NNTP article', ['article' => $articleNumber]);
         $dummyArticle = $nntpClient->selectArticle($articleNumber);
 
         // Check if the last article is still the last article
         $lastArticleNumber = (int)$nntpClient->last();
         if ($articleNumber === $lastArticleNumber) {
-            $this->getLogger()->info('Group got no new articles', array('group' => $groupName));
-            $this->acknowledgeMessage($message);
+            $this->getLogger()->info('Group got no new articles', ['group' => $groupName]);
             return;
 
         } else {
@@ -130,9 +125,8 @@ class NNTPGroup extends ConsumerAbstract
 
         $pearObj = new \PEAR();
         if ($pearObj->isError($dummyArticle)) {
-            $this->getLogger()->critical('Article can not be selected', array('article' => $articleNumber));
-            $this->rejectMessage($message);
-            return;
+            $this->getLogger()->critical('Article can not be selected', ['article' => $articleNumber]);
+            throw new \Exception('Article can not be selected', 1398887859);
         }
 
         // Loop over aaaaaaall articles
@@ -193,10 +187,6 @@ class NNTPGroup extends ConsumerAbstract
 
         $nntpClient->disconnect();
         unset($nntpClient);
-
-        $this->acknowledgeMessage($message);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**
