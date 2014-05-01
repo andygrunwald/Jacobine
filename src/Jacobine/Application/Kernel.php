@@ -43,9 +43,9 @@ abstract class Kernel implements KernelInterface
     protected $booted = false;
 
     /**
-     * Dependency Dependency Injection Container Builder
+     * Dependency Injection Container
      *
-     * @var \Symfony\Component\DependencyInjection\ContainerBuilder
+     * @var \Symfony\Component\DependencyInjection\TaggedContainerInterface
      */
     protected $container;
 
@@ -135,9 +135,31 @@ abstract class Kernel implements KernelInterface
         foreach ($commandServiceIds as $serviceId => $options) {
             /** @var Command $command */
             $command = $this->container->get($serviceId);
+
+            // Inject DIC if it is needed
+            if ($this->isContainerAwareTraitUsed($command) === true) {
+                $command->setContainer($this->container);
+            }
+
             $this->application->add($command);
         }
     }
+
+    /**
+     * Checks if the ContainerAwareTrait is implemented.
+     * If this trait is implemented, we can inject the DIC.
+     *
+     * @param mixed $class
+     * @return bool
+     */
+    protected function isContainerAwareTraitUsed($class)
+    {
+        $traitName = 'Symfony\Component\DependencyInjection\ContainerAwareTrait';
+        $implementedTraits = class_uses($class);
+
+        return isset($implementedTraits[$traitName]);
+    }
+
 
     /**
      * Gets the application root dir.
