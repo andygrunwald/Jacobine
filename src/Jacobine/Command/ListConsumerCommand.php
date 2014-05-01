@@ -10,10 +10,11 @@
 
 namespace Jacobine\Command;
 
+use Jacobine\Consumer\ConsumerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Class ListConsumerCommand
@@ -21,8 +22,7 @@ use Symfony\Component\Finder\Finder;
  * Command to list all available consumer which can be used to get some messages (tasks) done.
  * This command does not execute something. It will only output a list of usable consumer.
  *
- * A consumer must be a file in directory Jacobine/Consumer.
- * Further more a consumer must extend the Jacobine\Consumer\ConsumerAbstract class.
+ * A consumer must be registered in the DIC as a consumer (tag "jacobine.consumer").
  *
  * Usage:
  *  php console analysis:list-consumer
@@ -33,12 +33,7 @@ use Symfony\Component\Finder\Finder;
 class ListConsumerCommand extends Command
 {
 
-    /**
-     * Base namespace of consumer
-     *
-     * @var String
-     */
-    const BASE_NAMESPACE = 'Jacobine\Consumer\\';
+    use ContainerAwareTrait;
 
     /**
      * Pad length for consumer name
@@ -46,13 +41,6 @@ class ListConsumerCommand extends Command
      * @var integer
      */
     const PAD_LENGTH = 30;
-
-    /**
-     * Path of consumer
-     *
-     * @var String
-     */
-    protected $consumerPath;
 
     /**
      * Configures the current command.
@@ -66,46 +54,9 @@ class ListConsumerCommand extends Command
     }
 
     /**
-     * Sets the consumer path
-     *
-     * @param String $consumerPath
-     * @return void
-     */
-    public function setConsumerPath($consumerPath)
-    {
-        $this->consumerPath = $consumerPath;
-    }
-
-    /**
-     * Gets the consumer path
-     *
-     * @return String
-     */
-    public function getConsumerPath()
-    {
-        return $this->consumerPath;
-    }
-
-    /**
-     * Initializes the command just after the input has been validated.
-     *
-     * Sets up the consumer path
-     *
-     * @param InputInterface $input An InputInterface instance
-     * @param OutputInterface $output An OutputInterface instance
-     * @return void
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        $consumerPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Consumer';
-        $consumerPath = realpath($consumerPath);
-        $this->setConsumerPath($consumerPath);
-    }
-
-    /**
      * Executes the current command.
      *
-     * Lists all available consumer.
+     * Lists all available consumer + description.
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
@@ -113,42 +64,51 @@ class ListConsumerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $path = $this->getConsumerPath();
-        $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $consumerServiceIds = $this->container->findTaggedServiceIds('jacobine.consumer');
 
-        // Get all php files in given path
-        $finder = new Finder();
-        $finder->files()->in($path)->name('*.php')->notName('*Abstract.php')->notName('*Interface.php');
+        foreach ($consumerServiceIds as $serviceId => $options) {
+            $consumer = $this->container->get($serviceId);
+            $consumerName = $this->buildConsumerName($consumer);
 
-        $basePath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
-        $basePath = realpath($basePath) . DIRECTORY_SEPARATOR;
-
-        foreach ($finder as $file) {
-            /* @var $file \SplFileInfo */
-            $className = $file->getRealpath();
-            $className = str_replace($basePath, '', $className);
-            $className = substr($className, 0, -4);
-            $className = '\\' . str_replace(DIRECTORY_SEPARATOR, '\\', $className);
-
-            // Initialize consumer and check if the parent class is ConsumerAbstract
-            $consumer = new $className();
-            $reflection = new \ReflectionClass($consumer);
-
-            $parentClass = $reflection->getParentClass();
-            if ($parentClass === false || $parentClass->getName() !== 'Jacobine\Consumer\ConsumerAbstract') {
-                continue;
-            }
-
-            $consumerName = str_replace(self::BASE_NAMESPACE, '', $className);
-            $consumerName = substr($consumerName, 1, strlen($consumerName) - 1);
-            $consumerName = str_replace('\\', '\\\\', $consumerName);
-
-            $message = str_pad($consumerName, self::PAD_LENGTH, ' ');
-            $message = '<comment>' . $message . '</comment>';
-            $message .= '<comment>' . $consumer->getDescription() . '</comment>';
-            $output->writeln($message);
+            $this->writeLine($output, $consumerName, $consumer->getDescription());
         }
 
         return null;
+    }
+
+    /**
+     * Builds the consumer name (which should be used to execute a consumer) from a consumer instance.
+     *
+     * E.g.:
+     *      $consumer: Instance of \Jacobine\Consumer\Download\Git
+     *      Return: Download\\Git
+     *
+     * @param ConsumerInterface $consumer
+     * @return string
+     */
+    protected function buildConsumerName(ConsumerInterface $consumer)
+    {
+        $className = get_class($consumer);
+        $classNameParts = explode('\\', $className);
+        $classNameParts = array_slice($classNameParts, -2);
+        $consumerName = implode('\\\\', $classNameParts);
+
+        return $consumerName;
+    }
+
+    /**
+     * Outputs one line on the console.
+     *
+     * @param OutputInterface $output
+     * @param string $name
+     * @param string $description
+     * @return void
+     */
+    protected function writeLine(OutputInterface $output, $name, $description)
+    {
+        $name = str_pad($name, self::PAD_LENGTH, ' ');
+        $message = '<comment>' . $name . '</comment>';
+        $message .= '<comment>' . $description . '</comment>';
+        $output->writeln($message);
     }
 }
