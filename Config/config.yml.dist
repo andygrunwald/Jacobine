@@ -54,7 +54,7 @@ Projects:
     MySQL:
       Database: typo3
     RabbitMQ:
-      Exchange: TYPO3
+      Exchange: JacobineAnalysis
     ReleasesPath: /var/www/analysis-data/TYPO3/releases
     GitCheckoutPath: /var/www/analysis-data/TYPO3/git
     Gitweb: https://git.typo3.org/
