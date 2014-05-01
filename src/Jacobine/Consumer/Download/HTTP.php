@@ -67,40 +67,34 @@ class HTTP extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return void
      */
     protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
-        $record = $this->getVersionFromDatabase($messageData->versionId);
+        $record = $this->getVersionFromDatabase($message->versionId);
         $context = [
-            'versionId' => $messageData->versionId
+            'versionId' => $message->versionId
         ];
 
         // If the record does not exists in the database, reject message
         if ($record === false) {
             $this->getLogger()->critical('Record does not exist in version table', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('Record does not exist in version table', 1398949703);
         }
 
         // If the file has already been downloaded, skip this message
         if (isset($record['downloaded']) === true && $record['downloaded']) {
             $this->getLogger()->info('Record marked as already downloaded', $context);
-            $this->acknowledgeMessage($message);
             return;
         }
 
         $targetTempDir = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $fileName = $messageData->filenamePrefix . $record['version'] . $messageData->filenamePostfix;
+        $fileName = $message->filenamePrefix . $record['version'] . $message->filenamePostfix;
         $downloadFile = new File($targetTempDir . $fileName);
 
         $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$messageData->project];
+        $projectConfig = $config['Projects'][$message->project];
         $targetDir = rtrim($projectConfig['ReleasesPath'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $targetFile = new File($targetDir . $fileName);
 
@@ -113,9 +107,7 @@ class HTTP extends ConsumerAbstract
             );
             $this->getLogger()->info('File already exists', $context);
             $this->setVersionAsDownloadedInDatabase($record['id']);
-            $this->acknowledgeMessage($message);
-            $this->addFurtherMessageToQueue($messageData->project, $record['id'], $targetFile->getFile());
-            $this->getLogger()->info('Finish processing message', (array)$messageData);
+            $this->addFurtherMessageToQueue($message->project, $record['id'], $targetFile->getFile());
             return;
         }
 
@@ -132,16 +124,14 @@ class HTTP extends ConsumerAbstract
                 'timeout' => $config['Various']['Downloads']['Timeout'],
             );
             $this->getLogger()->critical('Download command failed', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('Download command failed', 1398949775);
         }
 
         // If there is no file after download, exit here
         if ($downloadFile->exists() !== true) {
             $context = ['targetFile' => $downloadFile->getFile()];
             $this->getLogger()->critical('File does not exist after download', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('File does not exist after download', 1398949793);
         }
 
         if (is_dir($targetDir) === false) {
@@ -157,8 +147,7 @@ class HTTP extends ConsumerAbstract
 
         if ($renameResult !== true) {
             $this->getLogger()->critical('Rename operation failed. Rights issue?', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('Rename operation failed. Rights issue?', 1398949817);
         }
 
         // If the hashes are not equal, exit here
@@ -170,19 +159,14 @@ class HTTP extends ConsumerAbstract
                 'fileHash' => $md5Hash
             );
             $this->getLogger()->critical('Checksums for file are not equal', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('Checksums for file are not equal', 1398949838);
         }
 
         // Update the 'downloaded' flag in database
         $this->setVersionAsDownloadedInDatabase($record['id']);
 
-        $this->acknowledgeMessage($message);
-
         // Adds new messages to queue: extract the file, get filesize or tar.gz file
-        $this->addFurtherMessageToQueue($messageData->project, $record['id'], $downloadFile->getFile());
-
-        $this->getLogger()->info('Finish processing message', (array) $messageData);
+        $this->addFurtherMessageToQueue($message->project, $record['id'], $downloadFile->getFile());
     }
 
     /**
