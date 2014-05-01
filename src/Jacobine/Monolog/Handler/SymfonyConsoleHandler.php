@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * This source code was originally written by Vitaliy Zhukv.
  * He tried to submit this as PR to Monolog.
- * His sourcecode was slightly modified to fits TYPO3Analyis needs.
+ * His sourcecode was slightly modified to fits Jacobine`s needs.
  * Thanks to Vitaliy!
  *
  * @link https://github.com/Seldaek/monolog/pull/156
