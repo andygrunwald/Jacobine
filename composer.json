@@ -32,7 +32,6 @@
         "ext-curl": "*",
         "videlalvaro/php-amqplib": "2.2.*",
         "kriswallsmith/buzz": "0.10",
-        "symfony/class-loader": "2.4.*",
         "symfony/yaml": "2.4.*",
         "symfony/console": "2.4.*",
         "symfony/finder": "2.4.*",
