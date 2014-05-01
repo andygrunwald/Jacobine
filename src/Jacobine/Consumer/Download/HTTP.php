@@ -195,14 +195,17 @@ class HTTP extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $id, $file)
     {
-        $message = array(
+        $config = $this->getConfig();
+        $projectConfig = $config['Projects'][$project];
+
+        $message = [
             'project' => $project,
             'versionId' => $id,
             'filename' => $file
-        );
+        ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'extract.targz');
-        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.filesize');
+        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'extract.targz');
+        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'analysis.filesize');
     }
 
     /**
