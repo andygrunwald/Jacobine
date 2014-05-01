@@ -50,7 +50,7 @@ To list all available consumers execute `php console analysis:list-consumer`.
 
 ## Requirements
 
-* PHP >= 5.4
+* PHP >= 5.5
 
 ## Contributing + Usage
 
