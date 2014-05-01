@@ -18,24 +18,52 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 abstract class Kernel
 {
-    protected $rootDir;
+    /**
+     * Root directory of application
+     *
+     * @var string
+     */
+    protected $rootDir = null;
+
+    /**
+     * Flag if the application is already booted
+     *
+     * @var bool
+     */
     protected $booted = false;
 
     /**
-     * @var ContainerBuilder
+     * Dependency Dependency Injection Container Builder
+     *
+     * @var \Symfony\Component\DependencyInjection\ContainerBuilder
      */
     protected $container;
 
     /**
-     * @var Application
+     * Console application
+     *
+     * @var \Symfony\Component\Console\Application
      */
-    protected $application;
+    protected $application = null;
 
-    function __construct()
+    /**
+     * Constructor of the Kernel
+     *
+     * @return \Jacobine\Application\Kernel
+     */
+    public function __construct()
     {
         $this->rootDir = $this->getRootDir();
     }
 
+    /**
+     * Entry point to run the application.
+     * This is the first method to call.
+     *
+     * For an example have a look at the console file
+     *
+     * @return void
+     */
     public function run()
     {
         $this->boot();
@@ -44,10 +72,12 @@ abstract class Kernel
 
     /**
      * Boots the current kernel.
+     *
+     * @return void
      */
     protected function boot()
     {
-        if ($this->booted) {
+        if ($this->booted === true) {
             return;
         }
 
@@ -60,24 +90,32 @@ abstract class Kernel
     /**
      * Initializes the service container.
      *
-     * The cached version of the service container is used when fresh,
-     * otherwise the container is built.
+     * The cached version of the service container is used when fresh, otherwise the container is built.
+     *
+     * @return void
      */
     protected function initializeContainer()
     {
         $this->container = new ContainerBuilder();
 
-        // load xml config
-        $loader = new XmlFileLoader($this->container, new FileLocator($this->getRootDir() . '/config'));
+        // Load xml config
+        $fileLocator = new FileLocator($this->getRootDir() . '/config');
+
+        $loader = new XmlFileLoader($this->container, $fileLocator);
         $loader->load('services.xml');
     }
 
     /**
      * Initializes the console application.
+     *
+     * For example:
+     *  Adds all console commands via DIC tag to the application
+     *
+     * @return void
      */
     protected function initializeApplication()
     {
-        if ($this->application) {
+        if ($this->application !== null) {
             return;
         }
 
@@ -98,7 +136,7 @@ abstract class Kernel
      */
     public function getRootDir()
     {
-        if (null === $this->rootDir) {
+        if ($this->rootDir === null) {
             $r = new \ReflectionObject($this);
             $this->rootDir = str_replace('\\', '/', dirname($r->getFileName()));
         }
