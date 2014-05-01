@@ -133,13 +133,16 @@ class Git extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $id, $dir)
     {
+        $config = $this->getConfig();
+        $projectConfig = $config['Projects'][$project];
+
         $message = [
             'project' => $project,
             'gitwebId' => $id,
             'checkoutDir' => $dir
         ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'analysis.cvsanaly');
+        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'analysis.cvsanaly');
     }
 
     /**
