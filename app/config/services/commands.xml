@@ -28,8 +28,8 @@
                  class="Jacobine\Command\GerritCommand">
             <tag name="jacobine.command" />
         </service>
-        <service id="command.GerritCommand"
-                 class="Jacobine\Command\GerritCommand">
+        <service id="command.NNTPCommand"
+                 class="Jacobine\Command\NNTPCommand">
             <tag name="jacobine.command" />
         </service>
     </services>
