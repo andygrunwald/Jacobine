@@ -8,10 +8,6 @@
  * file that was distributed with this source code.
  */
 
-/**
- * File to initialize various constants
- *
- * TODO Get rid of the constants!
- */
-
-define('CONFIG_FILE', __DIR__ . '/Config/config.yml');
+class AppKernel extends \Jacobine\Application\Kernel
+{
+}

@@ -15,23 +15,11 @@
  * Type `console list` for all commands
  */
 
-require_once __DIR__ . '/Bootstrap.php';
+// TODO Remove this constant!!
+define('CONFIG_FILE', __DIR__ . '/Config/config.yml');
 
-use Symfony\Component\Console\Application;
-use Jacobine\Command\GetTYPO3OrgCommand;
-use Jacobine\Command\ListConsumerCommand;
-use Jacobine\Command\ListProjectsCommand;
-use Jacobine\Command\ConsumerCommand;
-use Jacobine\Command\GitwebCommand;
-use Jacobine\Command\GerritCommand;
-use Jacobine\Command\NNTPCommand;
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/app/AppKernel.php';
 
-$console = new Application();
-$console->add(new GetTYPO3OrgCommand());
-$console->add(new ConsumerCommand());
-$console->add(new ListConsumerCommand());
-$console->add(new ListProjectsCommand());
-$console->add(new GitwebCommand());
-$console->add(new GerritCommand());
-$console->add(new NNTPCommand());
-$console->run();
+$kernel = new AppKernel();
+$kernel->run();

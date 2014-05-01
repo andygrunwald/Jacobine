@@ -9,7 +9,7 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="true"
-         bootstrap="Bootstrap.php">
+         bootstrap="src/Jacobine/Tests/Bootstrap.php">
 
     <testsuites>
         <testsuite name="Jacobine Test Suite">
