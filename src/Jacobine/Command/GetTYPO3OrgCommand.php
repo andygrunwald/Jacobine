@@ -46,18 +46,18 @@ class GetTYPO3OrgCommand extends Command
     const JSON_FILE_URL = 'http://get.typo3.org/json';
 
     /**
-     * Message Queue Exchange
-     *
-     * @var string
-     */
-    const EXCHANGE = 'TYPO3';
-
-    /**
      * Message Queue routing
      *
      * @var string
      */
     const ROUTING = 'download.http';
+
+    /**
+     * Project identifier
+     *
+     * @var string
+     */
+    const PROJECT = 'TYPO3';
 
     /**
      * Config
@@ -86,6 +86,13 @@ class GetTYPO3OrgCommand extends Command
      * @var \Jacobine\Helper\MessageQueue
      */
     protected $messageQueue;
+
+    /**
+     * Message Queue Exchange
+     *
+     * @var string
+     */
+    protected $exchange;
 
     /**
      * Configures the current command.
@@ -119,7 +126,9 @@ class GetTYPO3OrgCommand extends Command
 
         // Database client
         $config = $this->config['MySQL'];
-        $projectConfig = $this->config['Projects']['TYPO3'];
+        // The project is hardcoded here, because this command is special for the OpenSourceProject TYPO3
+        $projectConfig = $this->config['Projects'][self::PROJECT];
+        $this->exchange = $projectConfig['RabbitMQ']['Exchange'];
 
         $databaseFactory = new DatabaseFactory();
         // TODO Refactor this to use a config entity or an array
@@ -177,13 +186,13 @@ class GetTYPO3OrgCommand extends Command
                 // If the current version is not downloaded yet, queue it
                 if (!$versionRecord['downloaded']) {
                     $message = array(
-                        'project' => 'TYPO3',
+                        'project' => self::PROJECT,
                         'versionId' => $versionRecord['id'],
                         'filenamePrefix' => 'typo3_',
                         'filenamePostfix' => '.tar.gz',
                     );
 
-                    $this->messageQueue->sendSimpleMessage($message, self::EXCHANGE, self::ROUTING);
+                    $this->messageQueue->sendSimpleMessage($message, $this->exchange, self::ROUTING);
                 }
             }
         }
