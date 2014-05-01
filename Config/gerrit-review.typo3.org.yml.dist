@@ -16,7 +16,7 @@ Database:
   Port: 3306
   # Database name
   # Required
-  Name: typo3
+  Name: jacobine
 
 #
 # Configuration of executables

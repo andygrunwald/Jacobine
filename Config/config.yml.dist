@@ -52,7 +52,7 @@ Various:
 Projects:
   TYPO3:
     MySQL:
-      Database: typo3
+      Database: jacobine
     RabbitMQ:
       Exchange: JacobineAnalysis
     ReleasesPath: /var/www/analysis-data/TYPO3/releases
