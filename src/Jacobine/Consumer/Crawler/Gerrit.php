@@ -145,6 +145,9 @@ class Gerrit extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $serverId, $projectId, $configFile)
     {
+        $config = $this->getConfig();
+        $projectConfig = $config['Projects'][$project];
+
         $message = array(
             'project' => $project,
             'projectId' => $projectId,
@@ -152,7 +155,7 @@ class Gerrit extends ConsumerAbstract
             'configFile' => $configFile
         );
 
-        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'crawler.gerritproject');
+        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'crawler.gerritproject');
     }
 
     /**
