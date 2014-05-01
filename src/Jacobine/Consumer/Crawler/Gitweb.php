@@ -174,12 +174,15 @@ class Gitweb extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $id)
     {
-        $message = array(
+        $config = $this->getConfig();
+        $projectConfig = $config['Projects'][$project];
+
+        $message = [
             'project' => $project,
             'id' => $id
-        );
+        ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, 'TYPO3', 'download.git');
+        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'download.git');
     }
 
     /**
