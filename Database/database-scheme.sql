@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS `typo3`;
+CREATE DATABASE IF NOT EXISTS `jacobine`;
 
-USE `typo3`;
+USE `jacobine`;
 
 CREATE TABLE IF NOT EXISTS `versions` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of version',
