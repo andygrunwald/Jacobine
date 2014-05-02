@@ -15,6 +15,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Class ListConsumerCommand
@@ -30,7 +31,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
  * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
-class ListConsumerCommand extends Command
+class ListConsumerCommand extends Command implements ContainerAwareInterface
 {
 
     use ContainerAwareTrait;

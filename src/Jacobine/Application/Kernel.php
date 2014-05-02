@@ -137,29 +137,13 @@ abstract class Kernel implements KernelInterface
             $command = $this->container->get($serviceId);
 
             // Inject DIC if it is needed
-            if ($this->isContainerAwareTraitUsed($command) === true) {
+            if ($command instanceof \Symfony\Component\DependencyInjection\ContainerAwareInterface) {
                 $command->setContainer($this->container);
             }
 
             $this->application->add($command);
         }
     }
-
-    /**
-     * Checks if the ContainerAwareTrait is implemented.
-     * If this trait is implemented, we can inject the DIC.
-     *
-     * @param mixed $class
-     * @return bool
-     */
-    protected function isContainerAwareTraitUsed($class)
-    {
-        $traitName = 'Symfony\Component\DependencyInjection\ContainerAwareTrait';
-        $implementedTraits = class_uses($class);
-
-        return isset($implementedTraits[$traitName]);
-    }
-
 
     /**
      * Gets the application root dir.
