@@ -67,57 +67,45 @@ class PDepend extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return void
      */
-    public function process($message)
+    protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
         // If there is no directory to analyse, exit here
-        if (is_dir($messageData->directory) !== true) {
-            $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->directory));
-            $this->rejectMessage($message);
-            return;
+        if (is_dir($message->directory) !== true) {
+            $this->getLogger()->critical('Directory does not exist', ['directory' => $message->directory]);
+            throw new \Exception('Directory does not exist', 1398886309);
         }
 
-        $dirToAnalyze = rtrim($messageData->directory, DIRECTORY_SEPARATOR);
+        $dirToAnalyze = rtrim($message->directory, DIRECTORY_SEPARATOR);
         $analysisFiles = $this->generateAnalysisFilenames($dirToAnalyze);
 
         // If there was already a pDepend run, all files must be exist. If yes, exit here
         if ($this->doesAnalysisFilesAlreadyExists($analysisFiles) === true) {
             $context = array(
-                'versionId' => $messageData->versionId,
-                'directory' => $messageData->directory
+                'versionId' => $message->versionId,
+                'directory' => $message->directory
             );
             $this->getLogger()->info('Directory already analyzed with pDepend', $context);
-            $this->acknowledgeMessage($message);
             return;
         }
 
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->executePDepend($dirToAnalyze, $analysisFiles, $messageData->project);
+        list($process, $exception) = $this->executePDepend($dirToAnalyze, $analysisFiles, $message->project);
         if ($exception !== null || $process->isSuccessful() === false) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('pDepend command failed', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('pDepend command failed', 1398886366);
         }
 
         if ($this->doesMinimumOneAnalysisFileNotExists($analysisFiles) === true) {
             $context = $analysisFiles;
             $this->getLogger()->critical('pDepend analysis result files does not exist!', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('pDepend analysis result files does not exist!', 1398886405);
         }
 
         // @todo add further consumer to parse and store the jDependXml- and summaryXml-file
-
-        $this->acknowledgeMessage($message);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**

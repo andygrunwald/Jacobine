@@ -73,19 +73,14 @@ class NNTP extends ConsumerAbstract
      * @param \stdClass $message
      * @return null|void
      */
-    public function process($message)
+    protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-        $nntpConfig = $messageData->config;
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
+        $nntpConfig = $message->config;
 
         if (is_object($nntpConfig) === false || property_exists($nntpConfig, 'Host') === false) {
             $context = array('config' => $nntpConfig);
             $this->getLogger()->critical('NNTP configuration does not exist or is incomplete', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('NNTP configuration does not exist or is incomplete', 1398887703);
         }
 
         // Bootstrap NNTP Client
@@ -123,16 +118,12 @@ class NNTP extends ConsumerAbstract
             }
 
             $context = array(
-                'project' => $messageData->project,
+                'project' => $message->project,
                 'groupId' => $id
             );
             $this->getLogger()->info('Add nntp group to message queue "crawler.nntpgroup"', $context);
-            $this->addFurtherMessageToQueue($messageData->project, $nntpConfig->Host, $id);
+            $this->addFurtherMessageToQueue($message->project, $nntpConfig->Host, $id);
         }
-
-        $this->acknowledgeMessage($message);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**

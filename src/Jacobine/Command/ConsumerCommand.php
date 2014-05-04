@@ -303,7 +303,7 @@ class ConsumerCommand extends Command
         $logger->info('Consumer starts', array('consumer' => $consumerIdent));
 
         // Register consumer at message queue
-        $callback = array($consumer, 'process');
+        $callback = array($consumer, 'consume');
         $this->messageQueue->basicConsume(
             $consumer->getExchangeOptions(),
             $consumer->getQueueOptions(),

@@ -66,27 +66,22 @@ class Git extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return void
      */
-    public function process($message)
+    protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
-        $record = $this->getGitwebFromDatabase($messageData->id);
-        $context = ['id' => $messageData->id];
+        $record = $this->getGitwebFromDatabase($message->id);
+        $context = ['id' => $message->id];
 
         // If the record does not exists in the database exit here
         if ($record === false) {
             $this->getLogger()->critical('Record does not exist in gitweb table', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('Record does not exist in gitweb table', 1398949576);
         }
 
         $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$messageData->project];
+        $projectConfig = $config['Projects'][$message->project];
         $checkoutPath = $projectConfig['GitCheckoutPath'];
         $checkoutPath = rtrim($checkoutPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
@@ -111,16 +106,11 @@ class Git extends ConsumerAbstract
             $context = $this->getContextOfCommand($process, $exception);
             $logMessage = sprintf('git %s failed', $action);
             $this->getLogger()->error($logMessage, $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception($logMessage, 1398949618);
         }
 
-        $this->acknowledgeMessage($message);
-
         // Adds new messages to queue: Analyze this via CVSAnalY
-        $this->addFurtherMessageToQueue($messageData->project, $record['id'], $checkoutPath);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
+        $this->addFurtherMessageToQueue($message->project, $record['id'], $checkoutPath);
     }
 
     /**

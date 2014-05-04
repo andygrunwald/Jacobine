@@ -80,25 +80,23 @@ class Gitweb extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return void
      */
-    public function process($message)
+    protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
         try {
-            $content = $this->getContent($this->browser, $messageData->url);
+            $content = $this->getContent($this->browser, $message->url);
+
         } catch (\Exception $e) {
+            // TODO This seems to be not so smart to catch an exception and throw a new one
+            // I do this because of the error message. Maybe there is a better way?
             $context = array(
-                'url' => $messageData->url,
+                'url' => $message->url,
                 'message' => $e->getMessage()
             );
             $this->getLogger()->error('Reading gitweb frontend failed', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('Reading gitweb frontend failed', 1398887554);
         }
 
         $crawler = new Crawler($content);
@@ -109,7 +107,7 @@ class Gitweb extends ConsumerAbstract
             $name = $node->nodeValue;
 
             $href = $node->getAttribute('href');
-            $detailUrl = rtrim($messageData->url, '/') . $href;
+            $detailUrl = rtrim($message->url, '/') . $href;
             try {
                 $content = $this->getContent($this->browser, $detailUrl);
             } catch (\Exception $e) {
@@ -130,12 +128,8 @@ class Gitweb extends ConsumerAbstract
                 $this->getLogger()->info('Gitweb record already exists', array('git' => $gitUrl));
             }
 
-            $this->addFurtherMessageToQueue($messageData->project, $id);
+            $this->addFurtherMessageToQueue($message->project, $id);
         }
-
-        $this->acknowledgeMessage($message);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**

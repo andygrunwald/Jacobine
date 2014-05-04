@@ -64,40 +64,33 @@ class Targz extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return void
      */
-    public function process($message)
+    protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
-        $record = $this->getVersionFromDatabase($messageData->versionId);
-        $context = array('versionId' => $messageData->versionId);
+        $record = $this->getVersionFromDatabase($message->versionId);
+        $context = ['versionId' => $message->versionId];
 
         // If the record does not exists in the database exit here
         if ($record === false) {
             $this->getLogger()->critical('Record does not exist in version table', $context);
-            $this->rejectMessage($message);
-            return;
+            throw new \Exception('Record does not exist in version table', 1398949998);
         }
 
         // If the file has already been extracted exit here
         if (isset($record['extracted']) === true && $record['extracted']) {
             $this->getLogger()->info('Record marked as already extracted', $context);
-            $this->acknowledgeMessage($message);
             return;
         }
 
         // If there is no file, exit here
-        if (file_exists($messageData->filename) !== true) {
-            $this->getLogger()->critical('File does not exist', array('filename' => $messageData->filename));
-            $this->rejectMessage($this->getMessage());
-            return;
+        if (file_exists($message->filename) !== true) {
+            $this->getLogger()->critical('File does not exist', ['filename' => $message->filename]);
+            throw new \Exception('File does not exist', 1398950024);
         }
 
-        $pathInfo = pathinfo($messageData->filename);
+        $pathInfo = pathinfo($message->filename);
         $folder = rtrim($pathInfo['dirname'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         chdir($folder);
 
@@ -109,32 +102,26 @@ class Targz extends ConsumerAbstract
         mkdir($targetFolder);
 
         if (is_dir($targetFolder) === false) {
-            $this->getLogger()->critical('Directory can`t be created', array('folder' => $folder));
-            $this->rejectMessage($this->getMessage());
-            return;
+            $this->getLogger()->critical('Directory can`t be created', ['folder' => $folder]);
+            throw new \Exception('Directory can`t be created', 1398950058);
         }
 
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->extractArchive($messageData->filename, $targetFolder);
+        list($process, $exception) = $this->extractArchive($message->filename, $targetFolder);
         if ($exception !== null || $process->isSuccessful() === false) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('Extract command failed', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('Extract command failed', 1398950082);
         }
 
         // Set the correct access rights. 0777 is a bit to much ;)
         chmod($targetFolder, 0744);
 
         // Store in the database, that a file is extracted ;)
-        $this->setVersionAsExtractedInDatabase($messageData->versionId);
-
-        $this->acknowledgeMessage($message);
+        $this->setVersionAsExtractedInDatabase($message->versionId);
 
         // Adds new messages to queue: analyze phploc
-        $this->addFurtherMessageToQueue($messageData->project, $record['id'], $folder . $targetFolder);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
+        $this->addFurtherMessageToQueue($message->project, $record['id'], $folder . $targetFolder);
     }
 
     /**

@@ -356,6 +356,53 @@ abstract class ConsumerAbstract implements ConsumerInterface
     }
 
     /**
+     * Method to consume a single message delivered by the message broker.
+     * The message broker will put its message into this method and the message will be consumed.
+     *
+     * In the regular case this consume method is not overwritten by any special implementation of a consumer.
+     * It provides a general handling for a single process() to provide a more convenient handling of messages.
+     *
+     * @param \stdClass $message
+     * @return void
+     */
+    public function consume($message)
+    {
+        $this->setMessage($message);
+        $messageData = json_decode($message->body);
+
+        $this->getLogger()->info('Receiving message', (array) $messageData);
+
+        // @TODO Refactore consumer to throw only exceptions
+        // @TODO do we need a special kind of ConsumerException to handle a "data bag" for $context?
+        try {
+            $this->process($messageData);
+
+        } catch(\Exception $e) {
+            $context = [
+                'message' => (array) $messageData,
+                'exceptionCode' => $e->getCode(),
+                'exceptionMessage' => $e->getMessage(),
+                'exceptionFile' => $e->getFile()
+            ];
+            $this->getLogger()->critical('Consume process of message failed', $context);
+            $this->rejectMessage($message);
+            return;
+        }
+
+        $this->acknowledgeMessage($message);
+        $this->getLogger()->info('Finish processing message', (array) $messageData);
+    }
+
+    /**
+     * The (business) logic of the consumer.
+     * Will be called by the public API ($this->consume()).
+     *
+     * @param \stdClass $message
+     * @return void
+     */
+    abstract protected function process($message);
+
+    /**
      * Provides a context (e.g. for logging) of a executed command.
      *
      * @param \Symfony\Component\Process\Process $process

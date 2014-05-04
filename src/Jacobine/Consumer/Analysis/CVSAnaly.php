@@ -71,34 +71,24 @@ class CVSAnaly extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return void
      */
-    public function process($message)
+    protected function process($message)
     {
-        $this->setMessage($message);
-        $messageData = json_decode($message->body);
-
-        $this->getLogger()->info('Receiving message', (array) $messageData);
-
         // If there is no directory to analyse, exit here
-        if (is_dir($messageData->checkoutDir) !== true) {
-            $this->getLogger()->critical('Directory does not exist', array('directory' => $messageData->checkoutDir));
-            $this->rejectMessage($message);
-            return;
+        if (is_dir($message->checkoutDir) !== true) {
+            $this->getLogger()->critical('Directory does not exist', ['directory' => $message->checkoutDir]);
+            throw new \Exception('Directory does not exist', 1398885152);
         }
 
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->executeCVSAnaly($messageData->checkoutDir, $messageData->project);
+        list($process, $exception) = $this->executeCVSAnaly($message->checkoutDir, $message->project);
         if ($exception !== null || $process->isSuccessful() === false) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('CVSAnaly command failed', $context);
-            $this->rejectMessage($this->getMessage());
-            return;
+            throw new \Exception('CVSAnaly command failed', 1398885269);
         }
-
-        $this->acknowledgeMessage($message);
-
-        $this->getLogger()->info('Finish processing message', (array)$messageData);
     }
 
     /**

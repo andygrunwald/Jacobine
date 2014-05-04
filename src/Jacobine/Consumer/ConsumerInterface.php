@@ -39,12 +39,16 @@ interface ConsumerInterface
     public function initialize();
 
     /**
-     * The logic of the consumer
+     * Method to consume a single message delivered by the message broker.
+     * The message broker will put its message into this method and the message will be consumed.
+     *
+     * In the regular case this consume method is not overwritten by any special implementation of a consumer.
+     * It provides a general handling for a single process() to provide a more convenient handling of messages.
      *
      * @param \stdClass $message
      * @return void
      */
-    public function process($message);
+    public function consume($message);
 
     /**
      * Returns the queue options
