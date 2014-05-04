@@ -198,7 +198,7 @@ class NNTPGroup extends ConsumerAbstract
     private function getNNTPGroupFromDatabase($id)
     {
         $fields = array('id', 'name', 'last_indexed');
-        $rows = $this->getDatabase()->getRecords($fields, 'nntp_group', array('id' => $id), '', '', 1);
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_nntp_group', array('id' => $id), '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -220,7 +220,7 @@ class NNTPGroup extends ConsumerAbstract
     {
         $data = array('last_indexed' => $lastIndexedArticle);
         $where = array('id' => $groupId);
-        $this->getDatabase()->updateRecord('nntp_group', $data, $where);
+        $this->getDatabase()->updateRecord('jacobine_nntp_group', $data, $where);
     }
 
     /**
@@ -254,7 +254,7 @@ class NNTPGroup extends ConsumerAbstract
             'article_no' => $articleNumber,
             'message' => $body
         );
-        $insertedId = $this->getDatabase()->insertRecord('nntp_article', $data);
+        $insertedId = $this->getDatabase()->insertRecord('jacobine_nntp_article', $data);
         return $insertedId;
     }
 
@@ -282,7 +282,7 @@ class NNTPGroup extends ConsumerAbstract
                 'header' => $headerName,
                 'content' => $header
             );
-            $this->getDatabase()->insertRecord('nntp_article_header', $data);
+            $this->getDatabase()->insertRecord('jacobine_nntp_article_header', $data);
         }
     }
 
@@ -424,7 +424,7 @@ class NNTPGroup extends ConsumerAbstract
             'group_id' => $groupId,
             'article_no' => $articleNumber,
         );
-        $rows = $this->getDatabase()->getRecords(array('id'), 'nntp_article', $where);
+        $rows = $this->getDatabase()->getRecords(array('id'), 'jacobine_nntp_article', $where);
 
         $result = false;
         if (count($rows)) {

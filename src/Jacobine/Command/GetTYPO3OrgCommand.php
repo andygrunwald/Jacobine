@@ -222,7 +222,7 @@ class GetTYPO3OrgCommand extends Command
             'url_zip' => $versionData['url']['zip'],
             'downloaded' => 0
         );
-        $data['id'] = $this->database->insertRecord('versions', $data);
+        $data['id'] = $this->database->insertRecord('jacobine_versions', $data);
         return $data;
     }
 
@@ -236,7 +236,7 @@ class GetTYPO3OrgCommand extends Command
     {
         $rows = $this->database->getRecords(
             array('id', 'downloaded'),
-            'versions',
+            'jacobine_versions',
             array('version' => $version),
             '',
             '',

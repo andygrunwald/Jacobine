@@ -248,7 +248,7 @@ class Git extends ConsumerAbstract
     private function getGitwebFromDatabase($id)
     {
         $fields = ['id', 'name', 'git'];
-        $rows = $this->getDatabase()->getRecords($fields, 'gitweb', ['id' => $id], '', '', 1);
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_gitweb', ['id' => $id], '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {

@@ -153,7 +153,7 @@ class GithubLinguist extends ConsumerAbstract
         $this->getLogger()->info('Store linguist information in database', array('version' => $versionId));
         foreach ($result as $language) {
             $language['version'] = $versionId;
-            $insertedId = $this->getDatabase()->insertRecord('linguist', $language);
+            $insertedId = $this->getDatabase()->insertRecord('jacobine_linguist', $language);
 
             if (!$insertedId) {
                 $message = 'Insert of language failed';
@@ -172,7 +172,7 @@ class GithubLinguist extends ConsumerAbstract
      */
     protected function clearLinguistRecordsFromDatabase($versionId)
     {
-        $deleteResult = $this->getDatabase()->deleteRecords('linguist', array('version' => intval($versionId)));
+        $deleteResult = $this->getDatabase()->deleteRecords('jacobine_linguist', array('version' => intval($versionId)));
 
         if ($deleteResult === false) {
             $msg = 'Delete of linguist records for version failed';

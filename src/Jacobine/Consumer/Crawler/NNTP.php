@@ -157,7 +157,7 @@ class NNTP extends ConsumerAbstract
     private function getGroupFromDatabase($group)
     {
         $fields = array('id');
-        $rows = $this->getDatabase()->getRecords($fields, 'nntp_group', array('name' => $group), '', '', 1);
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_nntp_group', array('name' => $group), '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -191,6 +191,6 @@ class NNTP extends ConsumerAbstract
         );
 
         $this->getLogger()->info('Inserted new nntp_group record', $data);
-        return $this->getDatabase()->insertRecord('nntp_group', $data);
+        return $this->getDatabase()->insertRecord('jacobine_nntp_group', $data);
     }
 }

@@ -188,7 +188,7 @@ class Gitweb extends ConsumerAbstract
     private function getGitwebFromDatabase($repository)
     {
         $fields = array('id');
-        $rows = $this->getDatabase()->getRecords($fields, 'gitweb', array('git' => $repository), '', '', 1);
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_gitweb', array('git' => $repository), '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -214,6 +214,6 @@ class Gitweb extends ConsumerAbstract
         );
 
         $this->getLogger()->info('Inserted new gitweb record', $data);
-        return $this->getDatabase()->insertRecord('gitweb', $data);
+        return $this->getDatabase()->insertRecord('jacobine_gitweb', $data);
     }
 }

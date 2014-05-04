@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS `jacobine`;
 
 USE `jacobine`;
 
-CREATE TABLE IF NOT EXISTS `versions` (
+CREATE TABLE IF NOT EXISTS `jacobine_versions` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of version',
 	`branch` varchar(4) DEFAULT NULL COMMENT 'Branch of version. E.g. 4.7, 6.0',
 	`version` varchar(13) DEFAULT NULL COMMENT 'Specific version. E.g. 4.7.3, 4.7.4, 6.0.1',
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `versions` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `phploc` (
+CREATE TABLE IF NOT EXISTS `jacobine_phploc` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of phploc record',
 	`version` int(11) unsigned NOT NULL COMMENT 'id field of version table',
 	`directories` int(11) unsigned DEFAULT '0' COMMENT 'Number of directories',
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `phploc` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `linguist` (
+CREATE TABLE IF NOT EXISTS `jacobine_linguist` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of linguist record',
 	`version` int(11) unsigned NOT NULL COMMENT 'id field of version table',
 	`percent` decimal(5,2) unsigned DEFAULT '0.00' COMMENT 'Percent of programming language',
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `linguist` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `gitweb` (
+CREATE TABLE IF NOT EXISTS `jacobine_gitweb` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of gitweb project',
 	`name` varchar(200) DEFAULT NULL COMMENT 'Name of git project',
 	`git` varchar(200) DEFAULT NULL COMMENT 'Address of git repository',
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `gitweb` (
 	UNIQUE KEY `git` (`git`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `nntp_group` (
+CREATE TABLE IF NOT EXISTS `jacobine_nntp_group` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of nntp group',
 	`name` varchar(200) DEFAULT NULL COMMENT 'Name of nntp group',
 	`description` varchar(255) DEFAULT NULL COMMENT 'Description of nntp group',
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `nntp_group` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `nntp_article` (
+CREATE TABLE IF NOT EXISTS `jacobine_nntp_article` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of a nntp article',
 	`group_id` int(11) unsigned DEFAULT '0' COMMENT 'ID of nntp group',
 	`article_no` int(11) unsigned DEFAULT '0' COMMENT 'Number of nntp article',
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `nntp_article` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `nntp_article_header` (
+CREATE TABLE IF NOT EXISTS `jacobine_nntp_article_header` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of a nntp article header',
 	`article_id` int(11) unsigned DEFAULT '0' COMMENT 'ID of nntp article',
 	`header` varchar(100) DEFAULT NULL COMMENT 'Name of header',

@@ -212,7 +212,7 @@ class PHPLoc extends ConsumerAbstract
             'global_constant_accesses' => (int) $phpLocResults->globalConstantAccesses,
         );
 
-        $insertedId = $this->getDatabase()->insertRecord('phploc', $data);
+        $insertedId = $this->getDatabase()->insertRecord('jacobine_phploc', $data);
 
         $msg = 'Stored analzye results for version record in PHPLoc record';
         $context = array('versionId' => $versionId, 'phpLocRecord' => $insertedId);
@@ -228,7 +228,7 @@ class PHPLoc extends ConsumerAbstract
     private function getPhpLocDataFromDatabase($id)
     {
         $fields = array('version');
-        $rows = $this->getDatabase()->getRecords($fields, 'phploc', array('version' => $id), '', '', 1);
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_phploc', array('version' => $id), '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
