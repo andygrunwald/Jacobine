@@ -95,6 +95,8 @@ class Gerrit extends ConsumerAbstract
         $gerrieDataService = \Gerrie\Helper\Factory::getDataService($gerrieConfig, $project);
 
         $gerrie = new \Gerrie\Gerrie($gerrieDatabase, $gerrieDataService, $projectConfig);
+        $gerrie->setOutput($this->getLogger());
+
         $gerritHost = $gerrieDataService->getHost();
         $gerritServerId = $gerrie->proceedServer($project, $gerritHost);
 
