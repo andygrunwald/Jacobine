@@ -19,11 +19,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Yaml\Yaml;
-use Jacobine\Helper\AMQPFactory;
-use Jacobine\Helper\Database;
-use Jacobine\Helper\DatabaseFactory;
-use Jacobine\Helper\MessageQueue;
 use Jacobine\Monolog\Handler\SymfonyConsoleHandler;
 
 /**
@@ -44,8 +42,10 @@ use Jacobine\Monolog\Handler\SymfonyConsoleHandler;
  * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
-class ConsumerCommand extends Command
+class ConsumerCommand extends Command implements ContainerAwareInterface
 {
+
+    use ContainerAwareTrait;
 
     /**
      * MessageQueue connection
@@ -129,48 +129,8 @@ class ConsumerCommand extends Command
         $this->setProject($input->getOption('project'));
         $this->config = Yaml::parse(CONFIG_FILE);
 
-        $this->database = $this->initializeDatabase($this->config);
-        $this->messageQueue = $this->initializeMessageQueue($this->config);
-    }
-
-    /**
-     * Initialize the database connection
-     *
-     * @param array $parsedConfig
-     * @return \Jacobine\Helper\Database
-     * @throws \Exception
-     */
-    private function initializeDatabase($parsedConfig)
-    {
-        if (array_key_exists($this->getProject(), $parsedConfig['Projects']) === false) {
-            throw new \Exception('Configuration for project "' . $this->getProject() . '" does not exist', 1368101351);
-        }
-
-        $config = $parsedConfig['MySQL'];
-        $projectConfig = $parsedConfig['Projects'][$this->getProject()];
-
-        $databaseFactory = new DatabaseFactory();
-        // TODO Refactor this to use a config entity or an array
-        $database = new Database($databaseFactory, $config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
-
-        return $database;
-    }
-
-    /**
-     * Initialize the message queue object
-     *
-     * @param array $parsedConfig
-     * @return \Jacobine\Helper\MessageQueue
-     */
-    private function initializeMessageQueue($parsedConfig)
-    {
-        $config = $parsedConfig['RabbitMQ'];
-
-        $amqpFactory = new AMQPFactory();
-        $amqpConnection = $amqpFactory->createConnection($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
-        $messageQueue = new MessageQueue($amqpConnection, $amqpFactory);
-
-        return $messageQueue;
+        $this->database = $this->container->get('helper.database');
+        $this->messageQueue = $this->container->get('helper.messageQueue');
     }
 
     /**
