@@ -113,6 +113,8 @@ abstract class Kernel implements KernelInterface
 
         $loader = new XmlFileLoader($this->container, $fileLocator);
         $loader->load('services.xml');
+
+        $this->container->compile();
     }
 
     /**
