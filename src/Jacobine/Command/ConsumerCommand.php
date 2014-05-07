@@ -136,6 +136,8 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
     /**
      * Initialize the configured logger for consumer
      *
+     * TODO Extract Logger to LoggerFactory
+     *
      * @param array $parsedConfig
      * @param string $consumer
      * @param OutputInterface $output
@@ -238,17 +240,20 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $consumerIdent = $input->getArgument('consumer');
-        $consumerToGet = '\\Jacobine\\Consumer\\' . $consumerIdent;
+        $consumerToGet = str_replace('\\', '.', $consumerIdent);
+        $consumerToGet = 'consumer.' . strtolower($consumerToGet);
 
         // If the consumer does not exists exit here
-        if (class_exists($consumerToGet) === false) {
+        if ($this->container->has($consumerToGet) === false) {
             throw new \Exception('A consumer like "' . $consumerIdent . '" does not exist', 1368100583);
         }
 
         $logger = $this->initializeLogger($this->config, $consumerIdent, $output);
 
+        // TODO Port every consumer to DIC usage
+        // TODO Remove setDatabase, setMessageQueue and maybe setLogger, because we migrated to DIC
         // Create, initialize and start consumer
-        $consumer = new $consumerToGet();
+        $consumer = $this->container->get($consumerToGet);
         /* @var \Jacobine\Consumer\ConsumerAbstract $consumer */
         $consumer->setConfig($this->config);
         $consumer->setDatabase($this->database);

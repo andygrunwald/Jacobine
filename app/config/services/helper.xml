@@ -5,7 +5,7 @@
         <service id="helper.databaseFactory" class="Jacobine\Helper\DatabaseFactory" />
 
         <service id="helper.database" class="Jacobine\Helper\Database">
-            <argument type="service" id="helper.databaseFactory"/>
+            <argument type="service" id="helper.databaseFactory" />
             <argument>%database.host%</argument>
             <argument>%database.port%</argument>
             <argument>%database.username%</argument>
@@ -25,9 +25,11 @@
         </service>
 
         <service id="helper.messageQueue" class="Jacobine\Helper\MessageQueue">
-            <argument type="service" id="helper.amqpConnection"/>
-            <argument type="service" id="helper.amqpFactory"/>
+            <argument type="service" id="helper.amqpConnection" />
+            <argument type="service" id="helper.amqpFactory" />
         </service>
+
+        <service id="helper.processFactory" class="Jacobine\Helper\ProcessFactory" />
     </services>
 
 </container>

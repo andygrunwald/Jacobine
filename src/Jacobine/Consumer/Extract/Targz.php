@@ -35,6 +35,16 @@ class Targz extends ConsumerAbstract
 {
 
     /**
+     * @var \Jacobine\Helper\ProcessFactory
+     */
+    protected $processFactory;
+
+    public function __construct(\Jacobine\Helper\ProcessFactory $processFactory)
+    {
+        $this->processFactory = $processFactory;
+    }
+
+    /**
      * Gets a description of the consumer
      *
      * @return string
