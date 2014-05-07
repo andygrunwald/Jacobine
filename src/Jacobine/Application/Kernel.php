@@ -112,6 +112,7 @@ abstract class Kernel implements KernelInterface
         $fileLocator = new FileLocator($this->getRootDir() . '/config');
 
         $loader = new XmlFileLoader($this->container, $fileLocator);
+        $loader->load('config.xml');
         $loader->load('services.xml');
 
         $this->container->compile();

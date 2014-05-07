@@ -2,13 +2,14 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     
     <imports>
-        <import resource="services/commands.xml"/>
-        <import resource="services/consumer.xml"/>
+        <import resource="services/commands.xml" />
+        <import resource="services/consumer.xml" />
+        <import resource="services/helper.xml" />
     </imports>
 
     <services>
         <!-- Jacobine Console Application -->
-        <service id="console_application" class="Symfony\Component\Console\Application"/>
+        <service id="console_application" class="Symfony\Component\Console\Application" />
     </services>
 
 </container>

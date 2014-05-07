@@ -14,9 +14,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Yaml\Yaml;
-use Jacobine\Helper\AMQPFactory;
-use Jacobine\Helper\MessageQueue;
 
 /**
  * Class GerritCommand
@@ -40,8 +40,10 @@ use Jacobine\Helper\MessageQueue;
  * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
-class GerritCommand extends Command
+class GerritCommand extends Command implements ContainerAwareInterface
 {
+
+    use ContainerAwareTrait;
 
     /**
      * Routing key for the message queue
@@ -124,24 +126,7 @@ class GerritCommand extends Command
         $this->setProject($input->getOption('project'));
         $this->config = Yaml::parse(CONFIG_FILE);
 
-        $this->messageQueue = $this->initializeMessageQueue($this->config);
-    }
-
-    /**
-     * Initialize the message queue object
-     *
-     * @param array $parsedConfig
-     * @return MessageQueue
-     */
-    private function initializeMessageQueue($parsedConfig)
-    {
-        $config = $parsedConfig['RabbitMQ'];
-
-        $amqpFactory = new AMQPFactory();
-        $amqpConnection = $amqpFactory->createConnection($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
-        $messageQueue = new MessageQueue($amqpConnection, $amqpFactory);
-
-        return $messageQueue;
+        $this->messageQueue = $this->container->get('helper.messageQueue');
     }
 
     /**

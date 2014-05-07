@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <services>
+        <service id="helper.databaseFactory" class="Jacobine\Helper\DatabaseFactory" />
+
+        <service id="helper.database" class="Jacobine\Helper\Database">
+            <argument type="service" id="helper.databaseFactory"/>
+            <argument>%database.host%</argument>
+            <argument>%database.port%</argument>
+            <argument>%database.username%</argument>
+            <argument>%database.password%</argument>
+            <argument>%database.database%</argument>
+        </service>
+
+        <service id="helper.amqpFactory" class="Jacobine\Helper\AMQPFactory" />
+
+        <service id="helper.amqpConnection" class="PhpAmqpLib\Connection\AMQPConnection"
+                 factory-service="helper.amqpFactory" factory-method="createConnection">
+            <argument>%messagequeue.host%</argument>
+            <argument>%messagequeue.port%</argument>
+            <argument>%messagequeue.username%</argument>
+            <argument>%messagequeue.password%</argument>
+            <argument>%messagequeue.vhost%</argument>
+        </service>
+
+        <service id="helper.messageQueue" class="Jacobine\Helper\MessageQueue">
+            <argument type="service" id="helper.amqpConnection"/>
+            <argument type="service" id="helper.amqpFactory"/>
+        </service>
+    </services>
+
+</container>

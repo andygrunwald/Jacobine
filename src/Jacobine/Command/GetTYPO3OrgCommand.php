@@ -13,11 +13,9 @@ namespace Jacobine\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Yaml\Yaml;
-use Jacobine\Helper\AMQPFactory;
-use Jacobine\Helper\Database;
-use Jacobine\Helper\DatabaseFactory;
-use Jacobine\Helper\MessageQueue;
 
 /**
  * Class GetTYPO3OrgCommand
@@ -35,8 +33,10 @@ use Jacobine\Helper\MessageQueue;
  * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
-class GetTYPO3OrgCommand extends Command
+class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
 {
+
+    use ContainerAwareTrait;
 
     /**
      * JSON File with all information we need
@@ -124,22 +124,12 @@ class GetTYPO3OrgCommand extends Command
         $curlClient->setTimeout(intval($this->config['Various']['Requests']['Timeout']));
         $this->browser = new \Buzz\Browser($curlClient);
 
-        // Database client
-        $config = $this->config['MySQL'];
         // The project is hardcoded here, because this command is special for the OpenSourceProject TYPO3
         $projectConfig = $this->config['Projects'][self::PROJECT];
         $this->exchange = $projectConfig['RabbitMQ']['Exchange'];
 
-        $databaseFactory = new DatabaseFactory();
-        // TODO Refactor this to use a config entity or an array
-        $this->database = new Database($databaseFactory, $config['Host'], $config['Port'], $config['Username'], $config['Password'], $projectConfig['MySQL']['Database']);
-
-        // Message queue client
-        $config = $this->config['RabbitMQ'];
-
-        $amqpFactory = new AMQPFactory();
-        $amqpConnection = $amqpFactory->createConnection($config['Host'], $config['Port'], $config['Username'], $config['Password'], $config['VHost']);
-        $this->messageQueue = new MessageQueue($amqpConnection, $amqpFactory);
+        $this->database = $this->container->get('helper.database');
+        $this->messageQueue = $this->container->get('helper.messageQueue');
     }
 
     /**
