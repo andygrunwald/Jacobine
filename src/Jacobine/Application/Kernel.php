@@ -116,6 +116,10 @@ abstract class Kernel implements KernelInterface
         $loader->load('services.xml');
 
         $this->container->compile();
+
+        // TODO If we will dump the container in future, we have to create a compiler pass to collect
+        // all services with tag x.
+        // @link http://symfony.com/doc/current/components/dependency_injection/tags.html
     }
 
     /**
