@@ -21,6 +21,7 @@
 
         <service id="consumer.analysis.pdepend" class="Jacobine\Consumer\Analysis\PDepend">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.processFactory" />
         </service>
 
         <service id="consumer.analysis.phploc" class="Jacobine\Consumer\Analysis\PHPLoc">

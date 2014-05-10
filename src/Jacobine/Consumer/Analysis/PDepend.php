@@ -38,6 +38,21 @@ class PDepend extends ConsumerAbstract
 {
 
     /**
+     * @var \Jacobine\Helper\ProcessFactory
+     */
+    protected $processFactory;
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param ProcessFactory $processFactory
+     */
+    public function __construct(ProcessFactory $processFactory)
+    {
+        $this->processFactory = $processFactory;
+    }
+
+    /**
      * Gets a description of the consumer
      *
      * @return string
