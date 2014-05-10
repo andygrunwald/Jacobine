@@ -10,6 +10,7 @@
 
         <service id="consumer.analysis.filesize" class="Jacobine\Consumer\Analysis\Filesize">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.database" />
         </service>
 
         <service id="consumer.analysis.githublinguist" class="Jacobine\Consumer\Analysis\GithubLinguist">

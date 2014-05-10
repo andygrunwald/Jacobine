@@ -11,6 +11,7 @@
 namespace Jacobine\Consumer\Analysis;
 
 use Jacobine\Consumer\ConsumerAbstract;
+use Jacobine\Helper\Database;
 
 /**
  * Class Filesize
@@ -33,6 +34,16 @@ use Jacobine\Consumer\ConsumerAbstract;
  */
 class Filesize extends ConsumerAbstract
 {
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param Database $database
+     */
+    public function __construct(Database $database)
+    {
+        $this->setDatabase($database);
+    }
 
     /**
      * Gets a description of the consumer
