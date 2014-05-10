@@ -12,6 +12,8 @@ namespace Jacobine\Consumer\Download;
 
 use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Helper\File;
+use Jacobine\Helper\Database;
+use Jacobine\Helper\MessageQueue;
 
 /**
  * Class HTTP
@@ -36,6 +38,18 @@ use Jacobine\Helper\File;
  */
 class HTTP extends ConsumerAbstract
 {
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param MessageQueue $messageQueue
+     * @param Database $database
+     */
+    public function __construct(MessageQueue $messageQueue, Database $database)
+    {
+        $this->setDatabase($database);
+        $this->setMessageQueue($messageQueue);
+    }
 
     /**
      * Gets a description of the consumer

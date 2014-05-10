@@ -12,6 +12,8 @@ namespace Jacobine\Consumer\Download;
 
 use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Helper\ProcessFactory;
+use Jacobine\Helper\MessageQueue;
+use Jacobine\Helper\Database;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -35,6 +37,25 @@ use Symfony\Component\Process\ProcessUtils;
  */
 class Git extends ConsumerAbstract
 {
+
+    /**
+     * @var \Jacobine\Helper\ProcessFactory
+     */
+    protected $processFactory;
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param MessageQueue $messageQueue
+     * @param Database $database
+     * @param ProcessFactory $processFactory
+     */
+    public function __construct(MessageQueue $messageQueue, Database $database, ProcessFactory $processFactory)
+    {
+        $this->setDatabase($database);
+        $this->setMessageQueue($messageQueue);
+        $this->processFactory = $processFactory;
+    }
 
     /**
      * Gets a description of the consumer

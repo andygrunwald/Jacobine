@@ -47,15 +47,21 @@
         <!-- Download consumer -->
         <service id="consumer.download.git" class="Jacobine\Consumer\Download\Git">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.messageQueue" />
+            <argument type="service" id="helper.database" />
+            <argument type="service" id="helper.processFactory" />
         </service>
 
         <service id="consumer.download.http" class="Jacobine\Consumer\Download\HTTP">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.messageQueue" />
+            <argument type="service" id="helper.database" />
         </service>
 
         <!-- Extract consumer -->
         <service id="consumer.extract.targz" class="Jacobine\Consumer\Extract\Targz">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.messageQueue" />
             <argument type="service" id="helper.processFactory" />
         </service>
     </services>
