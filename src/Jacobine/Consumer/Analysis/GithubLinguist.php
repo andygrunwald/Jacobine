@@ -57,6 +57,7 @@ class GithubLinguist extends ConsumerAbstract
         $this->setDatabase($database);
         $this->processFactory = $processFactory;
     }
+
     /**
      * Gets a description of the consumer
      *
