@@ -26,6 +26,8 @@
 
         <service id="consumer.analysis.phploc" class="Jacobine\Consumer\Analysis\PHPLoc">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.database" />
+            <argument type="service" id="helper.processFactory" />
         </service>
 
         <!-- Crawler consumer -->

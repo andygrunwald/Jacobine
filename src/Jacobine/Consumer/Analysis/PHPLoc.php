@@ -12,6 +12,7 @@ namespace Jacobine\Consumer\Analysis;
 
 use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Helper\ProcessFactory;
+use Jacobine\Helper\Database;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -35,6 +36,23 @@ use Symfony\Component\Process\ProcessUtils;
  */
 class PHPLoc extends ConsumerAbstract
 {
+
+    /**
+     * @var \Jacobine\Helper\ProcessFactory
+     */
+    protected $processFactory;
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param Database $database
+     * @param ProcessFactory $processFactory
+     */
+    public function __construct(Database $database, ProcessFactory $processFactory)
+    {
+        $this->setDatabase($database);
+        $this->processFactory = $processFactory;
+    }
 
     /**
      * Gets a description of the consumer
