@@ -5,6 +5,7 @@
         <!-- Analysis consumer -->
         <service id="consumer.analysis.cvsanaly" class="Jacobine\Consumer\Analysis\CVSAnaly">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.processFactory" />
         </service>
 
         <service id="consumer.analysis.filesize" class="Jacobine\Consumer\Analysis\Filesize">
