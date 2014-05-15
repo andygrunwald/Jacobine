@@ -93,6 +93,7 @@ class GerritProject extends ConsumerAbstract
         $databaseConfig = $gerrieConfig->getConfigurationValue('Database');
         $projectConfig = $gerrieConfig->getConfigurationValue('Gerrit.' . $project);
 
+        // TODO port Gerrie classes to use DIC
         $gerrieDatabase = new \Gerrie\Helper\Database($databaseConfig);
         $gerrieDataService = \Gerrie\Helper\Factory::getDataService($gerrieConfig, $project);
 
