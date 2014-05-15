@@ -15,6 +15,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Jacobine\DependencyInjection\ConsumerCompilerPass;
 
 /**
  * Class Kernel
@@ -107,6 +108,7 @@ abstract class Kernel implements KernelInterface
     protected function initializeContainer()
     {
         $this->container = new ContainerBuilder();
+        $this->container->addCompilerPass(new ConsumerCompilerPass());
 
         // Load xml config
         $fileLocator = new FileLocator($this->getRootDir() . '/config');

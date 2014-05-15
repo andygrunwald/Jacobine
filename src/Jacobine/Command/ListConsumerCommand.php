@@ -65,10 +65,11 @@ class ListConsumerCommand extends Command implements ContainerAwareInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $consumerServiceIds = $this->container->findTaggedServiceIds('jacobine.consumer');
+        /* @var \Jacobine\DependencyInjection\ConsumerList $consumerListService */
+        $consumerListService = $this->container->get('dependencyInjection.consumerList');
+        $consumerCollection = $consumerListService->getAllConsumer();
 
-        foreach ($consumerServiceIds as $serviceId => $options) {
-            $consumer = $this->container->get($serviceId);
+        foreach ($consumerCollection as $consumer) {
             $consumerName = $this->buildConsumerName($consumer);
 
             $this->writeLine($output, $consumerName, $consumer->getDescription());
