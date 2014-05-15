@@ -12,6 +12,7 @@ namespace Jacobine\Consumer\Extract;
 
 use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Helper\ProcessFactory;
+use Jacobine\Helper\Database;
 use Jacobine\Helper\MessageQueue;
 use Symfony\Component\Process\ProcessUtils;
 
@@ -44,9 +45,10 @@ class Targz extends ConsumerAbstract
      * Constructor to set dependencies
      *
      * @param MessageQueue $messageQueue
+     * @param Database $database
      * @param ProcessFactory $processFactory
      */
-    public function __construct(MessageQueue $messageQueue, ProcessFactory $processFactory)
+    public function __construct(MessageQueue $messageQueue, Database $database, ProcessFactory $processFactory)
     {
         $this->processFactory = $processFactory;
         $this->setMessageQueue($messageQueue);

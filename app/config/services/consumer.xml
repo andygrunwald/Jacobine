@@ -75,6 +75,7 @@
         <service id="consumer.extract.targz" class="Jacobine\Consumer\Extract\Targz">
             <tag name="jacobine.consumer" />
             <argument type="service" id="helper.messageQueue" />
+            <argument type="service" id="helper.database" />
             <argument type="service" id="helper.processFactory" />
         </service>
     </services>
