@@ -46,10 +46,10 @@ class DatabaseFactoryTest extends \PHPUnit_Framework_TestCase
         $host = 'localhost';
         $port = 3306;
         $username = 'phpunit';
-        $passwort = '';
+        $password = '';
         $database = 'testcase';
 
         $databaseFactory = new DatabaseFactory();
-        $databaseFactory->create($driver, $host, $port, $username, $passwort, $database);
+        $databaseFactory->create($driver, $host, $port, $username, $password, $database);
     }
 }
