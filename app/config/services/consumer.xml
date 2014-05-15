@@ -48,6 +48,8 @@
 
         <service id="consumer.crawler.nntp" class="Jacobine\Consumer\Crawler\NNTP">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.messageQueue" />
+            <argument type="service" id="helper.database" />
         </service>
 
         <service id="consumer.crawler.nntpgroup" class="Jacobine\Consumer\Crawler\NNTPGroup">

@@ -11,6 +11,8 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
+use Jacobine\Helper\MessageQueue;
+use Jacobine\Helper\Database;
 
 /**
  * Class NNTP
@@ -40,6 +42,18 @@ use Jacobine\Consumer\ConsumerAbstract;
  */
 class NNTP extends ConsumerAbstract
 {
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param MessageQueue $messageQueue
+     * @param Database $database
+     */
+    public function __construct(MessageQueue $messageQueue, Database $database)
+    {
+        $this->setDatabase($database);
+        $this->setMessageQueue($messageQueue);
+    }
 
     /**
      * Gets a description of the consumer
