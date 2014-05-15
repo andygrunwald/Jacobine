@@ -42,6 +42,8 @@
 
         <service id="consumer.crawler.gitweb" class="Jacobine\Consumer\Crawler\Gitweb">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.messageQueue" />
+            <argument type="service" id="helper.database" />
         </service>
 
         <service id="consumer.crawler.nntp" class="Jacobine\Consumer\Crawler\NNTP">

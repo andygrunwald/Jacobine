@@ -12,6 +12,8 @@ namespace Jacobine\Consumer\Crawler;
 
 use Symfony\Component\DomCrawler\Crawler;
 use Jacobine\Consumer\ConsumerAbstract;
+use Jacobine\Helper\MessageQueue;
+use Jacobine\Helper\Database;
 
 /**
  * Class Gitweb
@@ -34,6 +36,18 @@ use Jacobine\Consumer\ConsumerAbstract;
  */
 class Gitweb extends ConsumerAbstract
 {
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param MessageQueue $messageQueue
+     * @param Database $database
+     */
+    public function __construct(MessageQueue $messageQueue, Database $database)
+    {
+        $this->setDatabase($database);
+        $this->setMessageQueue($messageQueue);
+    }
 
     /**
      * HTTP Client
@@ -69,6 +83,7 @@ class Gitweb extends ConsumerAbstract
 
         $config = $this->getConfig();
 
+        // TODO get Browser via DIC
         $curlClient = new \Buzz\Client\Curl();
         $curlClient->setVerifyPeer(false);
         $curlClient->setIgnoreErrors(true);
@@ -99,6 +114,7 @@ class Gitweb extends ConsumerAbstract
             throw new \Exception('Reading gitweb frontend failed', 1398887554);
         }
 
+        // TODO port crawler to DIC
         $crawler = new Crawler($content);
         /* @var $crawler \Symfony\Component\DomCrawler\Crawler */
 
