@@ -129,7 +129,6 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
         $this->setProject($input->getOption('project'));
         $this->config = Yaml::parse(CONFIG_FILE);
 
-        $this->database = $this->container->get('helper.database');
         $this->messageQueue = $this->container->get('helper.messageQueue');
     }
 
@@ -250,13 +249,11 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
 
         $logger = $this->initializeLogger($this->config, $consumerIdent, $output);
 
-        // TODO Port every consumer to DIC usage
-        // TODO Remove setDatabase, setMessageQueue and maybe setLogger, because we migrated to DIC
+        // TODO Remove setMessageQueue and maybe setLogger, because we migrated to DIC
         // Create, initialize and start consumer
         $consumer = $this->container->get($consumerToGet);
         /* @var \Jacobine\Consumer\ConsumerAbstract $consumer */
         $consumer->setConfig($this->config);
-        $consumer->setDatabase($this->database);
         $consumer->setMessageQueue($this->messageQueue);
         $consumer->setLogger($logger);
         $consumer->initialize();
