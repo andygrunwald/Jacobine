@@ -26,7 +26,9 @@ class HTTPTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $this->markTestIncomplete();
-        $this->consumer = new HTTP();
+        $messageQueueMock = $this->getMessageQueueMock(0);
+        $databaseMock = $this->getDatabaseMock();
+
+        $this->consumer = new HTTP($messageQueueMock, $databaseMock);
     }
 }

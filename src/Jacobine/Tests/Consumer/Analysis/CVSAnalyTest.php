@@ -26,7 +26,8 @@ class CVSAnalyTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $this->markTestIncomplete();
-        $this->consumer = new CVSAnaly();
+        $processFactoryMock = $this->getProcessFactoryMock();
+
+        $this->consumer = new CVSAnaly($processFactoryMock);
     }
 }

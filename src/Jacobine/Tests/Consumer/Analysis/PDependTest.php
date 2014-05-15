@@ -26,7 +26,8 @@ class PDependTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $this->markTestIncomplete();
-        $this->consumer = new PDepend();
+        $processFactoryMock = $this->getProcessFactoryMock();
+
+        $this->consumer = new PDepend($processFactoryMock);
     }
 }

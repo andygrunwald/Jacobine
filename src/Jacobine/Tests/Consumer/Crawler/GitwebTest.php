@@ -26,8 +26,10 @@ class GitwebTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $this->markTestIncomplete();
-        $this->consumer = new Gitweb();
+        $messageQueueMock = $this->getMessageQueueMock(0);
+        $databaseMock = $this->getDatabaseMock();
+
+        $this->consumer = new Gitweb($messageQueueMock, $databaseMock);
     }
 
     public function testConsumerInitializeWithQueueAndRouting()

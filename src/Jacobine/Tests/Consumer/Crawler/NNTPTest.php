@@ -26,7 +26,9 @@ class NNTPTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $this->markTestIncomplete();
-        $this->consumer = new NNTP();
+        $messageQueueMock = $this->getMessageQueueMock(0);
+        $databaseMock = $this->getDatabaseMock();
+
+        $this->consumer = new NNTP($messageQueueMock, $databaseMock);
     }
 }

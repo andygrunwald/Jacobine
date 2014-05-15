@@ -26,7 +26,9 @@ class PHPLocTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $this->markTestIncomplete();
-        $this->consumer = new PHPLoc();
+        $databaseMock = $this->getDatabaseMock();
+        $processFactoryMock = $this->getProcessFactoryMock();
+
+        $this->consumer = new PHPLoc($databaseMock, $processFactoryMock);
     }
 }
