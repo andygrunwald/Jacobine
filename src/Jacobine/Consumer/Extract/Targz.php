@@ -52,6 +52,7 @@ class Targz extends ConsumerAbstract
     {
         $this->processFactory = $processFactory;
         $this->setMessageQueue($messageQueue);
+        $this->setDatabase($database);
     }
 
     /**
