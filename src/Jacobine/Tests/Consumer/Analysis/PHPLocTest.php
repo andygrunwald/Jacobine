@@ -26,6 +26,7 @@ class PHPLocTest extends ConsumerTestAbstract
 
     public function setUp()
     {
+        $this->markTestIncomplete();
         $this->consumer = new PHPLoc();
     }
 }

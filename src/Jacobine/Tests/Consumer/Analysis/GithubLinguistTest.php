@@ -26,6 +26,7 @@ class GithubLinguistTest extends ConsumerTestAbstract
 
     public function setUp()
     {
+        $this->markTestIncomplete();
         $this->consumer = new GithubLinguist();
     }
 }

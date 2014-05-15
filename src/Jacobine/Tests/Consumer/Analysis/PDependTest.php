@@ -26,6 +26,7 @@ class PDependTest extends ConsumerTestAbstract
 
     public function setUp()
     {
+        $this->markTestIncomplete();
         $this->consumer = new PDepend();
     }
 }

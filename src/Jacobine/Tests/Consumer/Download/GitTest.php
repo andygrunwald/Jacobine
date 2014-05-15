@@ -26,6 +26,7 @@ class GitTest extends ConsumerTestAbstract
 
     public function setUp()
     {
+        $this->markTestIncomplete();
         $this->consumer = new Git();
     }
 }

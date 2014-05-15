@@ -26,6 +26,7 @@ class NNTPGroupTest extends ConsumerTestAbstract
 
     public function setUp()
     {
+        $this->markTestIncomplete();
         $this->consumer = new NNTPGroup();
     }
 }

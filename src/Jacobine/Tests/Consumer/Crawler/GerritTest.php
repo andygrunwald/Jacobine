@@ -26,6 +26,7 @@ class GerritTest extends ConsumerTestAbstract
 
     public function setUp()
     {
+        $this->markTestIncomplete();
         $this->consumer = new Gerrit();
     }
 }
