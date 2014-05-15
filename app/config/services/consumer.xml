@@ -33,6 +33,7 @@
         <!-- Crawler consumer -->
         <service id="consumer.crawler.gerrit" class="Jacobine\Consumer\Crawler\Gerrit">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.messageQueue" />
         </service>
 
         <service id="consumer.crawler.gerritproject" class="Jacobine\Consumer\Crawler\GerritProject">

@@ -11,6 +11,7 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
+use Jacobine\Helper\MessageQueue;
 
 /**
  * Class Gerrit
@@ -42,6 +43,16 @@ use Jacobine\Consumer\ConsumerAbstract;
  */
 class Gerrit extends ConsumerAbstract
 {
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param MessageQueue $messageQueue
+     */
+    public function __construct(MessageQueue $messageQueue)
+    {
+        $this->setMessageQueue($messageQueue);
+    }
 
     /**
      * Gets a description of the consumer
@@ -91,6 +102,7 @@ class Gerrit extends ConsumerAbstract
         $databaseConfig = $gerrieConfig->getConfigurationValue('Database');
         $projectConfig = $gerrieConfig->getConfigurationValue('Gerrit.' . $project);
 
+        // TODO get Gerrie classes via DIC
         $gerrieDatabase = new \Gerrie\Helper\Database($databaseConfig);
         $gerrieDataService = \Gerrie\Helper\Factory::getDataService($gerrieConfig, $project);
 
