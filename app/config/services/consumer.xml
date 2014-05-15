@@ -54,6 +54,7 @@
 
         <service id="consumer.crawler.nntpgroup" class="Jacobine\Consumer\Crawler\NNTPGroup">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.database" />
         </service>
 
         <!-- Download consumer -->

@@ -11,6 +11,7 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
+use Jacobine\Helper\Database;
 
 /**
  * Class NNTPGroup
@@ -46,6 +47,16 @@ use Jacobine\Consumer\ConsumerAbstract;
  */
 class NNTPGroup extends ConsumerAbstract
 {
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param Database $database
+     */
+    public function __construct(Database $database)
+    {
+        $this->setDatabase($database);
+    }
 
     /**
      * Gets a description of the consumer
