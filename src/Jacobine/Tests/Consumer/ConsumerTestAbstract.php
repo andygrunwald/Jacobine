@@ -58,6 +58,73 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         return $messageQueueMock;
     }
 
+    protected function getProcessFactoryMock()
+    {
+        $processMock = $this->getMock('\Symfony\Component\Process\Process', [], ['']);
+
+        $processFactoryMock = $this->getMock('Jacobine\Helper\ProcessFactory');
+        $processFactoryMock->method('createProcess')
+                           ->will($this->returnValue($processMock));
+
+        return $processFactoryMock;
+    }
+
+    protected function getDatabaseMock()
+    {
+        // Mock of \Jacobine\Helper\DatabaseFactory
+        $databaseFactoryMock = $this->getMock('Jacobine\Helper\DatabaseFactory');
+
+        $host = 'localhost';
+        $port = 3306;
+        $username = 'phpunit';
+        $password = '';
+        $database = 'testcase';
+
+        $constructorArgs = [$databaseFactoryMock, $host, $port, $username, $password, $database];
+        $databaseMock = $this->getMock('Jacobine\Helper\Database', [], $constructorArgs);
+
+        return $databaseMock;
+    }
+
+    protected function mockGetRecordsForDatabaseMock(\PHPUnit_Framework_MockObject_MockObject $databaseMock, array $records)
+    {
+        $databaseMock->expects($this->once())
+                     ->method('getRecords')
+                     ->will($this->returnValue($records));
+
+        return $databaseMock;
+    }
+
+    protected function getLoggerMock()
+    {
+        $loggerMock = $this->getMock('Psr\Log\LoggerInterface');
+
+        return $loggerMock;
+    }
+
+    protected function generateMessage(array $message, $rejectMethodCallTimes = 0)
+    {
+        $deliveryTag = 'deliver test tag';
+
+        $amqpChannelMock = $amqpChannelMock = $this->getMock('\PhpAmqpLib\Channel\AMQPChannel', [], [], '', false);
+
+        // Reject message
+        $amqpChannelcallCount = (($rejectMethodCallTimes > 0) ? $this->exactly($rejectMethodCallTimes): $this->never());
+        $amqpChannelMock->expects($amqpChannelcallCount)
+                        ->method('basic_reject')
+                        ->with($deliveryTag);
+
+        $messageObject = new \stdClass();
+        $messageObject->body = json_encode($message);
+
+        $messageObject->delivery_info = [
+            'channel' => $amqpChannelMock,
+            'delivery_tag' => $deliveryTag
+        ];
+
+        return $messageObject;
+    }
+
     public function testConsumerGotDescription()
     {
         $description = $this->consumer->getDescription();
@@ -145,8 +212,6 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
 
     public function testDatabaseGetterAndSetter()
     {
-        $this->assertNull($this->consumer->getDatabase());
-
         // Mock of \Jacobine\Helper\DatabaseFactory
         $databaseFactoryMock = $this->getMock('Jacobine\Helper\DatabaseFactory');
         $constructorArgs = [$databaseFactoryMock, '', '', '', '', ''];
@@ -159,8 +224,6 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
 
     public function testMessageQueueGetterAndSetter()
     {
-        $this->assertNull($this->consumer->getMessageQueue());
-
         $messageQueueMock = $this->getMessageQueueMock(0);
 
         $this->consumer->setMessageQueue($messageQueueMock);
@@ -170,9 +233,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
 
     public function testLoggerGetterAndSetter()
     {
-        $this->assertNull($this->consumer->getLogger());
-
-        $loggerMock = $this->getMock('\Monolog\Logger', [], ['']);
+        $loggerMock = $this->getMock('\Psr\Log\LoggerInterface');
 
         $this->consumer->setLogger($loggerMock);
 

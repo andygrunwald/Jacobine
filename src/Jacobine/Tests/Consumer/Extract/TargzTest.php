@@ -26,7 +26,65 @@ class TargzTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $this->markTestIncomplete();
-        $this->consumer = new Targz();
+        $messageQueueMock = $this->getMessageQueueMock(0);
+        $databaseMock = $this->getDatabaseMock();
+        $processFactoryMock = $this->getProcessFactoryMock();
+        $loggerMock = $this->getLoggerMock();
+
+        $this->consumer = new Targz($messageQueueMock, $databaseMock, $processFactoryMock);
+        $this->consumer->setLogger($loggerMock);
+    }
+
+    public function testVersionRecordDoesNotExists()
+    {
+        $data = [
+            'versionId' => 0
+        ];
+        $message = $this->generateMessage($data, 1);
+
+        $this->consumer->consume($message);
+    }
+
+    public function testRecordAlreadyExtracted()
+    {
+        $data = [
+            'versionId' => 5
+        ];
+        $message = $this->generateMessage($data, 0);
+
+        $versionRow = [
+            [
+                'id' => 5,
+                'version' => '5.2',
+                'extracted' => 1
+            ]
+        ];
+        $databaseMock = $this->consumer->getDatabase();
+        $databaseMock = $this->mockGetRecordsForDatabaseMock($databaseMock, $versionRow);
+        $this->consumer->setDatabase($databaseMock);
+
+        $this->consumer->consume($message);
+    }
+
+    public function testFilenameDoesNotExists()
+    {
+        $data = [
+            'versionId' => 5,
+            'filename' => '/this/directory/does/not/exists.tar.gz'
+        ];
+        $message = $this->generateMessage($data, 1);
+
+        $versionRow = [
+            [
+                'id' => 5,
+                'version' => '5.2',
+                'extracted' => 0
+            ]
+        ];
+        $databaseMock = $this->consumer->getDatabase();
+        $databaseMock = $this->mockGetRecordsForDatabaseMock($databaseMock, $versionRow);
+        $this->consumer->setDatabase($databaseMock);
+
+        $this->consumer->consume($message);
     }
 }
