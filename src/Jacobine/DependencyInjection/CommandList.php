@@ -10,46 +10,46 @@
 
 namespace Jacobine\DependencyInjection;
 
-use Jacobine\Consumer\ConsumerInterface;
+use Symfony\Component\Console\Command\Command;
 
 /**
- * Class ConsumerList
+ * Class CommandList
  *
- * Storage class to collect all consumer from DIC
+ * Storage class to collect all commands from DIC
  *
  * @link http://symfony.com/doc/current/components/dependency_injection/tags.html
  *
  * @package Jacobine\DependencyInjection
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
-class ConsumerList
+class CommandList
 {
 
     /**
-     * Bag to store all consumer
+     * Bag to store all commands
      *
      * @var array
      */
-    protected $consumer = [];
+    protected $commands = [];
 
     /**
-     * Adds a new consumer
+     * Adds a new command
      *
-     * @param ConsumerInterface $consumer
+     * @param Command $command
      * @return void
      */
-    public function addConsumer(ConsumerInterface $consumer)
+    public function addCommand(Command $command)
     {
-        $this->consumer[] = $consumer;
+        $this->commands[] = $command;
     }
 
     /**
-     * Return all consumer
+     * Return all commands
      *
      * @return array
      */
-    public function getAllConsumer()
+    public function getAllCommands()
     {
-        return $this->consumer;
+        return $this->commands;
     }
 }

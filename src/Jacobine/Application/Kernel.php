@@ -15,6 +15,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Jacobine\DependencyInjection\CommandCompilerPass;
 use Jacobine\DependencyInjection\ConsumerCompilerPass;
 
 /**
@@ -108,6 +109,7 @@ abstract class Kernel implements KernelInterface
     protected function initializeContainer()
     {
         $this->container = new ContainerBuilder();
+        $this->container->addCompilerPass(new CommandCompilerPass());
         $this->container->addCompilerPass(new ConsumerCompilerPass());
 
         // Load xml config
@@ -119,9 +121,10 @@ abstract class Kernel implements KernelInterface
 
         $this->container->compile();
 
-        // TODO If we will dump the container in future, we have to create a compiler pass to collect
-        // all services with tag x.
-        // @link http://symfony.com/doc/current/components/dependency_injection/tags.html
+        // In theory we are ready to dump the container here (for performance)
+        // I (Andy) think that this is (currently) not necessary. Maybe this make sense in the feature.
+        // The imprtant thing: We are ready for this change, because all tags are collected by compiler passes
+        // @link http://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance
     }
 
     /**
@@ -139,11 +142,13 @@ abstract class Kernel implements KernelInterface
         }
 
         $this->application = $this->container->get('console_application');
-        $commandServiceIds = $this->container->findTaggedServiceIds('jacobine.command');
 
-        foreach ($commandServiceIds as $serviceId => $options) {
+        /* @var \Jacobine\DependencyInjection\CommandList $commandListService */
+        $commandListService = $this->container->get('dependencyInjection.commandList');
+        $commandList = $commandListService->getAllCommands();
+
+        foreach ($commandList as $command) {
             /** @var Command $command */
-            $command = $this->container->get($serviceId);
 
             // Inject DIC if it is needed
             if ($command instanceof \Symfony\Component\DependencyInjection\ContainerAwareInterface) {

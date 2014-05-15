@@ -3,6 +3,8 @@
 
     <services>
         <service id="dependencyInjection.consumerList" class="Jacobine\DependencyInjection\ConsumerList" />
+
+        <service id="dependencyInjection.commandList" class="Jacobine\DependencyInjection\CommandList" />
     </services>
 
 </container>
