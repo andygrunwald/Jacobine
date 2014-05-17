@@ -24,8 +24,6 @@ use Symfony\Component\Process\ProcessUtils;
  * We have to execute CVSAnaly via a external command, because we can`t speak from PHP to Python libs directly.
  * Currently we can only execute this consumer once, because CVSAnaly is not ready to run concurrent.
  *
- * TODO: Idea -> Port this consumer from PHP to Python. With this we can get rid of the system command.
- *
  * Message format (json encoded):
  *  [
  *      project: Project key from config. E.g. TYPO3
