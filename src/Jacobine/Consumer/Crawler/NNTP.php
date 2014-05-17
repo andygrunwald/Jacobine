@@ -159,7 +159,8 @@ class NNTP extends ConsumerAbstract
             'groupId' => $groupId,
         ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'crawler.nntpgroup');
+        $exchange = $projectConfig['RabbitMQ']['Exchange'];
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'crawler.nntpgroup');
     }
 
     /**

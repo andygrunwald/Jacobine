@@ -200,8 +200,9 @@ class HTTP extends ConsumerAbstract
             'filename' => $file
         ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'extract.targz');
-        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'analysis.filesize');
+        $exchange = $projectConfig['RabbitMQ']['Exchange'];
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'extract.targz');
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.filesize');
     }
 
     /**

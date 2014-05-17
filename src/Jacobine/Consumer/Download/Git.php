@@ -151,7 +151,8 @@ class Git extends ConsumerAbstract
             'checkoutDir' => $dir
         ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'analysis.cvsanaly');
+        $exchange = $projectConfig['RabbitMQ']['Exchange'];
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.cvsanaly');
     }
 
     /**
