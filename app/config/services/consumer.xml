@@ -52,11 +52,8 @@
             <tag name="jacobine.consumer" />
             <argument type="service" id="helper.messageQueue" />
             <argument type="service" id="helper.database" />
-        </service>
-
-        <service id="consumer.crawler.nntpgroup" class="Jacobine\Consumer\Crawler\NNTPGroup">
-            <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.database" />
+            <argument type="service" id="pear.pear" />
+            <argument type="service" id="pear.net_nntp_client" />
         </service>
 
         <!-- Download consumer -->

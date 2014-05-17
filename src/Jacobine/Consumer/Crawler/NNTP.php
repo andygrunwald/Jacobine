@@ -48,15 +48,33 @@ class NNTP extends ConsumerAbstract
 {
 
     /**
+     * @var \PEAR
+     */
+    protected $pear;
+
+    /**
+     * @var \Net_NNTP_Client
+     */
+    protected $nntpClient;
+
+    /**
      * Constructor to set dependencies
      *
      * @param MessageQueue $messageQueue
      * @param Database $database
+     * @param \PEAR $pear
+     * @param \Net_NNTP_Client $nntpClient
      */
-    public function __construct(MessageQueue $messageQueue, Database $database)
-    {
+    public function __construct(
+        MessageQueue $messageQueue,
+        Database $database,
+        \PEAR $pear,
+        \Net_NNTP_Client $nntpClient
+    ) {
         $this->setDatabase($database);
         $this->setMessageQueue($messageQueue);
+        $this->pear = $pear;
+        $this->nntpClient = $nntpClient;
     }
 
     /**
@@ -126,19 +144,17 @@ class NNTP extends ConsumerAbstract
             throw new \Exception('NNTP configuration does not exist or is incomplete', 1398887703);
         }
 
-        // Bootstrap NNTP Client
-        $nntpClient = new \Net_NNTP_Client();
-        $nntpClient->connect($nntpConfig->Host);
+        $this->nntpClient->connect($nntpConfig->Host);
 
         $this->getLogger()->info('Requesting groups', array('host' => $nntpConfig->Host));
-        $groups = $nntpClient->getGroups();
+        $groups = $this->nntpClient->getGroups();
 
         $this->getLogger()->info('Requesting group descriptions', array('host' => $nntpConfig->Host));
-        $descriptions = $nntpClient->getDescriptions();
+        $descriptions = $this->nntpClient->getDescriptions();
 
         // Looping over the groups and get the shit done!
         foreach ($groups as $group) {
-            $groupSummary = $nntpClient->selectGroup($group['group']);
+            $groupSummary = $this->nntpClient->selectGroup($group['group']);
             $groupRecord = $this->getGroupFromDatabase($group['group']);
 
             if ($groupRecord === false) {
@@ -192,35 +208,32 @@ class NNTP extends ConsumerAbstract
 
         $groupName = $record['name'];
 
-        // Bootstrap NNTP client
-        $nntpClient = new \Net_NNTP_Client();
-        $nntpClient->connect($nntpHost);
+        $this->nntpClient->connect($nntpHost);
 
         $this->getLogger()->info('Select NNTP group', array('group' => $groupName));
-        $nntpClient->selectGroup($groupName);
+        $this->nntpClient->selectGroup($groupName);
 
         // Select last indexed article
         $articleNumber = $lastIndexedArticle = (int)$record['last_indexed'];
         if ($articleNumber <= 0) {
             // first time indexing
-            $articleNumber = (int) $nntpClient->first();
+            $articleNumber = (int) $this->nntpClient->first();
         }
 
         $this->getLogger()->info('Select NNTP article', ['article' => $articleNumber]);
-        $dummyArticle = $nntpClient->selectArticle($articleNumber);
+        $dummyArticle = $this->nntpClient->selectArticle($articleNumber);
 
         // Check if the last article is still the last article
-        $lastArticleNumber = (int)$nntpClient->last();
+        $lastArticleNumber = (int) $this->nntpClient->last();
         if ($articleNumber === $lastArticleNumber) {
             $this->getLogger()->info('Group got no new articles', ['group' => $groupName]);
             return;
 
         } else {
-            $articleNumber = (($articleNumber === 1) ? $articleNumber : $nntpClient->selectNextArticle());
+            $articleNumber = (($articleNumber === 1) ? $articleNumber: $this->nntpClient->selectNextArticle());
         }
 
-        $pearObj = new \PEAR();
-        if ($pearObj->isError($dummyArticle)) {
+        if ($this->pear->isError($dummyArticle)) {
             $this->getLogger()->critical('Article can not be selected', ['article' => $articleNumber]);
             throw new \Exception('Article can not be selected', 1398887859);
         }
@@ -228,9 +241,9 @@ class NNTP extends ConsumerAbstract
         // Loop over aaaaaaall articles
         do {
             // Fetch overview for currently selected article
-            $article = $nntpClient->getArticle();
+            $article = $this->nntpClient->getArticle();
 
-            if ($pearObj->isError($article)) {
+            if ($this->pear->isError($article)) {
                 break;
             }
 
@@ -243,10 +256,10 @@ class NNTP extends ConsumerAbstract
                 $this->getLogger()->info('Index article', $context);
 
                 // Which charset?
-                $articleHeader = $nntpClient->getHeader();
-                $articleBody = $nntpClient->getBody(null, true);
+                $articleHeader = $this->nntpClient->getHeader();
+                $articleBody = $this->nntpClient->getBody(null, true);
 
-                $contentType = $nntpClient->getHeaderField('Content-Type');
+                $contentType = $this->nntpClient->getHeaderField('Content-Type');
                 $charset = $this->getArticleCharset($contentType);
                 // $charset = $this->getArticleCharset($articleHeader);
 
@@ -256,7 +269,7 @@ class NNTP extends ConsumerAbstract
                 $articleBody = quoted_printable_decode($articleBody);
 
                 $this->indexNNTPGroupArticle(
-                    $nntpClient,
+                    $this->nntpClient,
                     $groupId,
                     $articleNumber,
                     $articleHeader,
@@ -268,12 +281,12 @@ class NNTP extends ConsumerAbstract
 
             unset($articleHeader, $articleBody);
 
-            $articleNumber = $nntpClient->selectNextArticle();
+            $articleNumber = $this->nntpClient->selectNextArticle();
             switch (true) {
                 case is_int($articleNumber):
                     $lastIndexedArticle = $articleNumber;
                     break;
-                case $pearObj->isError($articleNumber):
+                case $this->pear->isError($articleNumber):
                     $articleNumber = false;
                     break;
             }
@@ -281,7 +294,7 @@ class NNTP extends ConsumerAbstract
 
         $this->updateLastIndexedArticle($groupId, $lastIndexedArticle);
 
-        $nntpClient->disconnect();
+        $this->nntpClient->disconnect();
         unset($nntpClient);
     }
 
