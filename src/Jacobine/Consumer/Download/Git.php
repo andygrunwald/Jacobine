@@ -281,9 +281,6 @@ class Git extends ConsumerAbstract
     /**
      * Executes a single command for git consumer
      *
-     * TODO Extract this piece of code (+ error logging) into a own method
-     *      The other consumers has to be adjusted again
-     *
      * @param string $command
      * @param string|null $checkoutPath The working directory to use the working dir of the current PHP process
      * @return array [
