@@ -296,8 +296,7 @@ class Git extends ConsumerAbstract
     private function executeGitCommand($command, $checkoutPath)
     {
         $timeout = null;
-        $processFactory = new ProcessFactory();
-        $process = $processFactory->createProcess($command, $timeout, $checkoutPath);
+        $process = $this->processFactory->createProcess($command, $timeout, $checkoutPath);
 
         $exception = null;
         try {

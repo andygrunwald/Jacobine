@@ -175,8 +175,7 @@ class CVSAnaly extends ConsumerAbstract
         $extensions = $this->getCVSAnalyExtensions();
         $command = $this->buildCVSAnalyCommand($this->getConfig(), $project, $checkoutDir, $extensions);
 
-        $processFactory = new ProcessFactory();
-        $process = $processFactory->createProcess($command, null);
+        $process = $this->processFactory->createProcess($command, null);
         $exception = null;
         try {
             $process->run();

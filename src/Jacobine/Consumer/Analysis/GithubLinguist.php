@@ -235,8 +235,7 @@ class GithubLinguist extends ConsumerAbstract
 
         // Disable process timeout, because pDepend should take a while
         $processTimeout = null;
-        $processFactory = new ProcessFactory();
-        $process = $processFactory->createProcess($command, $processTimeout, $workingDir);
+        $process = $this->processFactory->createProcess($command, $processTimeout, $workingDir);
 
         $exception = null;
         try {

@@ -228,8 +228,7 @@ class Targz extends ConsumerAbstract
         $command .= ' -xzf ' . $archive . ' -C ' . $target;
 
         $timeout = (int) $config['Application']['Tar']['Timeout'];
-        $processFactory = new ProcessFactory();
-        $process = $processFactory->createProcess($command, $timeout);
+        $process = $this->processFactory->createProcess($command, $timeout);
 
         $exception = null;
         try {

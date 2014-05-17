@@ -286,8 +286,7 @@ class PHPLoc extends ConsumerAbstract
         $this->getLogger()->info('Start analyzing with PHPLoc', array('directory' => $dirToAnalyze));
 
         $timeout = (int) $config['Application']['PHPLoc']['Timeout'];
-        $processFactory = new ProcessFactory();
-        $process = $processFactory->createProcess($command, $timeout);
+        $process = $this->processFactory->createProcess($command, $timeout);
 
         $exception = null;
         try {

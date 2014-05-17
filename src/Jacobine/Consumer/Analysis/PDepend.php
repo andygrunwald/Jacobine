@@ -230,8 +230,7 @@ class PDepend extends ConsumerAbstract
 
         // Disable process timeout, because pDepend should take a while
         $processTimeout = null;
-        $processFactory = new ProcessFactory();
-        $process = $processFactory->createProcess($command, $processTimeout);
+        $process = $this->processFactory->createProcess($command, $processTimeout);
 
         $exception = null;
         try {
