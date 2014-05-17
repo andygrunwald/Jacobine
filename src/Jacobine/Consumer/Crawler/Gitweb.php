@@ -46,6 +46,13 @@ class Gitweb extends ConsumerAbstract
     protected $remoteService;
 
     /**
+     * Factory to create DOMCrawler
+     *
+     * @var \Jacobine\Helper\CrawlerFactory
+     */
+    protected $crawlerFactory;
+
+    /**
      * Constructor to set dependencies
      *
      * @param MessageQueue $messageQueue
