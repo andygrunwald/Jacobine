@@ -86,6 +86,13 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         return $databaseMock;
     }
 
+    protected function getBrowserMock()
+    {
+        $browserMock = $this->getMock('Buzz\Browser');
+
+        return $browserMock;
+    }
+
     protected function mockGetRecordsForDatabaseMock(\PHPUnit_Framework_MockObject_MockObject $databaseMock, array $records)
     {
         $databaseMock->expects($this->once())
