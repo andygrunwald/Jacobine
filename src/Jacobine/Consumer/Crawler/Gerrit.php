@@ -158,7 +158,8 @@ class Gerrit extends ConsumerAbstract
             'configFile' => $configFile
         );
 
-        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'crawler.gerritproject');
+        $exchange = $projectConfig['RabbitMQ']['Exchange'];
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'crawler.gerritproject');
     }
 
     /**

@@ -53,7 +53,12 @@ class Gitweb extends ConsumerAbstract
      * @param \Buzz\Browser $remoteService
      * @param \Jacobine\Helper\CrawlerFactory $crawlerFactory
      */
-    public function __construct(MessageQueue $messageQueue, Database $database, Browser $remoteService, CrawlerFactory $crawlerFactory)
+    public function __construct(
+        MessageQueue $messageQueue,
+        Database $database,
+        Browser $remoteService,
+        CrawlerFactory $crawlerFactory
+    )
     {
         $this->setDatabase($database);
         $this->setMessageQueue($messageQueue);
