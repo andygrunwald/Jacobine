@@ -30,6 +30,13 @@
         </service>
 
         <service id="helper.processFactory" class="Jacobine\Helper\ProcessFactory" />
+
+        <service id="helper.remoteServiceFactory" class="Jacobine\Helper\RemoteServiceFactory" />
+
+        <service id="helper.httpRemoteService" class="Buzz\Browser"
+                 factory-service="helper.remoteServiceFactory" factory-method="createHttpService">
+            <argument>%request.timeout%</argument>
+        </service>
     </services>
 
 </container>

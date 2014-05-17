@@ -71,7 +71,7 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
      *
      * @var \Buzz\Browser
      */
-    protected $browser;
+    protected $remoteService;
 
     /**
      * Database connection
@@ -119,10 +119,7 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
         // Config
         $this->config = Yaml::parse(CONFIG_FILE);
 
-        // HTTP Client
-        $curlClient = new \Buzz\Client\Curl();
-        $curlClient->setTimeout(intval($this->config['Various']['Requests']['Timeout']));
-        $this->browser = new \Buzz\Browser($curlClient);
+        $this->remoteService = $this->container->get('helper.httpRemoteService');
 
         // The project is hardcoded here, because this command is special for the OpenSourceProject TYPO3
         $projectConfig = $this->config['Projects'][self::PROJECT];
@@ -249,7 +246,7 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
      */
     private function getReleaseInformation()
     {
-        $response = $this->browser->get(static::JSON_FILE_URL);
+        $response = $this->remoteService->get(static::JSON_FILE_URL);
         /** @var \Buzz\Message\Response $response */
         if ($response->isOk() !== true) {
             return false;

@@ -44,6 +44,7 @@
             <tag name="jacobine.consumer" />
             <argument type="service" id="helper.messageQueue" />
             <argument type="service" id="helper.database" />
+            <argument type="service" id="helper.httpRemoteService" />
         </service>
 
         <service id="consumer.crawler.nntp" class="Jacobine\Consumer\Crawler\NNTP">

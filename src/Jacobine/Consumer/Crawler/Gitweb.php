@@ -14,6 +14,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Helper\MessageQueue;
 use Jacobine\Helper\Database;
+use Buzz\Browser;
 
 /**
  * Class Gitweb
@@ -38,23 +39,25 @@ class Gitweb extends ConsumerAbstract
 {
 
     /**
-     * Constructor to set dependencies
-     *
-     * @param MessageQueue $messageQueue
-     * @param Database $database
-     */
-    public function __construct(MessageQueue $messageQueue, Database $database)
-    {
-        $this->setDatabase($database);
-        $this->setMessageQueue($messageQueue);
-    }
-
-    /**
      * HTTP Client
      *
      * @var \Buzz\Browser
      */
-    protected $browser;
+    protected $remoteService;
+
+    /**
+     * Constructor to set dependencies
+     *
+     * @param MessageQueue $messageQueue
+     * @param Database $database
+     * @param \Buzz\Browser $remoteService
+     */
+    public function __construct(MessageQueue $messageQueue, Database $database, Browser $remoteService)
+    {
+        $this->setDatabase($database);
+        $this->setMessageQueue($messageQueue);
+        $this->remoteService = $remoteService;
+    }
 
     /**
      * Gets a description of the consumer
@@ -80,15 +83,6 @@ class Gitweb extends ConsumerAbstract
         $this->enableDeadLettering();
 
         $this->setRouting('crawler.gitweb');
-
-        $config = $this->getConfig();
-
-        // TODO get Browser via DIC
-        $curlClient = new \Buzz\Client\Curl();
-        $curlClient->setVerifyPeer(false);
-        $curlClient->setIgnoreErrors(true);
-        $curlClient->setTimeout(intval($config['Various']['Requests']['Timeout']));
-        $this->browser = new \Buzz\Browser($curlClient);
     }
 
     /**
@@ -101,7 +95,7 @@ class Gitweb extends ConsumerAbstract
     protected function process($message)
     {
         try {
-            $content = $this->getContent($this->browser, $message->url);
+            $content = $this->getContent($this->remoteService, $message->url);
 
         } catch (\Exception $e) {
             // TODO This seems to be not so smart to catch an exception and throw a new one
@@ -125,7 +119,7 @@ class Gitweb extends ConsumerAbstract
             $href = $node->getAttribute('href');
             $detailUrl = rtrim($message->url, '/') . $href;
             try {
-                $content = $this->getContent($this->browser, $detailUrl);
+                $content = $this->getContent($this->remoteService, $detailUrl);
             } catch (\Exception $e) {
                 continue;
             }
