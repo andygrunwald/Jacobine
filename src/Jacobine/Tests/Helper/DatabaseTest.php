@@ -106,13 +106,14 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
                 ->method('create')
                 ->will($this->returnValue($databaseConnection));
 
+        $driver = 'mysql';
         $host = 'localhost';
         $port = 3306;
         $username = 'phpunit';
         $password = '';
         $database = 'testcase';
 
-        return new Database($factory, $host, $port, $username, $password, $database);
+        return new Database($factory, $driver, $host, $port, $username, $password, $database);
     }
 
     /**

@@ -74,13 +74,14 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         // Mock of \Jacobine\Helper\DatabaseFactory
         $databaseFactoryMock = $this->getMock('Jacobine\Helper\DatabaseFactory');
 
+        $driver = 'mysql';
         $host = 'localhost';
         $port = 3306;
         $username = 'phpunit';
         $password = '';
         $database = 'testcase';
 
-        $constructorArgs = [$databaseFactoryMock, $host, $port, $username, $password, $database];
+        $constructorArgs = [$databaseFactoryMock, $driver, $host, $port, $username, $password, $database];
         $databaseMock = $this->getMock('Jacobine\Helper\Database', [], $constructorArgs);
 
         return $databaseMock;
@@ -221,7 +222,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
     {
         // Mock of \Jacobine\Helper\DatabaseFactory
         $databaseFactoryMock = $this->getMock('Jacobine\Helper\DatabaseFactory');
-        $constructorArgs = [$databaseFactoryMock, '', '', '', '', ''];
+        $constructorArgs = [$databaseFactoryMock, '', '', '', '', '', ''];
         $databaseMock = $this->getMock('\Jacobine\Helper\Database', [], $constructorArgs);
 
         $this->consumer->setDatabase($databaseMock);
