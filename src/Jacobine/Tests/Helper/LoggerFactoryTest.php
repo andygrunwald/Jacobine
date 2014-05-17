@@ -92,4 +92,16 @@ class LoggerFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Monolog\Handler\StreamHandler', $handler);
         $this->assertEquals(Logger::ERROR, $handler->getLevel());
     }
+
+    public function testCreateLoggerWithWrongHandlerClass()
+    {
+        $this->setExpectedException('\Exception');
+
+        $handlerConfig = [
+            'Stream' => [
+                'class' => 'ThisClassNotExists'
+            ]
+        ];
+        $this->factory->create('channel', $handlerConfig);
+    }
 }
