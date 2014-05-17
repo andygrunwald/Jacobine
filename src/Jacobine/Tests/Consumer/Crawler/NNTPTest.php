@@ -28,7 +28,9 @@ class NNTPTest extends ConsumerTestAbstract
     {
         $messageQueueMock = $this->getMessageQueueMock(0);
         $databaseMock = $this->getDatabaseMock();
+        $pearMock = $this->getMock('\PEAR');
+        $nntpClientMock = $this->getMock('\Net_NNTP_Client');
 
-        $this->consumer = new NNTP($messageQueueMock, $databaseMock);
+        $this->consumer = new NNTP($messageQueueMock, $databaseMock, $pearMock, $nntpClientMock);
     }
 }
