@@ -8,6 +8,10 @@
  * file that was distributed with this source code.
  */
 
-class AppKernel extends \Jacobine\Application\Kernel
+namespace Jacobine;
+
+use \Jacobine\Application\Kernel;
+
+class AppKernel extends Kernel
 {
 }
