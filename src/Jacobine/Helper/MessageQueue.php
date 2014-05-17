@@ -247,8 +247,14 @@ class MessageQueue
      * @param array $callback
      * @return void
      */
-    public function basicConsume(array $exchangeOptions, array $queueOptions, $deadLettering, $routing, $consumerTag, array $callback)
-    {
+    public function basicConsume(
+        array $exchangeOptions,
+        array $queueOptions,
+        $deadLettering,
+        $routing,
+        $consumerTag,
+        array $callback
+    ) {
         // Declare all needed stuff regarding dead lettering
         if ($deadLettering) {
             // Setup dead letter exchange

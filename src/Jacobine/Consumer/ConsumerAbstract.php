@@ -378,7 +378,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
         try {
             $this->process($messageData);
 
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $context = [
                 'message' => (array) $messageData,
                 'exceptionCode' => $e->getCode(),

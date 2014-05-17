@@ -65,8 +65,7 @@ class Gitweb extends ConsumerAbstract
         Database $database,
         Browser $remoteService,
         CrawlerFactory $crawlerFactory
-    )
-    {
+    ) {
         $this->setDatabase($database);
         $this->setMessageQueue($messageQueue);
         $this->remoteService = $remoteService;
