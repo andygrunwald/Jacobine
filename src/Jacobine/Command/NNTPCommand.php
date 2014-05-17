@@ -153,6 +153,7 @@ class NNTPCommand extends Command implements ContainerAwareInterface
 
         $message = array(
             'project' => $this->getProject(),
+            'type' => 'server',
             'config' => $nntpConfig
         );
 
