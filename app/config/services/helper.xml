@@ -6,6 +6,7 @@
 
         <service id="helper.database" class="Jacobine\Helper\Database">
             <argument type="service" id="helper.databaseFactory" />
+            <argument>%database.driver%</argument>
             <argument>%database.host%</argument>
             <argument>%database.port%</argument>
             <argument>%database.username%</argument>

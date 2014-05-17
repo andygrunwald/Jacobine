@@ -56,6 +56,7 @@ class Database
      * Constructor to initialize the database connection
      *
      * @param DatabaseFactory $factory
+     * @param string $driver
      * @param string $host
      * @param integer $port
      * @param string $username
@@ -63,11 +64,10 @@ class Database
      * @param string $database
      * @return \Jacobine\Helper\Database
      */
-    public function __construct(DatabaseFactory $factory, $host, $port, $username, $password, $database)
+    public function __construct(DatabaseFactory $factory, $driver, $host, $port, $username, $password, $database)
     {
         $this->factory = $factory;
-        // TODO make database driver configurable (via config)
-        $this->connect('mysql', $host, $port, $username, $password, $database);
+        $this->connect($driver, $host, $port, $username, $password, $database);
     }
 
     /**
