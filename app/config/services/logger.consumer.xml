@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <services>
+        <!-- Analysis consumer -->
+        <service id="logger.consumer.analysis.cvsanaly" class="Psr\Log\LoggerInterface"
+            factory-service="helper.loggerFactory" factory-method="create">
+            <argument>analysis.cvsanaly</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <service id="logger.consumer.analysis.filesize" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>analysis.filesize</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <service id="logger.consumer.analysis.githublinguist" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>analysis.githublinguist</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <service id="logger.consumer.analysis.pdepend" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>analysis.pdepend</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <service id="logger.consumer.analysis.phploc" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>analysis.phploc</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <!-- Crawler consumer -->
+        <service id="logger.consumer.crawler.gerrit" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>crawler.gerrit</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <service id="logger.consumer.crawler.gerritproject" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>crawler.gerritproject</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <service id="logger.consumer.crawler.gitweb" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>crawler.gitweb</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <service id="logger.consumer.crawler.nntp" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>crawler.nntp</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <service id="logger.consumer.crawler.nntpgroup" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>crawler.nntpgroup</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <!-- Download consumer -->
+        <service id="logger.consumer.download.git" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>download.git</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <service id="logger.consumer.download.http" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>download.http</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+
+        <!-- Extract consumer -->
+        <service id="logger.consumer.extract.targz" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>extract.targz</argument>
+            <argument>%logger.handler%</argument>
+        </service>
+    </services>
+
+</container>

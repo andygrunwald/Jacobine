@@ -10,11 +10,6 @@
 
 namespace Jacobine\Command;
 
-use Monolog\Logger;
-use Monolog\Processor\MemoryPeakUsageProcessor;
-use Monolog\Processor\MemoryUsageProcessor;
-use Monolog\Processor\ProcessIdProcessor;
-use Monolog\Processor\GitProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -134,101 +129,6 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
     }
 
     /**
-     * Initialize the configured logger for consumer
-     *
-     * TODO Extract Logger to LoggerFactory
-     *
-     * @param array $parsedConfig
-     * @param string $consumer
-     * @param OutputInterface $output
-     * @return \Monolog\Logger
-     */
-    private function initializeLogger($parsedConfig, $consumer, OutputInterface $output)
-    {
-        $loggerConfig = null;
-        if (array_key_exists('Logger', $parsedConfig['Logging']['Consumer']) === true) {
-            $loggerConfig = $parsedConfig['Logging']['Consumer'];
-        }
-
-        // Create a channel name ...
-        // e.g. Download\\HTTP to download.http
-        $channelName = str_replace('\\', '.', $consumer);
-        $channelName = strtolower($channelName);
-        $logger = new Logger($channelName);
-
-        // If there are no configured logger, add a NullHandler and exit
-        if ($loggerConfig === null || is_array($loggerConfig['Logger']) === false) {
-            $logger->pushHandler(new \Monolog\Handler\NullHandler());
-            return $logger;
-        }
-
-        // Add global logProcessors
-        $logger->pushProcessor(new ProcessIdProcessor());
-        $logger->pushProcessor(new MemoryUsageProcessor());
-        $logger->pushProcessor(new MemoryPeakUsageProcessor());
-        $logger->pushProcessor(new GitProcessor());
-
-        foreach ($loggerConfig['Logger'] as $loggerName => $singleLoggerConfig) {
-            $logFileName = $channelName . '-' . strtolower($loggerName);
-            $loggerInstance = $this->getLoggerInstance(
-                $singleLoggerConfig['Class'],
-                $singleLoggerConfig,
-                $logFileName,
-                $output
-            );
-            $logger->pushHandler($loggerInstance);
-        }
-
-        return $logger;
-    }
-
-    /**
-     * Creates a logger from config
-     *
-     * @param string $loggerClass
-     * @param array $loggerConfig
-     * @param string $logFileName
-     * @param OutputInterface $output
-     * @return \Monolog\Handler\StreamHandler|SymfonyConsoleHandler
-     * @throws \Exception
-     */
-    private function getLoggerInstance($loggerClass, $loggerConfig, $logFileName, OutputInterface $output)
-    {
-        switch ($loggerClass) {
-
-            // Monolog StreamHandler
-            case 'StreamHandler':
-                $stream = rtrim($loggerConfig['Path'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-                $stream .= $logFileName . '.log';
-
-                // Determine LogLevel
-                $minLogLevel = Logger::DEBUG;
-                $configuredLogLevel = (array_key_exists(
-                    'MinLogLevel',
-                    $loggerConfig
-                )) ? $loggerConfig['MinLogLevel'] : null;
-                $configuredLogLevel = strtoupper($configuredLogLevel);
-                if ($configuredLogLevel && constant('Monolog\Logger::' . $configuredLogLevel)) {
-                    $minLogLevel = constant('Monolog\Logger::' . $configuredLogLevel);
-                }
-
-                $instance = new \Monolog\Handler\StreamHandler($stream, $minLogLevel);
-                break;
-
-            // Custom SymfonyConsoleHandler
-            case 'SymfonyConsoleHandler':
-                $instance = new \Jacobine\Monolog\Handler\SymfonyConsoleHandler($output);
-                break;
-
-            // If there is another handler, skip it :(
-            default:
-                throw new \Exception('Configured logger "' . $loggerClass . '" not supported yet', 1368216223);
-        }
-
-        return $instance;
-    }
-
-    /**
      * Executes the current command.
      *
      * Initialize and starts a single consumer.
@@ -249,9 +149,9 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
             throw new \Exception('A consumer like "' . $consumerIdent . '" does not exist', 1368100583);
         }
 
-        $logger = $this->initializeLogger($this->config, $consumerIdent, $output);
+        $logger = $this->container->get('logger.' . $consumerToGet);
 
-        // TODO Remove setMessageQueue and maybe setLogger, because we migrated to DIC
+        // TODO Remove setMessageQueue, because we migrated to DIC
         // Create, initialize and start consumer
         $consumer = $this->container->get($consumerToGet);
         /* @var \Jacobine\Consumer\ConsumerAbstract $consumer */

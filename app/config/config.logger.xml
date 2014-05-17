@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <parameters>
+        <parameter key="logger.handler" type="collection">
+            <parameter key="Console" type="collection">
+                <parameter key="class">SymfonyConsoleHandler</parameter>
+            </parameter>
+            <parameter key="Stream" type="collection">
+                <parameter key="class">StreamHandler</parameter>
+                <parameter key="path">/var/log/analysis/</parameter>
+            </parameter>
+            <parameter key="ErrorStream" type="collection">
+                <parameter key="class">StreamHandler</parameter>
+                <parameter key="path">/var/log/analysis/</parameter>
+                <parameter key="minLogLevel">Error</parameter>
+            </parameter>
+        </parameter>
+    </parameters>
+
+</container>

@@ -10,6 +10,8 @@
 
 namespace Jacobine\Consumer;
 
+use \Psr\Log\LoggerInterface;
+
 /**
  * Class ConsumerAbstract
  *
@@ -76,7 +78,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Logger
      *
-     * @var \Monolog\Logger
+     * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
@@ -281,10 +283,10 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Sets the logger
      *
-     * @param \Monolog\Logger $logger
+     * @param LoggerInterface $logger
      * @return void
      */
-    public function setLogger($logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }

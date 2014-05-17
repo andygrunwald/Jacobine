@@ -4,6 +4,7 @@
     <imports>
         <import resource="services/commands.xml" />
         <import resource="services/consumer.xml" />
+        <import resource="services/logger.consumer.xml" />
         <import resource="services/helper.xml" />
         <import resource="services/dependency-injection.xml" />
     </imports>

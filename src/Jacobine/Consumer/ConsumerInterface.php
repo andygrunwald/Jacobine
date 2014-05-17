@@ -10,6 +10,8 @@
 
 namespace Jacobine\Consumer;
 
+use \Psr\Log\LoggerInterface;
+
 /**
  * Interface ConsumerInterface
  *
@@ -175,10 +177,10 @@ interface ConsumerInterface
     /**
      * Sets the logger
      *
-     * @param \Monolog\Logger $logger
+     * @param LoggerInterface $logger
      * @return void
      */
-    public function setLogger($logger);
+    public function setLogger(LoggerInterface $logger);
 
     /**
      * Sets the message
