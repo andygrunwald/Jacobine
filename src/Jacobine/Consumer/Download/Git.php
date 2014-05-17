@@ -253,7 +253,7 @@ class Git extends ConsumerAbstract
 
         $repository = ProcessUtils::escapeArgument($repository);
         $checkoutPath = ProcessUtils::escapeArgument($checkoutPath);
-        $command = $git . ' clone --recursive ' . $repository . ' ' . $checkoutPath;
+        $command = $git . ' clone ' . $repository . ' ' . $checkoutPath;
 
         return $this->executeGitCommand($command, null);
     }
