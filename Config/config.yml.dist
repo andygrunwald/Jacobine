@@ -13,7 +13,6 @@ MySQL:
 
 Logging:
   Consumer:
-    LogPath: /var/log/analysis/
     Logger:
       Console:
         Class: SymfonyConsoleHandler
