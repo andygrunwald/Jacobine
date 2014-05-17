@@ -115,11 +115,13 @@ class Targz extends ConsumerAbstract
         $folder = rtrim($pathInfo['dirname'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         chdir($folder);
 
-        // Create folder first and change the target folder of tar command via -C
-        // because typo3_src-4.6.0alpha1 does not contain a parent root in tar.
-        // Version typo3_src-4.6.0alpha1 is different from other versions.
-        // TODO get rid of hardcoded strings like 'typo3_src-'
-        $targetFolder = 'typo3_src-' . $record['version'] . DIRECTORY_SEPARATOR;
+        // Create folder first and change the target folder of tar command via -C parameter
+        // via this way we ensure a parent folder for a extracted tar.gz archive every time
+        $config = $this->getConfig();
+        $projectConfig = $config['Projects'][$message->project];
+        $targetFolderPrefix = $projectConfig['Consumer']['Extract\Targz']['TargetFolderPrefix'];
+        $targetFolder = $targetFolderPrefix . $record['version'] . DIRECTORY_SEPARATOR;
+
         mkdir($targetFolder);
 
         if (is_dir($targetFolder) === false) {

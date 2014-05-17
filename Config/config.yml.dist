@@ -68,3 +68,5 @@ Projects:
       Download\HTTP:
         DownloadPrefix: typo3_
         DownloadPostfix: .tar.gz
+      Extract\Targz:
+        TargetFolderPrefix: typo3_src-
