@@ -32,7 +32,7 @@ class LoggerFactory
 
     /**
      * Creates a logger with incoming $channelName
-     * 
+     *
      * @param string $channelName
      * @param array $handler
      * @return Logger
@@ -93,7 +93,7 @@ class LoggerFactory
                 $minLogLevel = Logger::DEBUG;
 
                 $configuredLogLevel = null;
-                if (array_key_exists('minLogLevel',$handlerConfig)) {
+                if (array_key_exists('minLogLevel', $handlerConfig)) {
                     $configuredLogLevel = $handlerConfig['minLogLevel'];
                 }
 
