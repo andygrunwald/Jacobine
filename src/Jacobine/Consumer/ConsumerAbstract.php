@@ -372,7 +372,6 @@ abstract class ConsumerAbstract implements ConsumerInterface
 
         $this->getLogger()->info('Receiving message', (array) $messageData);
 
-        // @TODO Refactore consumer to throw only exceptions
         // @TODO do we need a special kind of ConsumerException to handle a "data bag" for $context?
         try {
             $this->process($messageData);
