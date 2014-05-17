@@ -124,7 +124,8 @@ abstract class Kernel implements KernelInterface
         // In theory we are ready to dump the container here (for performance)
         // I (Andy) think that this is (currently) not necessary. Maybe this make sense in the feature.
         // The imprtant thing: We are ready for this change, because all tags are collected by compiler passes
-        // @link http://symfony.com/doc/current/components/dependency_injection/compilation.html#dumping-the-configuration-for-performance
+        // See the @link and chapter about "Dumping the Configuration for Performance"
+        // @link http://symfony.com/doc/current/components/dependency_injection/compilation.html
     }
 
     /**

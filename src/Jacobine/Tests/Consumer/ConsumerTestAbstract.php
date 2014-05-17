@@ -94,8 +94,10 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         return $browserMock;
     }
 
-    protected function mockGetRecordsForDatabaseMock(\PHPUnit_Framework_MockObject_MockObject $databaseMock, array $records)
-    {
+    protected function mockGetRecordsForDatabaseMock(
+        \PHPUnit_Framework_MockObject_MockObject $databaseMock,
+        array $records
+    ) {
         $databaseMock->expects($this->once())
                      ->method('getRecords')
                      ->will($this->returnValue($records));
