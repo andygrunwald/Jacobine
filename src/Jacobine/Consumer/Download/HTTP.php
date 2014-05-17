@@ -20,8 +20,6 @@ use Jacobine\Helper\MessageQueue;
  *
  * A consumer to download a HTTP resource.
  *
- * TODO Refactor the HTTP download consumer to download a single http resource without a database id
- *
  * Message format (json encoded):
  *  [
  *      project: Project to be analyzed. Must be a configured project in "configFile"
