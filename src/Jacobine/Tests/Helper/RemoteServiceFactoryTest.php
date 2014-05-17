@@ -37,6 +37,8 @@ class RemoteServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $httpService = $remoteServiceFactory->createHttpService(42, true, false);
 
         $client = $httpService->getClient();
+        /** @var \Buzz\Client\ClientInterface $client */
+
         $this->assertEquals(42, $client->getTimeout());
         $this->assertEquals(true, $client->getVerifyPeer());
         $this->assertEquals(false, $client->getIgnoreErrors());
