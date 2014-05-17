@@ -218,14 +218,13 @@ class GithubLinguist extends ConsumerAbstract
         $this->getLogger()->info('Analyze with github-linguist', ['directory' => $dirToAnalyze]);
 
         // TODO fix this ruby command!
-        // This command is "broken" with ruby 1.9 (tested with ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-linux])
+        // This command is fails with ruby 1.9 (tested with ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-linux])
         // Maybe execute bundle via rvm?
         //
-        // /.../github-linguist/lib/linguist/generated.rb:41:in `split': invalid byte sequence in US-ASCII (ArgumentError)
+        // github-linguist/lib/linguist/generated.rb:41:in `split': invalid byte sequence in US-ASCII (ArgumentError)
         // curl -L https://get.rvm.io | bash -s stable
         // source /home/vagrant/.rvm/scripts/rvm
         //
-        // @link http://stackoverflow.com/questions/6583815/how-to-run-bundle-exec-from-a-specific-ruby-version-using-rvm-when-shell-envir
         // @link https://github.com/github/linguist/issues/353
         $command = 'bundle exec linguist ' . $dirToAnalyze;
 
