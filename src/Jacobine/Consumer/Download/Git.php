@@ -21,8 +21,6 @@ use Symfony\Component\Process\ProcessUtils;
  *
  * A consumer to download a git repository.
  *
- * TODO Refactor the git download consumer to download a single git without a database id
- *
  * Message format (json encoded):
  *  [
  *      id: ID of a gitweb record in the database to receive the git url
