@@ -24,8 +24,6 @@ use Symfony\Component\Process\ProcessUtils;
  * linguist is written in Ruby.
  * We have to execute linguist via a external command, because we can`t speak from PHP to Ruby libs directly.
  *
- * TODO: Idea -> Port this consumer from PHP to Ruby. With this we can get rid of the system command.
- *
  * Message format (json encoded):
  *  [
  *      directory: Absolute path to folder which will be analyzed. E.g. /var/www/my/sourcecode
