@@ -145,9 +145,14 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
         foreach ($versions as $branch => $data) {
             // $data got two keys: releases + latest
             // Sometimes, the releases key does not exists.
-            // This is the case where $branch is latest_stable, latest_lts or latest_deprecated
-            // We can skip this here
-            // @todo update database with this information!
+            // This is the case where $branch contains one of this values:
+            // "latest_stable", "latest_old_stable", "latest_lts", "latest_old_lts" or "latest_deprecated"
+            // and $data reflects the version number e.g. 6.2.2 or 4.7.18
+            // Some examples:
+            //  $branch: latest_stable - $data: 6.2.2
+            //  $branch: latest_old_stable - $data: 6.1.8
+            //  ...
+            // We do not need this information (currently), so we can skip this here
             if (is_array($data) === false
                 || array_key_exists('releases', $data) === false
                 || is_array($data['releases']) === false
