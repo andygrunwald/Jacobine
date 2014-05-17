@@ -58,12 +58,6 @@
             <argument>%logger.handler%</argument>
         </service>
 
-        <service id="logger.consumer.crawler.nntpgroup" class="Psr\Log\LoggerInterface"
-                 factory-service="helper.loggerFactory" factory-method="create">
-            <argument>crawler.nntpgroup</argument>
-            <argument>%logger.handler%</argument>
-        </service>
-
         <!-- Download consumer -->
         <service id="logger.consumer.download.git" class="Psr\Log\LoggerInterface"
                  factory-service="helper.loggerFactory" factory-method="create">

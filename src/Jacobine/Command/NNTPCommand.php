@@ -29,7 +29,6 @@ use Symfony\Component\Yaml\Yaml;
  *
  * NNTPCommand
  *      |-> Consumer: Crawler\\NNTP
- *              |-> Consumer: Crawler\\NNTPGroup
  *
  * Usage:
  *  php console crawler:nntp [--project=ProjectName]
