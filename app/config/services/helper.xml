@@ -32,6 +32,8 @@
 
         <service id="helper.processFactory" class="Jacobine\Helper\ProcessFactory" />
 
+        <service id="helper.crawlerFactory" class="Jacobine\Helper\CrawlerFactory" />
+
         <service id="helper.remoteServiceFactory" class="Jacobine\Helper\RemoteServiceFactory" />
 
         <service id="helper.httpRemoteService" class="Buzz\Browser"

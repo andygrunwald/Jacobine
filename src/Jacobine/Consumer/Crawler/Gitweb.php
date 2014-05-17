@@ -10,10 +10,10 @@
 
 namespace Jacobine\Consumer\Crawler;
 
-use Symfony\Component\DomCrawler\Crawler;
 use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Helper\MessageQueue;
 use Jacobine\Helper\Database;
+use Jacobine\Helper\CrawlerFactory;
 use Buzz\Browser;
 
 /**
@@ -51,12 +51,14 @@ class Gitweb extends ConsumerAbstract
      * @param MessageQueue $messageQueue
      * @param Database $database
      * @param \Buzz\Browser $remoteService
+     * @param \Jacobine\Helper\CrawlerFactory $crawlerFactory
      */
-    public function __construct(MessageQueue $messageQueue, Database $database, Browser $remoteService)
+    public function __construct(MessageQueue $messageQueue, Database $database, Browser $remoteService, CrawlerFactory $crawlerFactory)
     {
         $this->setDatabase($database);
         $this->setMessageQueue($messageQueue);
         $this->remoteService = $remoteService;
+        $this->crawlerFactory = $crawlerFactory;
     }
 
     /**
@@ -109,8 +111,7 @@ class Gitweb extends ConsumerAbstract
             throw new \Exception('Reading gitweb frontend failed', 1398887554);
         }
 
-        // TODO port crawler to DIC
-        $crawler = new Crawler($content);
+        $crawler = $this->crawlerFactory->create($content);
         /* @var $crawler \Symfony\Component\DomCrawler\Crawler */
 
         $projectLinks = $crawler->filterXPath('//table[@class="project_list"]/tr/td[1]/a[@class="list"]');
@@ -125,7 +126,7 @@ class Gitweb extends ConsumerAbstract
                 continue;
             }
 
-            $detailCrawler = new Crawler($content);
+            $detailCrawler = $this->crawlerFactory->create($content);
             /* @var $detailCrawler \Symfony\Component\DomCrawler\Crawler */
             $gitUrl = $detailCrawler->filterXPath(
                 '//table[@class="projects_list"]/tr[@class="metadata_url"]/td[2]'
