@@ -113,7 +113,7 @@ class CVSAnaly extends ConsumerAbstract
      * @param string $extensions
      * @return string
      */
-    private function buildCVSAnalyCommand($config, $project, $directory, $extensions)
+    private function buildCVSAnalyCommand(array $config, $project, $directory, $extensions)
     {
         $projectConfig = $config['Projects'][$project];
 
@@ -132,22 +132,16 @@ class CVSAnaly extends ConsumerAbstract
     /**
      * Returns all active and usable extensions of CVSAnaly
      *
+     * @param array $config
      * @return string
      */
-    private function getCVSAnalyExtensions()
+    private function getCVSAnalyExtensions(array $config)
     {
-        // TODO Take care of this ... configure extensions or make this work!
-        // Hardcoded extensions, because some extensions may not work correct
-        // With this way we can enable / disable various extensions
-        // and know that all works fine :)
+        // Hardcoded extensions in config, because some extensions may not work correct
+        // With this way we can enable / disable various extensions and know that all works fine :)
         // Later on we try to fix all extensions in CVSAnaly to work with all repositories
-        //
-        // $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
-        // $command .= ' --list-extensions';
-        //
-        // $extensions = $this->executeCommand($command);
-        // $extensions = implode('', $extensions);
-        $extensions = 'Months, Weeks';
+        // For this we have to execute CVSAnaly with --list-extensions parameter
+        $extensions = $config['Application']['CVSAnaly']['Extensions'];
 
         if ($extensions) {
             $extensions = str_replace(' ', '', $extensions);
@@ -170,8 +164,9 @@ class CVSAnaly extends ConsumerAbstract
     {
         $this->getLogger()->info('Start analyzing directory with CVSAnaly', ['directory' => $checkoutDir]);
 
-        $extensions = $this->getCVSAnalyExtensions();
-        $command = $this->buildCVSAnalyCommand($this->getConfig(), $project, $checkoutDir, $extensions);
+        $config = $this->getConfig();
+        $extensions = $this->getCVSAnalyExtensions($config);
+        $command = $this->buildCVSAnalyCommand($config, $project, $checkoutDir, $extensions);
 
         $process = $this->processFactory->createProcess($command, null);
         $exception = null;
