@@ -188,7 +188,7 @@ class GithubLinguist extends ConsumerAbstract
      */
     protected function clearLinguistRecordsFromDatabase($versionId)
     {
-        $deleteResult = $this->getDatabase()->deleteRecords('jacobine_linguist', array('version' => intval($versionId)));
+        $deleteResult = $this->getDatabase()->deleteRecords('jacobine_linguist', ['version' => intval($versionId)]);
 
         if ($deleteResult === false) {
             $msg = 'Delete of linguist records for version failed';
