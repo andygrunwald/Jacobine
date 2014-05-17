@@ -16,6 +16,8 @@ use Jacobine\Helper\Database;
 /**
  * Class NNTPGroup
  *
+ * TODO merge both NNTP consumer to one. Adjust README as well!
+ *
  * A consumer to crawl a single group of a NNTP Server (http://en.wikipedia.org/wiki/Network_News_Transfer_Protocol).
  *
  * This consumer is part of "message chain".

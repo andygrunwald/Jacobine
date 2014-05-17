@@ -17,6 +17,8 @@ use Jacobine\Helper\Database;
 /**
  * Class NNTP
  *
+ * TODO merge both NNTP consumer to one. Adjust README as well!
+ *
  * A consumer to crawl a NNTP Server (http://en.wikipedia.org/wiki/Network_News_Transfer_Protocol).
  *
  * This consumer is part of "message chain".
@@ -85,6 +87,7 @@ class NNTP extends ConsumerAbstract
      * The logic of the consumer
      *
      * @param \stdClass $message
+     * @throws \Exception
      * @return null|void
      */
     protected function process($message)

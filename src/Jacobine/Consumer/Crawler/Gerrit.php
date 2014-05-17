@@ -16,6 +16,8 @@ use Jacobine\Helper\MessageQueue;
 /**
  * Class Gerrit
  *
+ * TODO merge both Gerrit consumer to one. Adjust README as well!
+ *
  * A consumer to execute Gerrie (https://github.com/andygrunwald/Gerrie).
  * Gerrie is a project written in PHP to crawl data from a Gerrit Code Review server.
  * The crawled data will be saved in a (configured) database.
