@@ -98,8 +98,9 @@ class Gitweb extends ConsumerAbstract
             $content = $this->getContent($this->remoteService, $message->url);
 
         } catch (\Exception $e) {
-            // TODO This seems to be not so smart to catch an exception and throw a new one
-            // I do this because of the error message. Maybe there is a better way?
+            // At first this seems to be not so smart to catch an exception and throw a new one,
+            // but i do this because i want to add the custom error message.
+            // If there is a better way a pull request is welcome :)
             $context = array(
                 'url' => $message->url,
                 'message' => $e->getMessage()
