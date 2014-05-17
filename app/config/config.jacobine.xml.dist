@@ -3,6 +3,7 @@
 
     <parameters>
         <!-- MySQL -->
+        <parameter key="database.driver">mysql</parameter>
         <parameter key="database.host">localhost</parameter>
         <parameter key="database.port">3306</parameter>
         <parameter key="database.username">root</parameter>
@@ -15,6 +16,9 @@
         <parameter key="messagequeue.username">analysis</parameter>
         <parameter key="messagequeue.password">analysis</parameter>
         <parameter key="messagequeue.vhost">analysis</parameter>
+
+        <!-- Timeout for HTTP requests -->
+        <parameter key="request.timeout">20</parameter>
     </parameters>
 
 </container>
