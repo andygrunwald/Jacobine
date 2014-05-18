@@ -91,7 +91,50 @@ class PDepend extends ConsumerAbstract
             case 'analyze':
                 $this->processXDependExecution($message);
                 break;
+
+            case 'import-jDepend-xml':
+                $this->processImportJDependXml($message);
+                break;
+
+            case 'import-summary-xml':
+                $this->processImportSummaryXml($message);
+                break;
         }
+    }
+
+    /**
+     * Imports a result of a xDepend analysis
+     * This method imports a standard jDepend output file.
+     *
+     * @link http://clarkware.com/software/JDepend.html
+     *
+     * @param \stdClass $message
+     * @throws \RuntimeException
+     * @return void
+     */
+    private function processImportJDependXml($message)
+    {
+        // TODO implement
+        // $message->content
+        // jdepend-xml-typo3_src-6.2.0beta7.xml
+        throw new \RuntimeException('Not implemented', 1400418354);
+    }
+
+    /**
+     * Imports a result of a xDepend analysis
+     * This methods import a summary xml output file.
+     * E.g. pDepend can report such a summary file
+     *
+     * @param \stdClass $message
+     * @throws \RuntimeException
+     * @return void
+     */
+    private function processImportSummaryXml($message)
+    {
+        // TODO implement
+        // $message->content
+        // summary-xml-typo3_src-6.2.0beta7.xml
+        throw new \RuntimeException('Not implemented', 1400418339);
     }
 
     /**
@@ -136,7 +179,37 @@ class PDepend extends ConsumerAbstract
             throw new \Exception('pDepend analysis result files does not exist!', 1398886405);
         }
 
-        // @todo add further consumer to parse and store the jDependXml- and summaryXml-file
+        $this->addFurtherMessageToQueue($message->project, $message->versionId, $analysisFiles);
+    }
+
+    /**
+     * Adds further messages to the message broker
+     *
+     * @param string $project
+     * @param integer $versionId
+     * @param array $analysisFiles
+     * @return void
+     */
+    private function addFurtherMessageToQueue($project, $versionId, array $analysisFiles)
+    {
+        $config = $this->getConfig();
+        $projectConfig = $config['Projects'][$project];
+        $exchange = $projectConfig['RabbitMQ']['Exchange'];
+
+        $jDependXmlMessage = [
+            'project' => $project,
+            'versionId' => $versionId,
+            'type' => 'import-jDepend-xml',
+            'content' => file_get_contents($analysisFiles['jDependXmlFile'])
+        ];
+
+        $summaryXmlMessage = $jDependXmlMessage;
+        $summaryXmlMessage['type'] = 'import-summary-xml';
+        $summaryXmlMessage['content'] = file_get_contents($analysisFiles['summaryXmlFile']);
+
+        $messageQueue = $this->getMessageQueue();
+        $messageQueue->sendSimpleMessage($jDependXmlMessage, $exchange, 'analysis.pdepend');
+        $messageQueue->sendSimpleMessage($summaryXmlMessage, $exchange, 'analysis.pdepend');
     }
 
     /**
