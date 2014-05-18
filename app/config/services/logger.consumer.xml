@@ -40,12 +40,6 @@
             <argument>%logger.handler%</argument>
         </service>
 
-        <service id="logger.consumer.crawler.gerritproject" class="Psr\Log\LoggerInterface"
-                 factory-service="helper.loggerFactory" factory-method="create">
-            <argument>crawler.gerritproject</argument>
-            <argument>%logger.handler%</argument>
-        </service>
-
         <service id="logger.consumer.crawler.gitweb" class="Psr\Log\LoggerInterface"
                  factory-service="helper.loggerFactory" factory-method="create">
             <argument>crawler.gitweb</argument>

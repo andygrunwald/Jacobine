@@ -28,8 +28,8 @@ use Symfony\Component\Yaml\Yaml;
  * With this message a chain of crawling messages is triggered:
  *
  * GerritCommand
- *      |-> Consumer: Crawler\\Gerrit
- *              |-> Consumer: Crawler\\GerritProject
+ *      |-> Consumer: Crawler\\Gerrit (type: server)
+ *              |-> Consumer: Crawler\\Gerrit (type: project)
  *
  * Usage:
  *  php console crawler:gerrit [--project=ProjectName]
@@ -154,7 +154,8 @@ class GerritCommand extends Command implements ContainerAwareInterface
 
         $message = array(
             'project' => $this->getProject(),
-            'configFile' => $configFile
+            'configFile' => $configFile,
+            'type' => 'server'
         );
 
         $this->messageQueue->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], self::ROUTING);

@@ -39,8 +39,7 @@ E.g. `php console analysis:consumer --project=TYPO3 Extract\\Targz`
 * `Analysis\\GithubLinguist`: Executes the Github Linguist analysis on a given folder and stores the results in linguist database table.
 * `Analysis\\PDepend`: Executes the PDepend analysis on a given folder.
 * `Analysis\\PHPLoc`: Executes the PHPLoc analysis on a given folder and stores the results in phploc database table.
-* `Crawler\\Gerrit`: Prepares the message queues for a single Gerrit review system.
-* `Crawler\\GerritProject`: Imports a single project of a Gerrit review system.
+* `Crawler\\Gerrit`: Crawls a single Gerrit review system (projects + all changesets)
 * `Crawler\\Gitweb`: Crawls a Gitweb-Index page for Git-repositories.
 * `Download\\Git`: Downloads a Git repository.
 * `Download\\HTTP`: Downloads a HTTP resource.

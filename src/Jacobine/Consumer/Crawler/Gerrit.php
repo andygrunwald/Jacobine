@@ -16,25 +16,28 @@ use Jacobine\Helper\MessageQueue;
 /**
  * Class Gerrit
  *
- * TODO merge both Gerrit consumer to one. Adjust README as well!
- *
  * A consumer to execute Gerrie (https://github.com/andygrunwald/Gerrie).
  * Gerrie is a project written in PHP to crawl data from a Gerrit Code Review server.
  * The crawled data will be saved in a (configured) database.
  *
  * This consumer is part of "message chain".
- * This consumer is responsible to receive all projects from a Gerrit server and create
- * a seperate message for each project.
+ * This consumer got two tasks:
+ *  * Receive all projects from a Gerrit server and create a seperate message for each project
+ *  * Receive all changesets + dependencies of a single project from a Gerrit server
+ *    and store them into a database which will be configured in Gerries config file
  * The chain is:
  *
  * GerritCommand
- *      |-> Consumer: Crawler\\Gerrit
- *              |-> Consumer: Crawler\\GerritProject
+ *      |-> Consumer: Crawler\\Gerrit (type: server)
+ *           |-> Consumer: Crawler\\Gerrit (type: project)
  *
  * Message format (json encoded):
  *  [
  *      configFile: Absolute path to a Gerrie config file which will be used. E.g. /var/www/my/Gerrie/config
  *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *      serverId: Server id of Gerrit server stored in Gerries database. Returned by Gerrie::proceedServer()
+ *      projectId: Project id of Gerrit server stored in Gerries database. Returned by Gerrie::importProject()
+ *      type: "server" to crawl a server or "project" to crawl a project
  *  ]
  *
  * Usage:
@@ -97,21 +100,69 @@ class Gerrit extends ConsumerAbstract
             throw new \Exception('Gerrit config file does not exist', 1398886834);
         }
 
-        $project = $message->project;
-
         // Bootstrap Gerrie
         $gerrieConfig = $this->initialGerrieConfig($message->configFile);
         $databaseConfig = $gerrieConfig->getConfigurationValue('Database');
-        $projectConfig = $gerrieConfig->getConfigurationValue('Gerrit.' . $project);
+        $projectConfig = $gerrieConfig->getConfigurationValue('Gerrit.' . $message->project);
 
         // TODO get Gerrie classes via DIC
         $gerrieDatabase = new \Gerrie\Helper\Database($databaseConfig);
-        $gerrieDataService = \Gerrie\Helper\Factory::getDataService($gerrieConfig, $project);
+        $gerrieDataService = \Gerrie\Helper\Factory::getDataService($gerrieConfig, $message->project);
 
         $gerrie = new \Gerrie\Gerrie($gerrieDatabase, $gerrieDataService, $projectConfig);
         $gerrie->setOutput($this->getLogger());
 
         $gerritHost = $gerrieDataService->getHost();
+
+        switch ($message->type) {
+            case 'server':
+                $this->processServer($message, $gerrie, $gerritHost, $gerrieDataService);
+                break;
+            case 'project':
+                $this->processProject($message, $gerrie, $gerritHost);
+                break;
+        }
+
+    }
+
+    /**
+     * Imports all changesets + dependencies of a single Gerrit project
+     *
+     * @param \stdClas  $message
+     * @param \Gerrie\Gerrie $gerrie
+     * @param string $gerritHost
+     * @throws \Exception
+     * @return void
+     */
+    private function processProject($message, \Gerrie\Gerrie $gerrie, $gerritHost)
+    {
+        $gerritProject = $gerrie->getGerritProjectById($message->serverId, $message->projectId);
+
+        $context = [
+            'serverId' => $message->serverId,
+            'projectId' => $message->projectId
+        ];
+        if ($gerritProject === false) {
+            $this->getLogger()->critical('Gerrit project does not exists in database', $context);
+            throw new \Exception('Gerrit project does not exists in database', 1398887300);
+        }
+
+        $this->getLogger()->info('Start importing of changesets for Gerrit project', $context);
+        $gerrie->proceedChangesetsOfProject($gerritHost, $gerritProject);
+        $this->getLogger()->info('Import of changesets for Gerrit project successful', $context);
+    }
+
+    /**
+     * Imports all projects of a single Gerrit review server and creates new messages to crawl those projects
+     *
+     * @param \stdClass $message
+     * @param \Gerrie\Gerrie $gerrie
+     * @param string $gerritHost
+     * @param $gerrieDataService
+     */
+    private function processServer($message, \Gerrie\Gerrie $gerrie, $gerritHost, $gerrieDataService)
+    {
+        $project = $message->project;
         $gerritServerId = $gerrie->proceedServer($project, $gerritHost);
 
         $this->getLogger()->info('Requesting projects', array('host' => $gerritHost));
@@ -157,11 +208,12 @@ class Gerrit extends ConsumerAbstract
             'project' => $project,
             'projectId' => $projectId,
             'serverId' => $serverId,
-            'configFile' => $configFile
+            'configFile' => $configFile,
+            'type' => 'project'
         );
 
         $exchange = $projectConfig['RabbitMQ']['Exchange'];
-        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'crawler.gerritproject');
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'crawler.gerrit');
     }
 
     /**
