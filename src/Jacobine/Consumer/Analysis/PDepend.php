@@ -87,6 +87,22 @@ class PDepend extends ConsumerAbstract
      */
     protected function process($message)
     {
+        switch ($message->type) {
+            case 'analyze':
+                $this->processXDependExecution($message);
+                break;
+        }
+    }
+
+    /**
+     * Executes the xDepend (currently only pDepend) tool
+     *
+     * @param \stdClass $message
+     * @throws \Exception
+     * @return void
+     */
+    private function processXDependExecution($message)
+    {
         // If there is no directory to analyse, exit here
         if (is_dir($message->directory) !== true) {
             $this->getLogger()->critical('Directory does not exist', ['directory' => $message->directory]);

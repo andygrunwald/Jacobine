@@ -199,9 +199,12 @@ class Targz extends ConsumerAbstract
             'directory' => $directory
         ];
 
+        $pDependMessage = $message;
+        $pDependMessage['type'] = 'analyze';
+
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.phploc');
-        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.pdepend');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.linguist');
+        $this->getMessageQueue()->sendSimpleMessage($pDependMessage, $exchange, 'analysis.pdepend');
     }
 
     /**
