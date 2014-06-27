@@ -15,7 +15,6 @@ use Monolog\Handler\NullHandler;
 use Monolog\Processor\MemoryPeakUsageProcessor;
 use Monolog\Processor\MemoryUsageProcessor;
 use Monolog\Processor\ProcessIdProcessor;
-use Monolog\Processor\GitProcessor;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Jacobine\Monolog\Handler\SymfonyConsoleHandler;
 
@@ -56,7 +55,6 @@ class LoggerFactory
         $logger->pushProcessor(new ProcessIdProcessor());
         $logger->pushProcessor(new MemoryUsageProcessor());
         $logger->pushProcessor(new MemoryPeakUsageProcessor());
-        $logger->pushProcessor(new GitProcessor());
 
         foreach ($handler as $handlerName => $handlerConfig) {
             $logFileName = $channelName . '-' . strtolower($handlerName);
