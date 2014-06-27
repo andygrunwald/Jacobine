@@ -153,7 +153,7 @@ class CVSAnaly extends ConsumerAbstract
     /**
      * Starts a analysis of a given $checkoutDir with CVSAnaly
      *
-     * @param string $checkoutDir Directory which should be analyzed by github linguist
+     * @param string $checkoutDir Directory which should be analyzed by CVSAnalY
      * @param string $project Project which will be analyzed. Needed to catch the right configuration file
      * @return array [
      *                  0 => Symfony Process object,

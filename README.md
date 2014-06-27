@@ -27,6 +27,7 @@ This project provide different parts which are linked / works with RabbitMQ as p
 
 * `php console crawler:gerrit`: Adds a Gerrit review system to message queue to crawl this.
 * `php console crawler:gitweb`: Adds a Gitweb page to message queue to crawl this.
+* `php console crawler:mailinglist`: Adds a single mailinglist or a mailinglist host to message queue to crawl it.
 * `php console typo3:get.typo3.org`: Recieves all versions of get.typo3.org and stores them into a database
 
 ### Consumer
@@ -41,6 +42,7 @@ E.g. `php console analysis:consumer --project=TYPO3 Extract\\Targz`
 * `Analysis\\PHPLoc`: Executes the PHPLoc analysis on a given folder and stores the results in phploc database table.
 * `Crawler\\Gerrit`: Crawls a single Gerrit review system (projects + all changesets)
 * `Crawler\\Gitweb`: Crawls a Gitweb-Index page for Git-repositories.
+* `Crawler\\Mailinglist`: Crawls a single mailinglist or a mailinglist server (e.g. Mailman).
 * `Download\\Git`: Downloads a Git repository.
 * `Download\\HTTP`: Downloads a HTTP resource.
 * `Extract\\Targz`: Extracts a *.tar.gz archive.

@@ -1,16 +1,3 @@
-RabbitMQ:
-  Host: 192.168.33.55
-  Port: 5672
-  Username: analysis
-  Password: analysis
-  VHost: analysis
-
-MySQL:
-  Host: localhost
-  Port: 3306
-  Username: root
-  Password:
-
 Logging:
   Consumer:
     Logger:
@@ -40,6 +27,8 @@ Application:
   CVSAnaly:
     Binary: /usr/local/bin/cvsanaly2
     Extensions: Months, Weeks
+  MLStats:
+    Binary: /usr/local/bin/mlstats
   GithubLinguist:
     WorkingDir: /var/www/analysis/tools/github-linguist
 
@@ -62,8 +51,12 @@ Projects:
       ConfigFile: gerrit-review.typo3.org.yml
     CVSAnaly:
       ConfigFile: cvsanaly-config
+    PDepend:
+      ConfigFile: pdepend.xml
     NNTP:
       Host: lists.typo3.org
+    Mailinglist:
+      Host: http://lists.typo3.org/
     Consumer:
       Download\HTTP:
         DownloadPrefix: typo3_

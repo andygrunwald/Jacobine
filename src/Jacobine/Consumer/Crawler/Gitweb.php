@@ -114,10 +114,10 @@ class Gitweb extends ConsumerAbstract
             // At first this seems to be not so smart to catch an exception and throw a new one,
             // but i do this because i want to add the custom error message.
             // If there is a better way a pull request is welcome :)
-            $context = array(
+            $context = [
                 'url' => $message->url,
                 'message' => $e->getMessage()
-            );
+            ];
             $this->getLogger()->error('Reading gitweb frontend failed', $context);
             throw new \Exception('Reading gitweb frontend failed', 1398887554);
         }
@@ -148,7 +148,7 @@ class Gitweb extends ConsumerAbstract
                 $id = $this->insertGitwebRecord($name, $gitUrl);
             } else {
                 $id = $gitwebRecord['id'];
-                $this->getLogger()->info('Gitweb record already exists', array('git' => $gitUrl));
+                $this->getLogger()->info('Gitweb record already exists', ['git' => $gitUrl]);
             }
 
             $this->addFurtherMessageToQueue($message->project, $id);
@@ -165,7 +165,7 @@ class Gitweb extends ConsumerAbstract
      */
     private function getContent($browser, $url)
     {
-        $this->getLogger()->info('Requesting url', array('url' => $url));
+        $this->getLogger()->info('Requesting url',['url' => $url]);
         $response = $browser->get($url);
         /** @var \Buzz\Message\Response $response */
 
@@ -211,7 +211,7 @@ class Gitweb extends ConsumerAbstract
     private function getGitwebFromDatabase($repository)
     {
         $fields = array('id');
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_gitweb', array('git' => $repository), '', '', 1);
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_gitweb', ['git' => $repository], '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {

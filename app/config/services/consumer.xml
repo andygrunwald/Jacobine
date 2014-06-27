@@ -52,6 +52,20 @@
             <argument type="service" id="pear.net_nntp_client" />
         </service>
 
+        <service id="consumer.crawler.mailinglist" class="Jacobine\Consumer\Crawler\Mailinglist">
+            <tag name="jacobine.consumer" />
+            <argument type="service" id="helper.messageQueue" />
+            <argument type="service" id="helper.httpRemoteService" />
+            <argument type="service" id="helper.crawlerFactory" />
+            <argument type="service" id="helper.processFactory" />
+            <!-- TODO This is a _DIRTY_ hack to get it work really fast ... REFACTOR THIS! -->
+            <argument>%database.driver%</argument>
+            <argument>%database.host%</argument>
+            <argument>%database.username%</argument>
+            <argument>%database.password%</argument>
+            <argument>%database.database%</argument>
+        </service>
+
         <!-- Download consumer -->
         <service id="consumer.download.git" class="Jacobine\Consumer\Download\Git">
             <tag name="jacobine.consumer" />

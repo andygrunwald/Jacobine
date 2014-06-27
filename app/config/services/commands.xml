@@ -29,6 +29,10 @@
         <service id="command.NNTPCommand" class="Jacobine\Command\NNTPCommand">
             <tag name="jacobine.command" />
         </service>
+
+        <service id="command.MailinglistCommand" class="Jacobine\Command\MailinglistCommand">
+            <tag name="jacobine.command" />
+        </service>
     </services>
 
 </container>
