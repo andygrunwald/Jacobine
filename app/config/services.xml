@@ -12,7 +12,10 @@
 
     <services>
         <!-- Jacobine Console Application -->
-        <service id="console_application" class="Symfony\Component\Console\Application" />
+        <service id="console_application" class="Symfony\Component\Console\Application">
+            <argument>%application.name%</argument>
+            <argument>%application.version%</argument>
+        </service>
     </services>
 
 </container>
