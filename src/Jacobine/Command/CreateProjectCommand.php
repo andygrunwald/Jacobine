@@ -446,10 +446,9 @@ class CreateProjectCommand extends Command implements ContainerAwareInterface
     {
         $messages = [
             '',
-            sprintf('Thanks for adding %d data sources!', $amount),
+            sprintf('Yeah! You added %d data sources!', $amount),
             'If you want to add some later on, this is no problem.',
             'Just restart this wizard and type the same project name as before :)',
-            ''
         ];
 
         $this->outputMessageArray($messages);
