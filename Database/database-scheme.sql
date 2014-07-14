@@ -2,6 +2,21 @@ CREATE DATABASE IF NOT EXISTS `jacobine`;
 
 USE `jacobine`;
 
+CREATE TABLE IF NOT EXISTS `jacobine_project` (
+	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of a project',
+	`name` varchar(50) DEFAULT NULL COMMENT 'Name of a project',
+	`website` varchar(100) DEFAULT NULL COMMENT 'Website of a project',
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `jacobine_datasource` (
+	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of a data source',
+	`project` int(11) unsigned NOT NULL COMMENT 'ID field of project table',
+	`type` tinyint(1) UNSIGNED DEFAULT 0 COMMENT 'Type of a data source',
+	`content` varchar(100) DEFAULT NULL COMMENT 'Content (Name or URL) of a data source',
+	PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS `jacobine_versions` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of version',
 	`branch` varchar(4) DEFAULT NULL COMMENT 'Branch of version. E.g. 4.7, 6.0',
