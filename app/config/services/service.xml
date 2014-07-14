@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <services>
+        <service id="service.project" class="Jacobine\Service\Project">
+            <argument type="service" id="helper.database" />
+        </service>
+    </services>
+
+</container>

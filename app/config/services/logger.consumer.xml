@@ -71,6 +71,13 @@
             <argument>extract.targz</argument>
             <argument>%logger.handler%</argument>
         </service>
+
+        <!-- Project consumer -->
+        <service id="logger.consumer.project.cud" class="Psr\Log\LoggerInterface"
+                 factory-service="helper.loggerFactory" factory-method="create">
+            <argument>project.cud</argument>
+            <argument>%logger.handler%</argument>
+        </service>
     </services>
 
 </container>
