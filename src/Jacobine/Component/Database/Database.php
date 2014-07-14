@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Helper;
+namespace Jacobine\Component\Database;
 
 /**
  * Class Database
@@ -18,7 +18,7 @@ namespace Jacobine\Helper;
  * This class offers the basic abstraction for select, insert, update and delete statements.
  * All statements are executed via PreparedStatements to avoid possible sql injections.
  *
- * @package Jacobine\Helper
+ * @package Jacobine\Component\Database
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class Database
@@ -34,7 +34,7 @@ class Database
     /**
      * Database factory
      *
-     * @var \Jacobine\Helper\DatabaseFactory
+     * @var \Jacobine\Component\Database\DatabaseFactory
      */
     protected $factory = null;
 
@@ -62,7 +62,7 @@ class Database
      * @param string $username
      * @param string $password
      * @param string $database
-     * @return \Jacobine\Helper\Database
+     * @return \Jacobine\Component\Database\Database
      */
     public function __construct(DatabaseFactory $factory, $driver, $host, $port, $username, $password, $database)
     {

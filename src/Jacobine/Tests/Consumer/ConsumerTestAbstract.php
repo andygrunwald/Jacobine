@@ -42,7 +42,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         $messageQueueOptions = new MessageQueueOptions();
 
         $amqpConnectionMock = $this->getMock('\PhpAmqpLib\Connection\AMQPConnection', [], [], '', false);
-        $amqpFactoryMock = $this->getMock('\Jacobine\Helper\AMQPFactory', ['createMessage']);
+        $amqpFactoryMock = $this->getMock('\Jacobine\Component\AMQP\AMQPFactory', ['createMessage']);
 
         $constructorArgs = [$amqpConnectionMock, $amqpFactoryMock];
         $messageQueueMock = $this->getMock('\Jacobine\Helper\MessageQueue', [], $constructorArgs);

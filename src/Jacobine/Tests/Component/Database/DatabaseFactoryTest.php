@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Tests\Helper;
+namespace Jacobine\Tests\Component\Database;
 
-use Jacobine\Helper\DatabaseFactory;
+use Jacobine\Component\Database\DatabaseFactory;
 
 /**
  * Class DatabaseFactoryTest
  *
- * Unit test class for \Jacobine\Helper\DatabaseFactory
+ * Unit test class for \Jacobine\Component\Database\DatabaseFactory
  *
- * @package Jacobine\Tests\Helper
+ * @package Jacobine\Tests\Component\Database
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class DatabaseFactoryTest extends \PHPUnit_Framework_TestCase

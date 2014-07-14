@@ -8,23 +8,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Tests\Helper;
+namespace Jacobine\Tests\Component\AMQP;
 
-use Jacobine\Helper\AMQPFactory;
+use Jacobine\Component\AMQP\AMQPFactory;
 
 /**
  * Class AMQPFactoryTest
  *
- * Unit test class for \Jacobine\Helper\AMQPFactory
+ * Unit test class for \Jacobine\Component\AMQP\AMQPFactory
  *
- * @package Jacobine\Tests\Helper
+ * @package Jacobine\Tests\Component\AMQP
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class AMQPFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Jacobine\Helper\AMQPFactory
+     * @var \Jacobine\Component\AMQP\AMQPFactory
      */
     protected $factory;
 

@@ -8,24 +8,24 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Tests\Helper;
+namespace Jacobine\Tests\Component\Logger;
 
-use Jacobine\Helper\LoggerFactory;
+use Jacobine\Component\Logger\LoggerFactory;
 use Monolog\Logger;
 
 /**
  * Class LoggerFactoryTest
  *
- * Unit test class for \Jacobine\Helper\LoggerFactory
+ * Unit test class for \Jacobine\Component\Logger\LoggerFactory
  *
- * @package Jacobine\Tests\Helper
+ * @package Jacobine\Tests\Component\Logger
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class LoggerFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Jacobine\Helper\LoggerFactory
+     * @var \Jacobine\Component\Logger\LoggerFactory
      */
     protected $factory;
 

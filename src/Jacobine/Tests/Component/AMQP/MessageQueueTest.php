@@ -8,23 +8,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Tests\Helper;
+namespace Jacobine\Tests\Component\AMQP;
 
-use Jacobine\Helper\MessageQueue;
+use Jacobine\Component\AMQP\MessageQueue;
 
 /**
  * Class MessageQueueTest
  *
- * Unit test class for \Jacobine\Helper\MessageQueue
+ * Unit test class for \Jacobine\Component\AMQP\MessageQueue
  *
- * @package Jacobine\Tests\Helper
+ * @package Jacobine\Tests\Component\AMQP
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class MessageQueueTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     protected $messageQueue;
 
@@ -42,7 +42,7 @@ class MessageQueueTest extends \PHPUnit_Framework_TestCase
 
         $amqpMessageMock = $this->getMock('\PhpAmqpLib\Message\AMQPMessage');
 
-        $factoryMock = $this->getMock('\Jacobine\Helper\AMQPFactory', ['createMessage']);
+        $factoryMock = $this->getMock('\Jacobine\Component\AMQP\AMQPFactory', ['createMessage']);
         $factoryMock->expects($this->once())
                     ->method('createMessage')
         // add check if string or something is incoming

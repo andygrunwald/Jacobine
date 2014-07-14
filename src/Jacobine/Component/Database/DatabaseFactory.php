@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Helper;
+namespace Jacobine\Component\Database;
 
 /**
  * Class DatabaseFactory
@@ -18,7 +18,7 @@ namespace Jacobine\Helper;
  * This is necessary, because we need to be able to reconnect every time.
  * During runtime this factory will be used to create new database connections.
  *
- * @package Jacobine\Helper
+ * @package Jacobine\Component\Database
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class DatabaseFactory
@@ -33,7 +33,7 @@ class DatabaseFactory
      * @param string $username
      * @param string $password
      * @param string $database
-     * @return \Jacobine\Helper\Database
+     * @return \Jacobine\Component\Database\Database
      */
     public function create($driverName, $host, $port, $username, $password, $database)
     {

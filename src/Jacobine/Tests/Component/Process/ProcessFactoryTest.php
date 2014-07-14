@@ -8,23 +8,23 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Tests\Helper;
+namespace Jacobine\Tests\Component\Process;
 
-use Jacobine\Helper\ProcessFactory;
+use Jacobine\Component\Process\ProcessFactory;
 
 /**
  * Class ProcessFactoryTest
  *
- * Unit test class for \Jacobine\Helper\ProcessFactory
+ * Unit test class for \Jacobine\Component\Process\ProcessFactory
  *
- * @package Jacobine\Tests\Helper
+ * @package Jacobine\Tests\Component\Process
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class ProcessFactoryTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Jacobine\Helper\ProcessFactory
+     * @var \Jacobine\Component\Process\ProcessFactory
      */
     protected $factory;
 

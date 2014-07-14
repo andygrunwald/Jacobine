@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Helper;
+namespace Jacobine\Component\AMQP;
 
 /**
  * Class MessageQueue
@@ -18,14 +18,14 @@ namespace Jacobine\Helper;
  * But in the normal case we use RabbitMQ.
  * This class offers exchange, queue, binding, channel and message handling.
  *
- * @package Jacobine\Helper
+ * @package Jacobine\Component\AMQP
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class MessageQueue
 {
 
     /**
-     * @var AMQPFactory
+     * @var \Jacobine\Component\AMQP
      */
     protected $factory;
 
@@ -90,8 +90,8 @@ class MessageQueue
      * Constructor to set up a connection to the RabbitMQ server
      *
      * @param \PhpAmqpLib\Connection\AMQPConnection $amqpConnection
-     * @param \Jacobine\Helper\AMQPFactory $amqpFactory
-     * @return \Jacobine\Helper\MessageQueue
+     * @param \Jacobine\Component\AMQP\AMQPFactory $amqpFactory
+     * @return \Jacobine\Component\AMQP\MessageQueue
      */
     public function __construct(\PhpAmqpLib\Connection\AMQPConnection $amqpConnection, AMQPFactory $amqpFactory)
     {

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Helper;
+namespace Jacobine\Component\Logger;
 
 use Monolog\Logger;
 use Monolog\Handler\NullHandler;
@@ -23,7 +23,7 @@ use Jacobine\Monolog\Handler\SymfonyConsoleHandler;
  *
  * Factory to create a Logger.
  *
- * @package Jacobine\Helper
+ * @package Jacobine\Component\Logger
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class LoggerFactory

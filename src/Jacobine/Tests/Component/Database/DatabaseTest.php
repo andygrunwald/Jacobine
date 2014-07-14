@@ -8,18 +8,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Tests\Helper;
+namespace Jacobine\Tests\Component\Database;
 
 use PHPUnit_Extensions_Database_DataSet_IDataSet;
 use PHPUnit_Extensions_Database_DB_IDatabaseConnection;
-use Jacobine\Helper\Database;
+use Jacobine\Component\Database\Database;
 
 /**
  * Class DatabaseTest
  *
- * Unit test class for \Jacobine\Helper\Database
+ * Unit test class for \Jacobine\Component\Database\Database
  *
- * @package Jacobine\Tests\Helper
+ * @package Jacobine\Tests\Component\Database
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
@@ -100,8 +100,8 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
      */
     protected function getDatabaseObject($databaseConnection)
     {
-        // Mock of \Jacobine\Helper\DatabaseFactory
-        $factory = $this->getMock('Jacobine\Helper\DatabaseFactory');
+        // Mock of \Jacobine\Component\Database\DatabaseFactory
+        $factory = $this->getMock('Jacobine\Component\Database\DatabaseFactory');
         $factory->expects($this->any())
                 ->method('create')
                 ->will($this->returnValue($databaseConnection));

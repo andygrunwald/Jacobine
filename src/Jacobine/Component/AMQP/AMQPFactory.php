@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Helper;
+namespace Jacobine\Component\AMQP;
 
 use PhpAmqpLib\Connection\AMQPConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -19,7 +19,7 @@ use PhpAmqpLib\Message\AMQPMessage;
  * Factory to create a AMQP connection and a AMQP message.
  * This factory is used in many commands. The created connections are used in our MessageQueue abstraction.
  *
- * @package Jacobine\Helper
+ * @package Jacobine\Component\AMQP
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class AMQPFactory

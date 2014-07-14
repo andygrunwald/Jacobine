@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Helper;
+namespace Jacobine\Component\Process;
 
 use \Symfony\Component\Process\Process;
 
@@ -18,7 +18,7 @@ use \Symfony\Component\Process\Process;
  * Factory to create a new system process (like calls with "system", "exec", ...).
  * This factory is used in many commands like CVSAnaly or GithubLinguist.
  *
- * @package Jacobine\Helper
+ * @package Jacobine\Component\Process
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class ProcessFactory
