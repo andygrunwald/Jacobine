@@ -87,7 +87,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
      */
     protected function getDataSet()
     {
-        $dataSetFile = dirname(__FILE__) . '/../Fixtures/DatabaseTables/Versions.xml';
+        $dataSetFile = dirname(__FILE__) . '/../../Fixtures/DatabaseTables/Versions.xml';
         return $this->createXMLDataSet($dataSetFile);
     }
 
