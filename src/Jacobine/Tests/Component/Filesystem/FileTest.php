@@ -11,12 +11,12 @@
 namespace Jacobine\Tests\Components\Filesystem;
 
 use org\bovigo\vfs\vfsStream;
-use Jacobine\Components\Filesystem\File;
+use Jacobine\Component\Filesystem\File;
 
 /**
  * Class FileTest
  *
- * Unit test class for \Jacobine\Components\Filesystem\File
+ * Unit test class for \Jacobine\Component\Filesystem\File
  *
  * @package Jacobine\Tests\Components\Filesystem
  * @author Andy Grunwald <andygrunwald@gmail.com>
