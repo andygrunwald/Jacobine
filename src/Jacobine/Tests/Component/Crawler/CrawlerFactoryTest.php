@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Tests\Helper;
+namespace Jacobine\Tests\Component\Crawler;
 
-use Jacobine\Helper\CrawlerFactory;
+use Jacobine\Component\Crawler\CrawlerFactory;
 
 /**
  * Class CrawlerFactoryTest
  *
- * Unit test class for \Jacobine\Helper\CrawlerFactory
+ * Unit test class for \Jacobine\Component\Crawler\CrawlerFactory
  *
- * @package Jacobine\Tests\Helper
+ * @package Jacobine\Tests\Component\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class CrawlerFactoryTest extends \PHPUnit_Framework_TestCase

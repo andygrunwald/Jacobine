@@ -73,7 +73,7 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
     /**
      * MessageQueue connection
      *
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     protected $messageQueue;
 
@@ -147,7 +147,7 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
         $projectConfig = $this->config['Projects'][$this->getProject()];
         $this->exchange = $projectConfig['RabbitMQ']['Exchange'];
 
-        $this->messageQueue = $this->container->get('helper.messageQueue');
+        $this->messageQueue = $this->container->get('component.amqp.messageQueue');
     }
 
     /**

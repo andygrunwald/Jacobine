@@ -11,7 +11,7 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\MessageQueue;
+use Jacobine\Component\AMQP\MessageQueue;
 
 /**
  * Class Gerrit

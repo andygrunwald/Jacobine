@@ -11,9 +11,9 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\MessageQueue;
-use Jacobine\Helper\CrawlerFactory;
-use Jacobine\Helper\ProcessFactory;
+use Jacobine\Component\AMQP\MessageQueue;
+use Jacobine\Component\Crawler\CrawlerFactory;
+use Jacobine\Component\Process\ProcessFactory;
 use Symfony\Component\Process\ProcessUtils;
 use Buzz\Browser;
 
@@ -54,12 +54,12 @@ class Mailinglist extends ConsumerAbstract
     /**
      * Factory to create DOMCrawler
      *
-     * @var \Jacobine\Helper\CrawlerFactory
+     * @var \Jacobine\Component\Crawler\CrawlerFactory
      */
     protected $crawlerFactory;
 
     /**
-     * @var \Jacobine\Helper\ProcessFactory
+     * @var \Jacobine\Component\Process\ProcessFactory
      */
     protected $processFactory;
 

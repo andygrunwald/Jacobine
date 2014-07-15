@@ -8,16 +8,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Tests\Helper;
+namespace Jacobine\Tests\Component\RemoteService;
 
-use Jacobine\Helper\RemoteServiceFactory;
+use Jacobine\Component\RemoteService\RemoteServiceFactory;
 
 /**
  * Class RemoteServiceFactoryTest
  *
- * Unit test class for \Jacobine\Helper\RemoteServiceFactory
+ * Unit test class for \Jacobine\Component\RemoteService\RemoteServiceFactory
  *
- * @package Jacobine\Tests\Helper
+ * @package Jacobine\Tests\Component\RemoteService
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class RemoteServiceFactoryTest extends \PHPUnit_Framework_TestCase

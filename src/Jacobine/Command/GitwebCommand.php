@@ -62,7 +62,7 @@ class GitwebCommand extends Command implements ContainerAwareInterface
     /**
      * MessageQueue connection
      *
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     protected $messageQueue;
 
@@ -126,7 +126,7 @@ class GitwebCommand extends Command implements ContainerAwareInterface
         $this->setProject($input->getOption('project'));
         $this->config = Yaml::parse(CONFIG_FILE);
 
-        $this->messageQueue = $this->container->get('helper.messageQueue');
+        $this->messageQueue = $this->container->get('component.amqp.messageQueue');
     }
 
     /**

@@ -29,7 +29,7 @@ class GitwebTest extends ConsumerTestAbstract
         $messageQueueMock = $this->getMessageQueueMock(0);
         $databaseMock = $this->getDatabaseMock();
         $browserMock = $this->getBrowserMock();
-        $crawlerFactoryMock = $this->getMock('Jacobine\Helper\CrawlerFactory');
+        $crawlerFactoryMock = $this->getMock('Jacobine\Component\Crawler\CrawlerFactory');
 
         $this->consumer = new Gitweb($messageQueueMock, $databaseMock, $browserMock, $crawlerFactoryMock);
     }

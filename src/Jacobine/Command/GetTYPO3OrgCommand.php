@@ -76,14 +76,14 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     /**
      * Database connection
      *
-     * @var \Jacobine\Helper\Database
+     * @var \Jacobine\Component\Database\Database
      */
     protected $database;
 
     /**
      * MessageQueue connection
      *
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     protected $messageQueue;
 
@@ -119,14 +119,14 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
         // Config
         $this->config = Yaml::parse(CONFIG_FILE);
 
-        $this->remoteService = $this->container->get('helper.httpRemoteService');
+        $this->remoteService = $this->container->get('component.remoteService.httpRemoteService');
 
         // The project is hardcoded here, because this command is special for the OpenSourceProject TYPO3
         $projectConfig = $this->config['Projects'][self::PROJECT];
         $this->exchange = $projectConfig['RabbitMQ']['Exchange'];
 
-        $this->database = $this->container->get('helper.database');
-        $this->messageQueue = $this->container->get('helper.messageQueue');
+        $this->database = $this->container->get('component.database.database');
+        $this->messageQueue = $this->container->get('component.amqp.messageQueue');
     }
 
     /**

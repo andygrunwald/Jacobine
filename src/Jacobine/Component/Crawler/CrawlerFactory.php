@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Helper;
+namespace Jacobine\Component\Crawler;
 
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -20,7 +20,7 @@ use Symfony\Component\DomCrawler\Crawler;
  * We need this factory, because we need several crawlers per consumer.
  * See Crawler\Gitweb for example.
  *
- * @package Jacobine\Helper
+ * @package Jacobine\Component\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class CrawlerFactory

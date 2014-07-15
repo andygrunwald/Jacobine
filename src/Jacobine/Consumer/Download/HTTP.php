@@ -11,9 +11,9 @@
 namespace Jacobine\Consumer\Download;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\File;
-use Jacobine\Helper\Database;
-use Jacobine\Helper\MessageQueue;
+use Jacobine\Component\Filesystem\File;
+use Jacobine\Component\Database\Database;
+use Jacobine\Component\AMQP\MessageQueue;
 
 /**
  * Class HTTP

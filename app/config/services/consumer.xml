@@ -5,59 +5,59 @@
         <!-- Analysis consumer -->
         <service id="consumer.analysis.cvsanaly" class="Jacobine\Consumer\Analysis\CVSAnaly">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.processFactory" />
+            <argument type="service" id="component.process.processFactory" />
         </service>
 
         <service id="consumer.analysis.filesize" class="Jacobine\Consumer\Analysis\Filesize">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.database" />
+            <argument type="service" id="component.database.database" />
         </service>
 
         <service id="consumer.analysis.githublinguist" class="Jacobine\Consumer\Analysis\GithubLinguist">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.database" />
-            <argument type="service" id="helper.processFactory" />
+            <argument type="service" id="component.database.database" />
+            <argument type="service" id="component.process.processFactory" />
         </service>
 
         <service id="consumer.analysis.pdepend" class="Jacobine\Consumer\Analysis\PDepend">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.processFactory" />
+            <argument type="service" id="component.process.processFactory" />
         </service>
 
         <service id="consumer.analysis.phploc" class="Jacobine\Consumer\Analysis\PHPLoc">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.database" />
-            <argument type="service" id="helper.processFactory" />
+            <argument type="service" id="component.database.database" />
+            <argument type="service" id="component.process.processFactory" />
         </service>
 
         <!-- Crawler consumer -->
         <service id="consumer.crawler.gerrit" class="Jacobine\Consumer\Crawler\Gerrit">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.messageQueue" />
+            <argument type="service" id="component.amqp.messageQueue" />
         </service>
 
         <service id="consumer.crawler.gitweb" class="Jacobine\Consumer\Crawler\Gitweb">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.messageQueue" />
-            <argument type="service" id="helper.database" />
-            <argument type="service" id="helper.httpRemoteService" />
-            <argument type="service" id="helper.crawlerFactory" />
+            <argument type="service" id="component.amqp.messageQueue" />
+            <argument type="service" id="component.database.database" />
+            <argument type="service" id="component.remoteService.httpRemoteService" />
+            <argument type="service" id="component.crawler.crawlerFactory" />
         </service>
 
         <service id="consumer.crawler.nntp" class="Jacobine\Consumer\Crawler\NNTP">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.messageQueue" />
-            <argument type="service" id="helper.database" />
+            <argument type="service" id="component.amqp.messageQueue" />
+            <argument type="service" id="component.database.database" />
             <argument type="service" id="pear.pear" />
             <argument type="service" id="pear.net_nntp_client" />
         </service>
 
         <service id="consumer.crawler.mailinglist" class="Jacobine\Consumer\Crawler\Mailinglist">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.messageQueue" />
-            <argument type="service" id="helper.httpRemoteService" />
-            <argument type="service" id="helper.crawlerFactory" />
-            <argument type="service" id="helper.processFactory" />
+            <argument type="service" id="component.amqp.messageQueue" />
+            <argument type="service" id="component.remoteService.httpRemoteService" />
+            <argument type="service" id="component.crawler.crawlerFactory" />
+            <argument type="service" id="component.process.processFactory" />
             <!-- TODO This is a _DIRTY_ hack to get it work really fast ... REFACTOR THIS! -->
             <argument>%database.driver%</argument>
             <argument>%database.host%</argument>
@@ -69,23 +69,23 @@
         <!-- Download consumer -->
         <service id="consumer.download.git" class="Jacobine\Consumer\Download\Git">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.messageQueue" />
-            <argument type="service" id="helper.database" />
-            <argument type="service" id="helper.processFactory" />
+            <argument type="service" id="component.amqp.messageQueue" />
+            <argument type="service" id="component.database.database" />
+            <argument type="service" id="component.process.processFactory" />
         </service>
 
         <service id="consumer.download.http" class="Jacobine\Consumer\Download\HTTP">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.messageQueue" />
-            <argument type="service" id="helper.database" />
+            <argument type="service" id="component.amqp.messageQueue" />
+            <argument type="service" id="component.database.database" />
         </service>
 
         <!-- Extract consumer -->
         <service id="consumer.extract.targz" class="Jacobine\Consumer\Extract\Targz">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.messageQueue" />
-            <argument type="service" id="helper.database" />
-            <argument type="service" id="helper.processFactory" />
+            <argument type="service" id="component.amqp.messageQueue" />
+            <argument type="service" id="component.database.database" />
+            <argument type="service" id="component.process.processFactory" />
         </service>
     </services>
 

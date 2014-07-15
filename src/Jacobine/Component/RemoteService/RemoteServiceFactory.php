@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Helper;
+namespace Jacobine\Component\RemoteService;
 
 use Buzz\Client\Curl;
 use Buzz\Browser;
@@ -18,7 +18,7 @@ use Buzz\Browser;
  *
  * Factory to create a objects to communicate with remote services over e.g. HTTP.
  *
- * @package Jacobine\Helper
+ * @package Jacobine\Component\RemoteService
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class RemoteServiceFactory

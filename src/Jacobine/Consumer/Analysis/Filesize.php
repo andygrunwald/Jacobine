@@ -11,7 +11,7 @@
 namespace Jacobine\Consumer\Analysis;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\Database;
+use Jacobine\Component\Database\Database;
 
 /**
  * Class Filesize

@@ -45,7 +45,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         $amqpFactoryMock = $this->getMock('\Jacobine\Component\AMQP\AMQPFactory', ['createMessage']);
 
         $constructorArgs = [$amqpConnectionMock, $amqpFactoryMock];
-        $messageQueueMock = $this->getMock('\Jacobine\Helper\MessageQueue', [], $constructorArgs);
+        $messageQueueMock = $this->getMock('\Jacobine\Component\AMQP\MessageQueue', [], $constructorArgs);
 
         $messageQueueMock->expects($this->exactly($defaultOptionsCall))
                          ->method('getDefaultQueueOptions')
@@ -62,7 +62,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
     {
         $processMock = $this->getMock('\Symfony\Component\Process\Process', [], ['']);
 
-        $processFactoryMock = $this->getMock('Jacobine\Helper\ProcessFactory');
+        $processFactoryMock = $this->getMock('Jacobine\Component\Process\ProcessFactory');
         $processFactoryMock->method('createProcess')
                            ->will($this->returnValue($processMock));
 
@@ -71,8 +71,8 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
 
     protected function getDatabaseMock()
     {
-        // Mock of \Jacobine\Helper\DatabaseFactory
-        $databaseFactoryMock = $this->getMock('Jacobine\Helper\DatabaseFactory');
+        // Mock of \Jacobine\Component\Database\DatabaseFactory
+        $databaseFactoryMock = $this->getMock('Jacobine\Component\Database\DatabaseFactory');
 
         $driver = 'mysql';
         $host = 'localhost';
@@ -82,7 +82,7 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         $database = 'testcase';
 
         $constructorArgs = [$databaseFactoryMock, $driver, $host, $port, $username, $password, $database];
-        $databaseMock = $this->getMock('Jacobine\Helper\Database', [], $constructorArgs);
+        $databaseMock = $this->getMock('Jacobine\Component\Database\Database', [], $constructorArgs);
 
         return $databaseMock;
     }
@@ -222,10 +222,10 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
 
     public function testDatabaseGetterAndSetter()
     {
-        // Mock of \Jacobine\Helper\DatabaseFactory
-        $databaseFactoryMock = $this->getMock('Jacobine\Helper\DatabaseFactory');
+        // Mock of \Jacobine\Component\Database\DatabaseFactory
+        $databaseFactoryMock = $this->getMock('Jacobine\Component\Database\DatabaseFactory');
         $constructorArgs = [$databaseFactoryMock, '', '', '', '', '', ''];
-        $databaseMock = $this->getMock('\Jacobine\Helper\Database', [], $constructorArgs);
+        $databaseMock = $this->getMock('\Jacobine\Component\Database\Database', [], $constructorArgs);
 
         $this->consumer->setDatabase($databaseMock);
 

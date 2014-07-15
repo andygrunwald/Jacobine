@@ -11,9 +11,9 @@
 namespace Jacobine\Consumer\Extract;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\ProcessFactory;
-use Jacobine\Helper\Database;
-use Jacobine\Helper\MessageQueue;
+use Jacobine\Component\Process\ProcessFactory;
+use Jacobine\Component\Database\Database;
+use Jacobine\Component\AMQP\MessageQueue;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -37,7 +37,7 @@ class Targz extends ConsumerAbstract
 {
 
     /**
-     * @var \Jacobine\Helper\ProcessFactory
+     * @var \Jacobine\Component\Process\ProcessFactory
      */
     protected $processFactory;
 

@@ -11,8 +11,8 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\MessageQueue;
-use Jacobine\Helper\Database;
+use Jacobine\Component\AMQP\MessageQueue;
+use Jacobine\Component\Database\Database;
 
 /**
  * Class NNTP

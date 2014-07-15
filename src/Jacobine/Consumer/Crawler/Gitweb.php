@@ -11,9 +11,9 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\MessageQueue;
-use Jacobine\Helper\Database;
-use Jacobine\Helper\CrawlerFactory;
+use Jacobine\Component\AMQP\MessageQueue;
+use Jacobine\Component\Database\Database;
+use Jacobine\Component\Crawler\CrawlerFactory;
 use Buzz\Browser;
 
 /**
@@ -48,7 +48,7 @@ class Gitweb extends ConsumerAbstract
     /**
      * Factory to create DOMCrawler
      *
-     * @var \Jacobine\Helper\CrawlerFactory
+     * @var \Jacobine\Component\Crawler\CrawlerFactory
      */
     protected $crawlerFactory;
 
@@ -58,7 +58,7 @@ class Gitweb extends ConsumerAbstract
      * @param MessageQueue $messageQueue
      * @param Database $database
      * @param \Buzz\Browser $remoteService
-     * @param \Jacobine\Helper\CrawlerFactory $crawlerFactory
+     * @param \Jacobine\Component\Crawler\CrawlerFactory $crawlerFactory
      */
     public function __construct(
         MessageQueue $messageQueue,

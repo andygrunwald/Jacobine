@@ -57,7 +57,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Database connection
      *
-     * @var \Jacobine\Helper\Database
+     * @var \Jacobine\Component\Database\Database
      */
     private $database;
 
@@ -71,7 +71,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * MessageQueue connection
      *
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     private $messageQueue;
 
@@ -210,7 +210,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Gets the database
      *
-     * @return \Jacobine\Helper\Database
+     * @return \Jacobine\Component\Database\Database
      */
     public function getDatabase()
     {
@@ -220,7 +220,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Sets the database
      *
-     * @param \Jacobine\Helper\Database $database
+     * @param \Jacobine\Component\Database\Database $database
      * @return void
      */
     public function setDatabase($database)
@@ -252,7 +252,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Gets the message queue
      *
-     * @return \Jacobine\Helper\MessageQueue
+     * @return \Jacobine\Component\AMQP\MessageQueue
      */
     public function getMessageQueue()
     {
@@ -262,7 +262,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Sets the message queue
      *
-     * @param \Jacobine\Helper\MessageQueue $messageQueue
+     * @param \Jacobine\Component\AMQP\MessageQueue $messageQueue
      * @return void
      */
     public function setMessageQueue($messageQueue)

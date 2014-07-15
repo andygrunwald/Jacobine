@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Helper;
+namespace Jacobine\Component\Filesystem;
 
 /**
  * Class File
@@ -19,7 +19,7 @@ namespace Jacobine\Helper;
  * TODO Implement symfony filesystem component
  * @link https://github.com/symfony/Filesystem
  *
- * @package Jacobine\Helper
+ * @package Jacobine\Component\Filesystem
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class File

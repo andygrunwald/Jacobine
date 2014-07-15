@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Jacobine\Tests\Helper;
+namespace Jacobine\Tests\Components\Filesystem;
 
 use org\bovigo\vfs\vfsStream;
-use Jacobine\Helper\File;
+use Jacobine\Components\Filesystem\File;
 
 /**
  * Class FileTest
  *
- * Unit test class for \Jacobine\Helper\File
+ * Unit test class for \Jacobine\Components\Filesystem\File
  *
- * @package Jacobine\Tests\Helper
+ * @package Jacobine\Tests\Components\Filesystem
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
 class FileTest extends \PHPUnit_Framework_TestCase

@@ -45,6 +45,21 @@
             Logger
         -->
         <service id="component.logger.loggerFactory" class="Jacobine\Component\Logger\LoggerFactory" />
+
+        <!--
+            Crawler
+        -->
+        <service id="component.crawler.crawlerFactory" class="Jacobine\Component\Crawlers\CrawlerFactory" />
+
+        <!--
+            RemoteService
+        -->
+        <service id="component.remoteService.remoteServiceFactory" class="Jacobine\Component\RemoteService\RemoteServiceFactory" />
+
+        <service id="component.remoteService.httpRemoteService" class="Buzz\Browser"
+                 factory-service="component.remoteService.remoteServiceFactory" factory-method="createHttpService">
+            <argument>%request.timeout%</argument>
+        </service>
     </services>
 
 </container>

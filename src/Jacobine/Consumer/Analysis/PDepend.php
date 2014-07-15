@@ -11,7 +11,7 @@
 namespace Jacobine\Consumer\Analysis;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\ProcessFactory;
+use Jacobine\Component\Process\ProcessFactory;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -38,7 +38,7 @@ class PDepend extends ConsumerAbstract
 {
 
     /**
-     * @var \Jacobine\Helper\ProcessFactory
+     * @var \Jacobine\Component\Process\ProcessFactory
      */
     protected $processFactory;
 
