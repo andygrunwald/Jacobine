@@ -257,7 +257,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
         $queryTable = $this->getConnection()->createQueryTable('versions', 'SELECT * FROM versions WHERE id = 3');
 
-        $dataSetFile = dirname(__FILE__) . '/../Fixtures/DatabaseTables/VersionsUpdateWithWhere.xml';
+        $dataSetFile = dirname(__FILE__) . '/../../Fixtures/DatabaseTables/VersionsUpdateWithWhere.xml';
         $expectedTable = $this->createXMLDataSet($dataSetFile)->getTable('versions');
 
         $this->assertTablesEqual($expectedTable, $queryTable);
@@ -278,7 +278,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
         $queryTable = $this->getConnection()->createQueryTable('versions', 'SELECT * FROM versions');
 
-        $dataSetFile = dirname(__FILE__) . '/../Fixtures/DatabaseTables/VersionsUpdateWithoutWhere.xml';
+        $dataSetFile = dirname(__FILE__) . '/../../Fixtures/DatabaseTables/VersionsUpdateWithoutWhere.xml';
         $expectedTable = $this->createXMLDataSet($dataSetFile)->getTable('versions');
 
         $this->assertTablesEqual($expectedTable, $queryTable);
@@ -317,7 +317,7 @@ class DatabaseTest extends \PHPUnit_Extensions_Database_TestCase
 
         $queryTable = $this->getConnection()->createQueryTable('versions', 'SELECT * FROM versions');
 
-        $dataSetFile = dirname(__FILE__) . '/../Fixtures/DatabaseTables/VersionsDeleteSingleRow.xml';
+        $dataSetFile = dirname(__FILE__) . '/../../Fixtures/DatabaseTables/VersionsDeleteSingleRow.xml';
         $expectedTable = $this->createXMLDataSet($dataSetFile)->getTable('versions');
 
         $this->assertTablesEqual($expectedTable, $queryTable);
