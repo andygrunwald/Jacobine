@@ -44,14 +44,6 @@
             <argument type="service" id="component.crawler.crawlerFactory" />
         </service>
 
-        <service id="consumer.crawler.nntp" class="Jacobine\Consumer\Crawler\NNTP">
-            <tag name="jacobine.consumer" />
-            <argument type="service" id="component.amqp.messageQueue" />
-            <argument type="service" id="component.database.database" />
-            <argument type="service" id="pear.pear" />
-            <argument type="service" id="pear.net_nntp_client" />
-        </service>
-
         <service id="consumer.crawler.mailinglist" class="Jacobine\Consumer\Crawler\Mailinglist">
             <tag name="jacobine.consumer" />
             <argument type="service" id="component.amqp.messageQueue" />

@@ -46,12 +46,6 @@
             <argument>%logger.handler%</argument>
         </service>
 
-        <service id="logger.consumer.crawler.nntp" class="Psr\Log\LoggerInterface"
-                 factory-service="component.logger.loggerFactory" factory-method="create">
-            <argument>crawler.nntp</argument>
-            <argument>%logger.handler%</argument>
-        </service>
-
         <service id="logger.consumer.crawler.mailinglist" class="Psr\Log\LoggerInterface"
                  factory-service="component.logger.loggerFactory" factory-method="create">
             <argument>crawler.mailinglist</argument>

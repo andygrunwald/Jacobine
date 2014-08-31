@@ -53,8 +53,6 @@ Projects:
       ConfigFile: cvsanaly-config
     PDepend:
       ConfigFile: pdepend.xml
-    NNTP:
-      Host: lists.typo3.org
     Mailinglist:
       Host: http://lists.typo3.org/
     Consumer:

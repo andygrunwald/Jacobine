@@ -86,31 +86,3 @@ CREATE TABLE IF NOT EXISTS `jacobine_gitweb` (
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `git` (`git`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `jacobine_nntp_group` (
-	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of nntp group',
-	`name` varchar(200) DEFAULT NULL COMMENT 'Name of nntp group',
-	`description` varchar(255) DEFAULT NULL COMMENT 'Description of nntp group',
-	`first` int(11) unsigned DEFAULT '0' COMMENT 'First article of nntp group',
-	`last` int(11) unsigned DEFAULT '0' COMMENT 'Last article of nntp group',
-	`cnt` int(11) unsigned DEFAULT '0' COMMENT 'Article count of nntp group',
-	`posting` varchar(10) DEFAULT NULL COMMENT 'Is posting allowed?',
-	`last_indexed` int(11) unsigned DEFAULT '0' COMMENT 'Last indexed article of nntp group',
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `jacobine_nntp_article` (
-	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of a nntp article',
-	`group_id` int(11) unsigned DEFAULT '0' COMMENT 'ID of nntp group',
-	`article_no` int(11) unsigned DEFAULT '0' COMMENT 'Number of nntp article',
-	`message` TEXT DEFAULT '' COMMENT 'Text of nntp article',
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS `jacobine_nntp_article_header` (
-	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of a nntp article header',
-	`article_id` int(11) unsigned DEFAULT '0' COMMENT 'ID of nntp article',
-	`header` varchar(100) DEFAULT NULL COMMENT 'Name of header',
-	`content` TEXT DEFAULT '' COMMENT 'Content of header',
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
