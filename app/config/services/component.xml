@@ -49,7 +49,7 @@
         <!--
             Crawler
         -->
-        <service id="component.crawler.crawlerFactory" class="Jacobine\Component\Crawlers\CrawlerFactory" />
+        <service id="component.crawler.crawlerFactory" class="Jacobine\Component\Crawler\CrawlerFactory" />
 
         <!--
             RemoteService
