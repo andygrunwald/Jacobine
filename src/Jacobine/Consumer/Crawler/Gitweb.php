@@ -165,7 +165,7 @@ class Gitweb extends ConsumerAbstract
      */
     private function getContent($browser, $url)
     {
-        $this->getLogger()->info('Requesting url',['url' => $url]);
+        $this->getLogger()->info('Requesting url', ['url' => $url]);
         $response = $browser->get($url);
         /** @var \Buzz\Message\Response $response */
 
