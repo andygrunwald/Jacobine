@@ -83,7 +83,7 @@
         <!-- Project consumer -->
         <service id="consumer.project.cud" class="Jacobine\Consumer\Project\CUD">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="helper.messageQueue" />
+            <argument type="service" id="component.amqp.messageQueue" />
             <argument type="service" id="service.project" />
         </service>
     </services>

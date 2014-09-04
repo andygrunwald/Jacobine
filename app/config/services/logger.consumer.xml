@@ -74,7 +74,7 @@
 
         <!-- Project consumer -->
         <service id="logger.consumer.project.cud" class="Psr\Log\LoggerInterface"
-                 factory-service="helper.loggerFactory" factory-method="create">
+                 factory-service="component.logger.loggerFactory" factory-method="create">
             <argument>project.cud</argument>
             <argument>%logger.handler%</argument>
         </service>

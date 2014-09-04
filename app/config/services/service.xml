@@ -3,7 +3,7 @@
 
     <services>
         <service id="service.project" class="Jacobine\Service\Project">
-            <argument type="service" id="helper.database" />
+            <argument type="service" id="component.database.database" />
         </service>
     </services>
 
