@@ -31,7 +31,7 @@ use Symfony\Component\Process\ProcessUtils;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Analysis\\CVSAnaly
+ *  php console jacobine:consumer Analysis\\CVSAnaly
  *
  * @package Jacobine\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>

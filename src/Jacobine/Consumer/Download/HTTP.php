@@ -29,7 +29,7 @@ use Jacobine\Component\AMQP\MessageQueue;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Download\\HTTP
+ *  php console jacobine:consumer Download\\HTTP
  *
  * @package Jacobine\Consumer\Download
  * @author Andy Grunwald <andygrunwald@gmail.com>

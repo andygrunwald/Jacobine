@@ -31,7 +31,7 @@ use Symfony\Component\Process\ProcessUtils;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Analysis\\GithubLinguist
+ *  php console jacobine:consumer Analysis\\GithubLinguist
  *
  * @package Jacobine\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>

@@ -30,7 +30,7 @@ use Symfony\Component\Yaml\Yaml;
  * To check if your new project is configured correct, just configure it and execute this command.
  *
  * Usage:
- *  php console analysis:list-projects
+ *  php console jacobine:list-projects
  *
  * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -52,7 +52,7 @@ class ListProjectsCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('analysis:list-projects')
+        $this->setName('jacobine:list-projects')
              ->setDescription('Lists all available and configured projects');
     }
 

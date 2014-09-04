@@ -36,7 +36,7 @@ use Buzz\Browser;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Crawler\\Mailinglist
+ *  php console jacobine:consumer Crawler\\Mailinglist
  *
  * @package Jacobine\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>

@@ -30,10 +30,10 @@ use Jacobine\Monolog\Handler\SymfonyConsoleHandler;
  * This class reflects the single entry point for every consumer.
  *
  * Usage:
- *  php console analysis:consumer ConsumerName [--project=ProjectName]
+ *  php console jacobine:consumer ConsumerName [--project=ProjectName]
  *
  * e.g. to start the Download HTTP consumer
- *  php console analysis:consumer Download\\HTTP --project=TYPO3
+ *  php console jacobine:consumer Download\\HTTP --project=TYPO3
  *
  * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -78,7 +78,7 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
      */
     protected function configure()
     {
-        $this->setName('analysis:consumer')
+        $this->setName('jacobine:consumer')
              ->setDescription('Generic task for message queue consumer')
              ->addOption(
                  'project',

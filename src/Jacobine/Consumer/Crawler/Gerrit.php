@@ -41,7 +41,7 @@ use Jacobine\Component\AMQP\MessageQueue;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Crawler\\Gerrit
+ *  php console jacobine:consumer Crawler\\Gerrit
  *
  * @package Jacobine\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>

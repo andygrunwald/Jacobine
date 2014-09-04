@@ -28,7 +28,7 @@ use Jacobine\Service\Project;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Project\\CUD
+ *  php console jacobine:consumer Project\\CUD
  *
  * @package Jacobine\Consumer\Project
  * @author Andy Grunwald <andygrunwald@gmail.com>

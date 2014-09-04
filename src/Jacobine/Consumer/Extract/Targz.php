@@ -28,7 +28,7 @@ use Symfony\Component\Process\ProcessUtils;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Extract\\Targz
+ *  php console jacobine:consumer Extract\\Targz
  *
  * @package Jacobine\Consumer\Extract
  * @author Andy Grunwald <andygrunwald@gmail.com>

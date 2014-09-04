@@ -27,7 +27,7 @@ use Jacobine\Component\Database\Database;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Analysis\\Filesize
+ *  php console jacobine:consumer Analysis\\Filesize
  *
  * @package Jacobine\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>

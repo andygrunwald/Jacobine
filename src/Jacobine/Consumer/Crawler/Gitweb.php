@@ -30,7 +30,7 @@ use Buzz\Browser;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Crawler\\Gitweb
+ *  php console jacobine:consumer Crawler\\Gitweb
  *
  * @package Jacobine\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>

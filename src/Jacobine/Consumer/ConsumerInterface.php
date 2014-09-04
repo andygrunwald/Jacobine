@@ -17,7 +17,7 @@ use \Psr\Log\LoggerInterface;
  *
  * Interface of a single consumer.
  * Every consumer must implement this interface.
- * With this it is possible to start this consumer via our consumer command `php console analysis:consumer CONSUMERNAME`
+ * With this it is possible to start this consumer via our consumer command `php console jacobine:consumer CONSUMERNAME`
  *
  * @package Jacobine\Consumer
  * @author Andy Grunwald <andygrunwald@gmail.com>

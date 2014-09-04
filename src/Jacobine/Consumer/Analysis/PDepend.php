@@ -29,7 +29,7 @@ use Symfony\Component\Process\ProcessUtils;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Analysis\\PDepend
+ *  php console jacobine:consumer Analysis\\PDepend
  *
  * @package Jacobine\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>

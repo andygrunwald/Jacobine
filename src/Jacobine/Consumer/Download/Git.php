@@ -28,7 +28,7 @@ use Symfony\Component\Process\ProcessUtils;
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Download\\Git
+ *  php console jacobine:consumer Download\\Git
  *
  * @package Jacobine\Consumer\Download
  * @author Andy Grunwald <andygrunwald@gmail.com>
