@@ -155,6 +155,7 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
         // Create, initialize and start consumer
         $consumer = $this->container->get($consumerToGet);
         /* @var \Jacobine\Consumer\ConsumerAbstract $consumer */
+        $consumer->setContainer($this->container);
         $consumer->setConfig($this->config);
         $consumer->setMessageQueue($this->messageQueue);
         $consumer->setLogger($logger);

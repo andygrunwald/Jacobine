@@ -11,6 +11,8 @@
 namespace Jacobine\Consumer;
 
 use \Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Class ConsumerAbstract
@@ -21,8 +23,10 @@ use \Psr\Log\LoggerInterface;
  * @package Jacobine\Consumer
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
-abstract class ConsumerAbstract implements ConsumerInterface
+abstract class ConsumerAbstract implements ConsumerInterface, ContainerAwareInterface
 {
+
+    use ContainerAwareTrait;
 
     /**
      * The queue options
