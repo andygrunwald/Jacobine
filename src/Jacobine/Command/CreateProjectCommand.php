@@ -150,7 +150,7 @@ class CreateProjectCommand extends Command implements ContainerAwareInterface
     {
         $this->setInput($input);
         $this->setOutput($output);
-        $this->messageQueue = $this->container->get('helper.messageQueue');
+        $this->messageQueue = $this->container->get('component.amqp.messageQueue');
     }
 
     /**
@@ -406,7 +406,7 @@ class CreateProjectCommand extends Command implements ContainerAwareInterface
             'Please note that this can take some seconds.',
             '',
             'After your project is created all our hardworking consumer will start to update your data sources.',
-            'Please not that the update process can take some more minutes.',
+            'Please note that the update process can take some more minutes.',
             '',
             'Anyway. I hope you enjoyed this way to create your new project!',
             'Cu next time!',

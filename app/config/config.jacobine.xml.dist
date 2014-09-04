@@ -16,6 +16,7 @@
         <parameter key="messagequeue.username">analysis</parameter>
         <parameter key="messagequeue.password">analysis</parameter>
         <parameter key="messagequeue.vhost">analysis</parameter>
+        <parameter key="messagequeue.exchange">JacobineAnalysis</parameter>
 
         <!-- Timeout for HTTP requests -->
         <parameter key="request.timeout">20</parameter>
