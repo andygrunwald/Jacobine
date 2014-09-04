@@ -4,6 +4,7 @@
     <imports>
         <import resource="config.jacobine.xml" />
         <import resource="config.logger.xml" />
+        <import resource="config.application.xml" />
     </imports>
 
     <parameters>

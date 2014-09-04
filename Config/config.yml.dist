@@ -11,27 +11,6 @@ Logging:
         Path: /var/log/analysis/
         MinLogLevel: Error
 
-Application:
-  Tar:
-    Binary: /bin/tar
-    Timeout: 600
-  Git:
-    Binary: /usr/bin/git
-  PHPLoc:
-    Binary: /var/www/analysis/vendor/phploc/phploc/composer/bin/phploc
-    FilePattern: "*.php,*.inc"
-    Timeout: 1200
-  PDepend:
-    Binary: /var/www/analysis/vendor/pdepend/pdepend/src/bin/pdepend
-    FilePattern: "php,inc"
-  CVSAnaly:
-    Binary: /usr/local/bin/cvsanaly2
-    Extensions: Months, Weeks
-  MLStats:
-    Binary: /usr/local/bin/mlstats
-  GithubLinguist:
-    WorkingDir: /var/www/analysis/tools/github-linguist
-
 Various:
   Requests:
     Timeout: 20

@@ -10,13 +10,13 @@
 
 namespace Jacobine\Command;
 
+use Jacobine\Entity\DataSource;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class MailinglistCommand
@@ -57,20 +57,6 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
     const ROUTING = 'crawler.mailinglist';
 
     /**
-     * Project identifier
-     *
-     * @var string
-     */
-    const PROJECT = 'TYPO3';
-
-    /**
-     * Config
-     *
-     * @var array
-     */
-    protected $config = [];
-
-    /**
      * MessageQueue connection
      *
      * @var \Jacobine\Component\AMQP\MessageQueue
@@ -78,18 +64,18 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
     protected $messageQueue;
 
     /**
+     * Project service
+     *
+     * @var \Jacobine\Service\Project
+     */
+    protected $projectService;
+
+    /**
      * Project
      *
      * @var string
      */
     protected $project;
-
-    /**
-     * Message Queue Exchange
-     *
-     * @var string
-     */
-    protected $exchange;
 
     /**
      * Configures the current command.
@@ -104,8 +90,7 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
                 'project',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Choose the project (for configuration, etc.).',
-                self::PROJECT
+                'Choose the project (for configuration, etc.).'
              );
     }
 
@@ -133,7 +118,7 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
     /**
      * Initializes the command just after the input has been validated.
      *
-     * Sets up the config, HTTP client, database and message queue
+     * Sets up the message queue and project service
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
@@ -142,18 +127,15 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->setProject($input->getOption('project'));
-        $this->config = Yaml::parse(CONFIG_FILE);
-
-        $projectConfig = $this->config['Projects'][$this->getProject()];
-        $this->exchange = $projectConfig['RabbitMQ']['Exchange'];
 
         $this->messageQueue = $this->container->get('component.amqp.messageQueue');
+        $this->projectService = $this->container->get('service.project');
     }
 
     /**
      * Executes the current command.
      *
-     * Reads the mailinglists from config and sends it to the message broker..
+     * Reads the mailinglists from project storage and sends it to the message broker.
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
@@ -161,15 +143,27 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // TODO This is not dynamic enough. Currently we can only read mailinglists from config
-        // A better way would be to read this from a database or an alternative data storage
-        $projectConfig = $this->config['Projects'][$this->getProject()];
-        $message = [
-            'project' => $this->getProject(),
-            'type' => 'server',
-            'host' => $projectConfig['Mailinglist']['Host'],
+        $exchange = $this->container->getParameter('messagequeue.exchange');
+        $dataSource = [
+            DataSource::TYPE_MAILMAN_SERVER,
+            DataSource::TYPE_MAILMAN_LIST
         ];
 
-        $this->messageQueue->sendSimpleMessage($message, $this->exchange, self::ROUTING);
+        $project = $this->getProject();
+        if ($project) {
+            $projects = $this->projectService->getProjectByNameWithDatasources($project, $dataSource);
+        } else {
+            $projects = $this->projectService->getAllProjectsWithDatasources($dataSource);
+        }
+
+        foreach ($projects as $project) {
+            $message = [
+                'project' => $project['projectId'],
+                'type' => $project['datasourceType'],
+                'host' => $project['datasourceContent'],
+            ];
+
+            $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
+        }
     }
 }

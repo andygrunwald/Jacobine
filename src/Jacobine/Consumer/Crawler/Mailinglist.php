@@ -14,6 +14,7 @@ use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Component\AMQP\MessageQueue;
 use Jacobine\Component\Crawler\CrawlerFactory;
 use Jacobine\Component\Process\ProcessFactory;
+use Jacobine\Entity\DataSource;
 use Symfony\Component\Process\ProcessUtils;
 use Buzz\Browser;
 
@@ -157,12 +158,13 @@ class Mailinglist extends ConsumerAbstract
         $type = strtolower($message->type);
         switch ($type) {
             // A complete mailinglist server (e.g. mailman)
-            case 'server':
+            case DataSource::TYPE_MAILMAN_SERVER:
                 $this->processMailinglistServer($message);
                 break;
 
             // A single mailinglist
-            case 'list':
+            case DataSource::TYPE_MAILMAN_LIST:
+                // TODO TESTEN UND FIXEN
                 $this->processSingleMailinglist($message);
                 break;
 
@@ -232,15 +234,15 @@ class Mailinglist extends ConsumerAbstract
      */
     private function buildMLStatsCommand(array $config, $url)
     {
-        $command = escapeshellcmd($config['Application']['MLStats']['Binary']);
+        $command = escapeshellcmd($this->container->getParameter('application.mlstats.binary'));
         $command .= ' --no-report';
         $command .= ' --db-driver ' . ProcessUtils::escapeArgument($this->databaseCredentials['driver']);
         $command .= ' --db-hostname ' . ProcessUtils::escapeArgument($this->databaseCredentials['host']);
         $command .= ' --db-user ' . ProcessUtils::escapeArgument($this->databaseCredentials['username']);
         $command .= ' --db-password ' . ProcessUtils::escapeArgument($this->databaseCredentials['password']);
         // TODO Currently we log into mlstats database. Why? See comments in $this->processSingleMailinglist();
-        //$command .= ' --db-name ' . ProcessUtils::escapeArgument($this->databaseCredentials['name']);
-        $command .= ' --db-name ' . ProcessUtils::escapeArgument('mlstats');
+        $command .= ' --db-name ' . ProcessUtils::escapeArgument($this->databaseCredentials['name']);
+        //$command .= ' --db-name ' . ProcessUtils::escapeArgument('mlstats');
         $command .= ' ' . ProcessUtils::escapeArgument($url);
 
         return $command;
@@ -267,6 +269,7 @@ class Mailinglist extends ConsumerAbstract
         $exception = null;
         try {
             $process->run();
+
         } catch (\Exception $exception) {
             // This catch section is empty, because we got an error handling in the caller area
             // We check not only the exception. We use the result command of the process as well
@@ -288,11 +291,13 @@ class Mailinglist extends ConsumerAbstract
     {
         try {
             $content = $this->getContent($this->remoteService, $message->host);
+
         } catch (\Exception $e) {
             // At first this seems to be not so smart to catch an exception and throw a new one,
             // but i do this because i want to add the custom error message.
             // If there is a better way a pull request is welcome :)
             $context = [
+                'project' => $message->project,
                 'url' => $message->host,
                 'message' => $e->getMessage()
             ];
@@ -352,11 +357,13 @@ class Mailinglist extends ConsumerAbstract
 
             try {
                 $content = $this->getContent($this->remoteService, $listInfoSingle);
+
             } catch (\Exception $e) {
                 // At first this seems to be not so smart to catch an exception and throw a new one,
                 // but i do this because i want to add the custom error message.
                 // If there is a better way a pull request is welcome :)
                 $context = [
+                    'project' => $message->project,
                     'url' => $listInfoSingle,
                     'message' => $e->getMessage()
                 ];
@@ -380,7 +387,7 @@ class Mailinglist extends ConsumerAbstract
             // Check if there is a private or public mailing list
             // Public got "/pipermail/" in it
             // Private got "/private/" in it
-            // TODO: Currently we (jacobine) do not support private mailing lists, but this should be implemented
+            // TODO: Currently we (Jacobine) do not support private mailing lists, but this should be implemented
             // in future, because mlstats supports it (via --web-user && --web-password parameter)
             // Until this we skip private mailinglists
             // And we skip wrong links where is no "pipermail" occurrence.
@@ -428,16 +435,14 @@ class Mailinglist extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $detailUrl)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-
         $message = [
             'project' => $project,
-            'type' => 'list',
+            'type' => DataSource::TYPE_MAILMAN_LIST,
             'host' => $detailUrl,
         ];
+        $exchange = $this->container->getParameter('messagequeue.exchange');
 
-        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'crawler.mailinglist');
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'crawler.mailinglist');
     }
 
     /**

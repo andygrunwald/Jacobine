@@ -103,4 +103,66 @@ class Project
             }
         }
     }
+
+    public function getProjectByNameWithDatasources($project, array $dataSourceTypes = [])
+    {
+        $preparedValues = [
+            ':name' => $project,
+        ];
+        $query = $this->getProjectBaseQuery();
+        $query .= '
+            WHERE
+              project.name = :name
+        ';
+
+        list($preparedKeys, $preparedSourceValues) = $this->prepareDatasources($dataSourceTypes);
+        $query .= ' AND datasource.type IN (' . implode(',', $preparedKeys) . ')';
+
+        $preparedValues = $preparedValues + $preparedSourceValues;
+
+        return $this->database->getRecordsByRawQuery($query, $preparedValues);
+    }
+
+    public function getAllProjectsWithDatasources(array $dataSourceTypes = []) {
+        $query = $this->getProjectBaseQuery();
+
+        list($preparedKeys, $preparedValues) = $this->prepareDatasources($dataSourceTypes);
+        $query .= ' WHERE datasource.type IN (' . implode(',', $preparedKeys) . ')';
+
+        return $this->database->getRecordsByRawQuery($query, $preparedValues);
+    }
+
+    protected function prepareDatasources(array $dataSourceTypes = []) {
+        $preparedKeys = [];
+        $preparedValues = [];
+        if (count($dataSourceTypes) > 0) {
+
+            foreach ($dataSourceTypes as $source) {
+                $source = (int) $source;
+
+                $key = ':datasource' . $source;
+                $preparedKeys[] = $key;
+                $preparedValues[$key] = $source;
+            }
+        }
+
+        return [$preparedKeys, $preparedValues];
+    }
+
+    protected function getProjectBaseQuery() {
+        $query = '
+            SELECT
+              project.id AS projectId,
+              datasource.id AS datasourceId,
+              datasource.type AS datasourceType,
+              datasource.content AS datasourceContent
+            FROM
+              jacobine_project AS project
+              INNER JOIN jacobine_datasource AS datasource ON (
+                project.id = datasource.project
+              )
+        ';
+
+        return $query;
+    }
 }

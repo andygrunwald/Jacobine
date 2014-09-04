@@ -210,7 +210,7 @@ class Database
     }
 
     /**
-     * Gets records form the database.
+     * Gets records from the database.
      * Executes a SELECT statement.
      *
      * @param array $fields An array of fields. E.g. array('*') or array('id', 'version', ...)
@@ -247,6 +247,20 @@ class Database
             $query .= ' LIMIT ' . $limit;
         }
 
+        $this->executeStatement($query, $prepareParts);
+        $result = $this->getLastStatement()->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    /**
+     * Gets records from a database by a self written / raw query.
+     *
+     * @param string $query SQL-Query
+     * @param array $prepareParts Prepared statement parts which will be replaced in query
+     * @return array
+     */
+    public function getRecordsByRawQuery($query, array $prepareParts = []) {
         $this->executeStatement($query, $prepareParts);
         $result = $this->getLastStatement()->fetchAll(\PDO::FETCH_ASSOC);
 
