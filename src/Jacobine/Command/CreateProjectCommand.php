@@ -59,7 +59,7 @@ class CreateProjectCommand extends Command implements ContainerAwareInterface
     /**
      * MessageQueue connection
      *
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     private $messageQueue;
 

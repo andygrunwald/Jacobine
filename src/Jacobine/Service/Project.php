@@ -10,7 +10,7 @@
 
 namespace Jacobine\Service;
 
-use Jacobine\Helper\Database;
+use Jacobine\Component\Database\Database;
 
 /**
  * Class Project
@@ -30,7 +30,7 @@ class Project
     /**
      * Database connection
      *
-     * @var \Jacobine\Helper\Database
+     * @var \Jacobine\Component\Database\Database
      */
     protected $database;
 
@@ -98,7 +98,6 @@ class Project
                     'project' => $projectId,
                     'type' => $dataSourceType,
                     'content' => $content
-
                 ];
                 $this->database->insertRecord('jacobine_datasource', $dataSourceData);
             }
