@@ -6,4 +6,10 @@
         <import resource="config.logger.xml" />
     </imports>
 
+    <parameters>
+        <!-- Jacobine -->
+        <parameter key="application.name">Jacobine</parameter>
+        <parameter key="application.version">0.2.0-dev</parameter>
+    </parameters>
+
 </container>
