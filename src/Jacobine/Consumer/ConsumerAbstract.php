@@ -423,7 +423,6 @@ abstract class ConsumerAbstract implements ConsumerInterface, ContainerAwareInte
         $context = [
             'command' => $command,
             'commandOutput' => $process->getOutput(),
-            'pid' => $process->getPid(),
             'wasSuccessful' => var_export($process->isSuccessful(), true),
             'exitCode' => $process->getExitCode(),
             'exceptionCode' => $exceptionCode,
