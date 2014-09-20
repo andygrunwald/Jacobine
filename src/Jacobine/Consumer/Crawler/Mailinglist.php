@@ -186,8 +186,6 @@ class Mailinglist extends ConsumerAbstract
     private function processSingleMailinglist($message)
     {
         // Further more we got two / three more issues to solve:
-        // #45: Changed message_body from TEXT to MEDIUMTEXT, because we got messages > 65.535 bytes
-        // @link https://github.com/MetricsGrimoire/MailingListStats/pull/45
         // #40: Raise subject field from 255 to 320 chars
         // @link https://github.com/MetricsGrimoire/MailingListStats/pull/40
         // #22: Error parsing list archive: column `Subject` is not big enough
