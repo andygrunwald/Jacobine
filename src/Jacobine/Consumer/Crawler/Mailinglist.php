@@ -185,20 +185,6 @@ class Mailinglist extends ConsumerAbstract
      */
     private function processSingleMailinglist($message)
     {
-        // TODO This does currently not work "out of the box", because the current mlstats master requires a already setuped database
-        // or mlstats creates a new database itselfs
-        // This can be (in a good way) done by importing the sql scheme from
-        // https://github.com/MetricsGrimoire/MailingListStats/blob/master/db/data_model_mysql.sql via the command
-        //      mysql -uroot jacobine < ./tools/MetricsGrimoire/MLStats/db/data_model_mysql.sql
-        // but this does not work either, because the scheme is not complete :(
-        // Field mailing_list_url is missing :(
-        // _mysql_exceptions.OperationalError: (1054, "Unknown column 'mailing_list_url' in 'field list'")
-        //
-        // I already opened an issue about this:
-        // #36: Create table even if database exists
-        // https://github.com/MetricsGrimoire/MailingListStats/issues/36
-        // So we have to wait :(
-
         // Further more we got two / three more issues to solve:
         // #45: Changed message_body from TEXT to MEDIUMTEXT, because we got messages > 65.535 bytes
         // @link https://github.com/MetricsGrimoire/MailingListStats/pull/45
