@@ -21,10 +21,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/andygrunwald/Gerrie"
-        },
-        {
-            "type": "pear",
-            "url": "http://pear.php.net"
         }
     ],
     "require": {
