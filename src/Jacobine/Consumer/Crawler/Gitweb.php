@@ -199,9 +199,9 @@ class Gitweb extends ConsumerAbstract
             'project' => $projectId,
             'id' => $id
         ];
+        $exchange = $this->container->getParameter('messagequeue.exchange');
 
-        // Replace Exchange with config setting messagequeue.exchange
-        $this->getMessageQueue()->sendSimpleMessage($message, 'JacobineAnalysis', 'download.git');
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'download.git');
     }
 
     /**
