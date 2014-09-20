@@ -1,16 +1,3 @@
-Logging:
-  Consumer:
-    Logger:
-      Console:
-        Class: SymfonyConsoleHandler
-      Stream:
-        Class: StreamHandler
-        Path: /var/log/analysis/
-      ErrorStream:
-        Class: StreamHandler
-        Path: /var/log/analysis/
-        MinLogLevel: Error
-
 Various:
   Requests:
     Timeout: 20
