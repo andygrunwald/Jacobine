@@ -185,13 +185,6 @@ class Mailinglist extends ConsumerAbstract
      */
     private function processSingleMailinglist($message)
     {
-        // Further more we got two / three more issues to solve:
-        // #40: Raise subject field from 255 to 320 chars
-        // @link https://github.com/MetricsGrimoire/MailingListStats/pull/40
-        // #22: Error parsing list archive: column `Subject` is not big enough
-        // @link https://github.com/MetricsGrimoire/MailingListStats/issues/22
-        // TODO Write SQL queries to fix #45, #40 and #22
-
         // TODO Maybe it would be useful to log the (incremental) output of the commands as wel
         // The incremental can be getted every 5 seconds or something
         // Further more most of the tools logs messages with "\n" in it. How to handle this?
