@@ -50,14 +50,9 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
     protected $messageQueue;
 
     /**
-     * Database connection
-     *
-     * @var \Jacobine\Component\Database\Database
-     */
-    protected $database;
-
-    /**
      * Config
+     *
+     * TODO get rid of config here
      *
      * @var array
      */
@@ -65,6 +60,8 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
 
     /**
      * Project
+     *
+     * TODO get rid of project here
      *
      * @var string
      */
@@ -79,6 +76,7 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
     {
         $this->setName('jacobine:consumer')
              ->setDescription('Generic task for message queue consumer')
+            // // TODO get rid of project here
              ->addOption(
                  'project',
                  null,
@@ -96,6 +94,7 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
      */
     protected function getProject()
     {
+        // TODO get rid of project here
         return $this->project;
     }
 
@@ -107,13 +106,14 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
      */
     protected function setProject($project)
     {
+        // TODO get rid of project here
         $this->project = $project;
     }
 
     /**
      * Initializes the command just after the input has been validated.
      *
-     * Sets up the project, config, database and message queue
+     * Sets up the project, config and message queue
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
@@ -121,6 +121,7 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
+        // TODO get rid of config here + project
         $this->setProject($input->getOption('project'));
         $this->config = Yaml::parse(CONFIG_FILE);
 
@@ -150,13 +151,12 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
 
         $logger = $this->container->get('logger.' . $consumerToGet);
 
-        // TODO Remove setMessageQueue, because we migrated to DIC
         // Create, initialize and start consumer
         $consumer = $this->container->get($consumerToGet);
         /* @var \Jacobine\Consumer\ConsumerAbstract $consumer */
         $consumer->setContainer($this->container);
+        // TODO get rid of config here
         $consumer->setConfig($this->config);
-        $consumer->setMessageQueue($this->messageQueue);
         $consumer->setLogger($logger);
         $consumer->initialize();
 
@@ -164,10 +164,10 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
         $consumer->setExchangeOption('name', $projectConfig['RabbitMQ']['Exchange']);
 
         $consumerIdent = str_replace('\\', '\\\\', $consumerIdent);
-        $logger->info('Consumer starts', array('consumer' => $consumerIdent));
+        $logger->info('Consumer starts', ['consumer' => $consumerIdent]);
 
         // Register consumer at message queue
-        $callback = array($consumer, 'consume');
+        $callback = [$consumer, 'consume'];
         $this->messageQueue->basicConsume(
             $consumer->getExchangeOptions(),
             $consumer->getQueueOptions(),
