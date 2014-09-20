@@ -26,7 +26,7 @@ use Buzz\Browser;
  * Message format (json encoded):
  *  [
  *      url: URL of the Gitweb server. E.g. http://git.typo3.org/
- *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
@@ -143,12 +143,16 @@ class Gitweb extends ConsumerAbstract
                 '//table[@class="projects_list"]/tr[@class="metadata_url"]/td[2]'
             )->text();
 
-            $gitwebRecord = $this->getGitwebFromDatabase($gitUrl);
+            $gitwebRecord = $this->getGitwebFromDatabase($message->project, $gitUrl);
             if ($gitwebRecord === false) {
-                $id = $this->insertGitwebRecord($name, $gitUrl);
+                $id = $this->insertGitwebRecord($message->project, $name, $gitUrl);
             } else {
                 $id = $gitwebRecord['id'];
-                $this->getLogger()->info('Gitweb record already exists', ['git' => $gitUrl]);
+                $context = [
+                    'project' => $message->project,
+                    'git' => $gitUrl
+                ];
+                $this->getLogger()->info('Gitweb record already exists', $context);
             }
 
             $this->addFurtherMessageToQueue($message->project, $id);
@@ -185,33 +189,36 @@ class Gitweb extends ConsumerAbstract
     /**
      * Adds new messages to queue system to download the git repository
      *
-     * @param string $project
+     * @param int $projectId
      * @param integer $id
      * @return void
      */
-    private function addFurtherMessageToQueue($project, $id)
+    private function addFurtherMessageToQueue($projectId, $id)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-
         $message = [
-            'project' => $project,
+            'project' => $projectId,
             'id' => $id
         ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'download.git');
+        // Replace Exchange with config setting messagequeue.exchange
+        $this->getMessageQueue()->sendSimpleMessage($message, 'JacobineAnalysis', 'download.git');
     }
 
     /**
      * Receives a single gitweb record of the database
      *
+     * @param int $projectId
      * @param string $repository
      * @return bool|array
      */
-    private function getGitwebFromDatabase($repository)
+    private function getGitwebFromDatabase($projectId, $repository)
     {
         $fields = array('id');
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_gitweb', ['git' => $repository], '', '', 1);
+        $where = [
+            'prject' => $projectId,
+            'git' => $repository
+        ];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_gitweb', $where, '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -225,13 +232,15 @@ class Gitweb extends ConsumerAbstract
     /**
      * Inserts a new gitweb record to database
      *
+     * @param int $projectId
      * @param string $name
      * @param string $repository
      * @return string
      */
-    private function insertGitwebRecord($name, $repository)
+    private function insertGitwebRecord($projectId, $name, $repository)
     {
         $data = array(
+            'project' => $projectId,
             'name' => $name,
             'git' => $repository
         );

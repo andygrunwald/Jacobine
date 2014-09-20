@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS `jacobine_linguist` (
 
 CREATE TABLE IF NOT EXISTS `jacobine_gitweb` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of gitweb project',
+	`project` int(11) unsigned NOT NULL COMMENT 'ID field of project table',
 	`name` varchar(200) DEFAULT NULL COMMENT 'Name of git project',
 	`git` varchar(200) DEFAULT NULL COMMENT 'Address of git repository',
 	PRIMARY KEY (`id`),
