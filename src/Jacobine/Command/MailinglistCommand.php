@@ -160,7 +160,7 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
             $message = [
                 'project' => $project['projectId'],
                 'type' => $project['datasourceType'],
-                'host' => $project['datasourceContent'],
+                'url' => $project['datasourceContent'],
             ];
 
             $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);

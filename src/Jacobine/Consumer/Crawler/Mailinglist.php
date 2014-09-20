@@ -32,7 +32,7 @@ use Buzz\Browser;
  * Message format (json encoded):
  *  [
  *      type: "server" or "list" to identify the task of the consumer
- *      host: Host of the mailinglist / mailinglist server
+ *      url: Url of the mailinglist / mailinglist server
  *      project: Project to be analyzed. Must be a configured project in "configFile"
  *  ]
  *
@@ -186,7 +186,7 @@ class Mailinglist extends ConsumerAbstract
     private function processSingleMailinglist($message)
     {
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->executeMLStats($message->host);
+        list($process, $exception) = $this->executeMLStats($message->url);
         $context = $this->getContextOfCommand($process, $exception);
         if ($exception !== null || $process->isSuccessful() === false) {
             $this->getLogger()->critical('mlstats command failed', $context);
@@ -262,7 +262,7 @@ class Mailinglist extends ConsumerAbstract
     private function processMailinglistServer($message)
     {
         try {
-            $content = $this->getContent($this->remoteService, $message->host);
+            $content = $this->getContent($this->remoteService, $message->url);
 
         } catch (\Exception $e) {
             // At first this seems to be not so smart to catch an exception and throw a new one,
@@ -270,11 +270,11 @@ class Mailinglist extends ConsumerAbstract
             // If there is a better way a pull request is welcome :)
             $context = [
                 'project' => $message->project,
-                'url' => $message->host,
+                'url' => $message->url,
                 'message' => $e->getMessage()
             ];
-            $this->getLogger()->error('Reading mailinglist host frontend failed', $context);
-            throw new \Exception('Reading mailinglist host frontend failed', 1403431979);
+            $this->getLogger()->error('Reading mailinglist frontend failed', $context);
+            throw new \Exception('Reading mailinglist frontend failed', 1403431979);
         }
 
         $remoteClient = $this->remoteService->getClient();
@@ -354,7 +354,7 @@ class Mailinglist extends ConsumerAbstract
             $crawler = $this->crawlerFactory->create($content);
             /* @var $crawler \Symfony\Component\DomCrawler\Crawler */
             $detailUrl = $crawler->filterXPath('//table[1]/tr/td[1]/p/a')->attr('href');
-            $detailUrl = $this->makeAbsoluteUrl($message->host, $detailUrl);
+            $detailUrl = $this->makeAbsoluteUrl($message->url, $detailUrl);
 
             // Check if there is a private or public mailing list
             // Public got "/pipermail/" in it
@@ -410,7 +410,7 @@ class Mailinglist extends ConsumerAbstract
         $message = [
             'project' => $project,
             'type' => DataSource::TYPE_MAILMAN_LIST,
-            'host' => $detailUrl,
+            'url' => $detailUrl,
         ];
         $exchange = $this->container->getParameter('messagequeue.exchange');
 
