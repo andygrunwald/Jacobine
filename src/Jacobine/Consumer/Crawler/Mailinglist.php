@@ -185,11 +185,6 @@ class Mailinglist extends ConsumerAbstract
      */
     private function processSingleMailinglist($message)
     {
-        // TODO Maybe it would be useful to log the (incremental) output of the commands as wel
-        // The incremental can be getted every 5 seconds or something
-        // Further more most of the tools logs messages with "\n" in it. How to handle this?
-        // Another question is if we can handle stderr + stdout (if the tool throws warnings / errors to stderr).
-
         /** @var \Symfony\Component\Process\Process $process */
         list($process, $exception) = $this->executeMLStats($message->host);
         $context = $this->getContextOfCommand($process, $exception);
