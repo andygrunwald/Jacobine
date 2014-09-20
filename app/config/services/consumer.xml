@@ -50,12 +50,6 @@
             <argument type="service" id="component.remoteService.httpRemoteService" />
             <argument type="service" id="component.crawler.crawlerFactory" />
             <argument type="service" id="component.process.processFactory" />
-            <!-- TODO This is a _DIRTY_ hack to get it work really fast ... REFACTOR THIS! -->
-            <argument>%database.driver%</argument>
-            <argument>%database.host%</argument>
-            <argument>%database.username%</argument>
-            <argument>%database.password%</argument>
-            <argument>%database.database%</argument>
         </service>
 
         <!-- Download consumer -->

@@ -65,55 +65,23 @@ class Mailinglist extends ConsumerAbstract
     protected $processFactory;
 
     /**
-     * Database credentials for mlstats
-     *
-     * TODO REFACTOR THIS! Really dirty hack ...
-     *
-     * @var array
-     */
-    protected $databaseCredentials = [
-        'driver' => '',
-        'host' => '',
-        'username' => '',
-        'password' => '',
-        'name' => ''
-    ];
-
-    /**
      * Constructor to set dependencies
      *
      * @param MessageQueue $messageQueue
      * @param \Buzz\Browser $remoteService
      * @param CrawlerFactory $crawlerFactory
      * @param ProcessFactory $processFactory
-     * @param string $databaseDriver
-     * @param string $databaseHost
-     * @param string $databaseUsername
-     * @param string $databasePassword
-     * @param string $databaseName
      */
     public function __construct(
         MessageQueue $messageQueue,
         Browser $remoteService,
         CrawlerFactory $crawlerFactory,
-        ProcessFactory $processFactory,
-        $databaseDriver,
-        $databaseHost,
-        $databaseUsername,
-        $databasePassword,
-        $databaseName
+        ProcessFactory $processFactory
     ) {
         $this->setMessageQueue($messageQueue);
         $this->remoteService = $remoteService;
         $this->crawlerFactory = $crawlerFactory;
         $this->processFactory = $processFactory;
-
-        // TODO DIRTY HACK! Refactor it, please :(
-        $this->databaseCredentials['driver'] = $databaseDriver;
-        $this->databaseCredentials['host'] = $databaseHost;
-        $this->databaseCredentials['username'] = $databaseUsername;
-        $this->databaseCredentials['password'] = $databasePassword;
-        $this->databaseCredentials['name'] = $databaseName;
     }
 
     /**
@@ -197,24 +165,24 @@ class Mailinglist extends ConsumerAbstract
     /**
      * Builds the mlstats command
      *
-     * TODO Refactor this! This is a REALLY HEAVY HACK to inject all database credentials directly in the command :(
      * Idea: Open a issue at MLStats to do this via config file...
      *
-     * @param array $config
      * @param string $url
      * @return string
      */
-    private function buildMLStatsCommand(array $config, $url)
+    private function buildMLStatsCommand($url)
     {
         $command = escapeshellcmd($this->container->getParameter('application.mlstats.binary'));
         $command .= ' --no-report';
-        $command .= ' --db-driver ' . ProcessUtils::escapeArgument($this->databaseCredentials['driver']);
-        $command .= ' --db-hostname ' . ProcessUtils::escapeArgument($this->databaseCredentials['host']);
-        $command .= ' --db-user ' . ProcessUtils::escapeArgument($this->databaseCredentials['username']);
-        $command .= ' --db-password ' . ProcessUtils::escapeArgument($this->databaseCredentials['password']);
-        // TODO Currently we log into mlstats database. Why? See comments in $this->processSingleMailinglist();
-        $command .= ' --db-name ' . ProcessUtils::escapeArgument($this->databaseCredentials['name']);
-        //$command .= ' --db-name ' . ProcessUtils::escapeArgument('mlstats');
+        $command .= ' --db-driver ' . ProcessUtils::escapeArgument($this->container->getParameter('database.driver'));
+        $command .= ' --db-hostname ' . ProcessUtils::escapeArgument($this->container->getParameter('database.host'));
+        $command .= ' --db-user ' . ProcessUtils::escapeArgument($this->container->getParameter('database.username'));
+        $command .= ' --db-password ' . ProcessUtils::escapeArgument($this->container->getParameter('database.password'));
+        // TODO Currently we log into mlstats database.
+        // Why?
+        // Because CVSAnaly + MLStats got same table names and no tool supports table prefix :(
+        // $command .= ' --db-name ' . ProcessUtils::escapeArgument($this->container->getParameter('database.name'));
+        $command .= ' --db-name ' . ProcessUtils::escapeArgument('mlstats');
         $command .= ' ' . ProcessUtils::escapeArgument($url);
 
         return $command;
@@ -235,8 +203,7 @@ class Mailinglist extends ConsumerAbstract
     {
         $this->getLogger()->info('Start crawling mailinglist with mlstats', ['mailinglist' => $url]);
 
-        $config = $this->getConfig();
-        $command = $this->buildMLStatsCommand($config, $url);
+        $command = $this->buildMLStatsCommand($url);
         $process = $this->processFactory->createProcess($command, null);
         $exception = null;
         try {
