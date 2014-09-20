@@ -58,7 +58,7 @@
 
         <service id="component.remoteService.httpRemoteService" class="Buzz\Browser"
                  factory-service="component.remoteService.remoteServiceFactory" factory-method="createHttpService">
-            <argument>%request.timeout%</argument>
+            <argument>%http.request.timeout%</argument>
         </service>
     </services>
 

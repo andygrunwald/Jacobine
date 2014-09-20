@@ -18,8 +18,9 @@
         <parameter key="messagequeue.vhost">analysis</parameter>
         <parameter key="messagequeue.exchange">JacobineAnalysis</parameter>
 
-        <!-- Timeout for HTTP requests -->
-        <parameter key="request.timeout">20</parameter>
+        <!-- Timeout for HTTP -->
+        <parameter key="http.request.timeout">20</parameter>
+        <parameter key="http.download.timeout">3600</parameter>
     </parameters>
 
 </container>

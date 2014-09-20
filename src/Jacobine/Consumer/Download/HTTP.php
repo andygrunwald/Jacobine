@@ -129,6 +129,7 @@ class HTTP extends ConsumerAbstract
         );
         $this->getLogger()->info('Starting download', $context);
 
+        // TODO: Replace timeout ith new config setting
         $downloadResult = $downloadFile->download($record['url_tar'], $config['Various']['Downloads']['Timeout']);
         if (!$downloadResult) {
             $context = array(

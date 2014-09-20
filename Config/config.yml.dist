@@ -1,9 +1,3 @@
-Various:
-  Requests:
-    Timeout: 20
-  Downloads:
-    Timeout: 3600
-
 Projects:
   TYPO3:
     MySQL:
