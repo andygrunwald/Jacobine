@@ -71,7 +71,8 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
 
     protected function getProjectServiceMock()
     {
-        $projectServiceMock = $this->getMock('Jacobine\Service\Project');
+        $databaseMock = $this->getDatabaseMock();
+        $projectServiceMock = $this->getMock('Jacobine\Service\Project', [], $databaseMock);
 
         return $projectServiceMock;
     }
