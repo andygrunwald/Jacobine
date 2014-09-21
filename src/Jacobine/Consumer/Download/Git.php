@@ -23,7 +23,7 @@ use Symfony\Component\Process\ProcessUtils;
  *
  * Message format (json encoded):
  *  [
- *      id: ID of a gitweb record in the database to receive the git url
+ *      id: ID of a git record in the database to receive the git url
  *      project: Project to be analyzed. Must be a configured project in "configFile"
  *  ]
  *
@@ -90,13 +90,13 @@ class Git extends ConsumerAbstract
      */
     protected function process($message)
     {
-        $record = $this->getGitwebFromDatabase($message->id);
+        $record = $this->getGitRepositoryFromDatabase($message->id);
         $context = ['id' => $message->id];
 
         // If the record does not exists in the database exit here
         if ($record === false) {
-            $this->getLogger()->critical('Record does not exist in gitweb table', $context);
-            throw new \Exception('Record does not exist in gitweb table', 1398949576);
+            $this->getLogger()->critical('Record does not exist in git table', $context);
+            throw new \Exception('Record does not exist in git table', 1398949576);
         }
 
         $config = $this->getConfig();
@@ -147,7 +147,7 @@ class Git extends ConsumerAbstract
 
         $message = [
             'project' => $project,
-            'gitwebId' => $id,
+            'gitId' => $id,
             'checkoutDir' => $dir
         ];
 
@@ -260,15 +260,15 @@ class Git extends ConsumerAbstract
     }
 
     /**
-     * Receives a single gitweb record of the database
+     * Receives a single git record of the database
      *
      * @param integer $id
      * @return bool|array
      */
-    private function getGitwebFromDatabase($id)
+    private function getGitRepositoryFromDatabase($id)
     {
         $fields = ['id', 'name', 'git'];
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_gitweb', ['id' => $id], '', '', 1);
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_git', ['id' => $id], '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {

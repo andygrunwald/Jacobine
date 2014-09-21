@@ -20,7 +20,7 @@ use Buzz\Browser;
  * Class Gitweb
  *
  * A consumer to crawl a Gitweb Server (https://git.wiki.kernel.org/index.php/Gitweb).
- * Every (git) project which is on the given Gitweb server will be stored in the gitweb database table.
+ * Every (git) project which is on the given Gitweb server will be stored in the git database table.
  * Further more a message to download the git repository will be created.
  *
  * Message format (json encoded):
@@ -143,16 +143,16 @@ class Gitweb extends ConsumerAbstract
                 '//table[@class="projects_list"]/tr[@class="metadata_url"]/td[2]'
             )->text();
 
-            $gitwebRecord = $this->getGitwebFromDatabase($message->project, $gitUrl);
-            if ($gitwebRecord === false) {
-                $id = $this->insertGitwebRecord($message->project, $name, $gitUrl);
+            $gitRecord = $this->getGitRepositoryFromDatabase($message->project, $gitUrl);
+            if ($gitRecord === false) {
+                $id = $this->insertGitRecord($message->project, $name, $gitUrl);
             } else {
-                $id = $gitwebRecord['id'];
+                $id = $gitRecord['id'];
                 $context = [
                     'project' => $message->project,
                     'git' => $gitUrl
                 ];
-                $this->getLogger()->info('Gitweb record already exists', $context);
+                $this->getLogger()->info('Git record already exists', $context);
             }
 
             $this->addFurtherMessageToQueue($message->project, $id);
@@ -205,20 +205,20 @@ class Gitweb extends ConsumerAbstract
     }
 
     /**
-     * Receives a single gitweb record of the database
+     * Receives a single git record of the database
      *
      * @param int $projectId
      * @param string $repository
      * @return bool|array
      */
-    private function getGitwebFromDatabase($projectId, $repository)
+    private function getGitRepositoryFromDatabase($projectId, $repository)
     {
         $fields = array('id');
         $where = [
-            'prject' => $projectId,
+            'project' => $projectId,
             'git' => $repository
         ];
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_gitweb', $where, '', '', 1);
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_git', $where, '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -230,14 +230,14 @@ class Gitweb extends ConsumerAbstract
     }
 
     /**
-     * Inserts a new gitweb record to database
+     * Inserts a new git record to database
      *
      * @param int $projectId
      * @param string $name
      * @param string $repository
      * @return string
      */
-    private function insertGitwebRecord($projectId, $name, $repository)
+    private function insertGitRecord($projectId, $name, $repository)
     {
         $data = array(
             'project' => $projectId,
@@ -245,7 +245,7 @@ class Gitweb extends ConsumerAbstract
             'git' => $repository
         );
 
-        $this->getLogger()->info('Inserted new gitweb record', $data);
-        return $this->getDatabase()->insertRecord('jacobine_gitweb', $data);
+        $this->getLogger()->info('Inserted new git record', $data);
+        return $this->getDatabase()->insertRecord('jacobine_git', $data);
     }
 }

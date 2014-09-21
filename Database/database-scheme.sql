@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `jacobine_linguist` (
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `jacobine_gitweb` (
+CREATE TABLE IF NOT EXISTS `jacobine_git` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of gitweb project',
 	`project` int(11) unsigned NOT NULL COMMENT 'ID field of project table',
 	`name` varchar(200) DEFAULT NULL COMMENT 'Name of git project',
