@@ -94,8 +94,7 @@ class ListProjectsCommand extends Command
     /**
      * Executes the current command.
      *
-     * Lists all configured projects.
-     * See Config/config.yml
+     * Lists all stored projects.
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance

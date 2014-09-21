@@ -66,13 +66,6 @@ abstract class ConsumerAbstract implements ConsumerInterface, ContainerAwareInte
     private $database;
 
     /**
-     * Config
-     *
-     * @var array
-     */
-    private $config = [];
-
-    /**
      * MessageQueue connection
      *
      * @var \Jacobine\Component\AMQP\MessageQueue
@@ -230,27 +223,6 @@ abstract class ConsumerAbstract implements ConsumerInterface, ContainerAwareInte
     public function setDatabase($database)
     {
         $this->database = $database;
-    }
-
-    /**
-     * Gets the config
-     *
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * Sets the config
-     *
-     * @param array $config
-     * @return void
-     */
-    public function setConfig(array $config)
-    {
-        $this->config = $config;
     }
 
     /**
