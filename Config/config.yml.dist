@@ -9,8 +9,6 @@ Projects:
     Gitweb: https://git.typo3.org/
     Gerrit:
       ConfigFile: gerrit-review.typo3.org.yml
-    CVSAnaly:
-      ConfigFile: cvsanaly-config
     PDepend:
       ConfigFile: pdepend.xml
     Mailinglist:

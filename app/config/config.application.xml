@@ -22,6 +22,7 @@
         <!-- CVSAnaly -->
         <parameter key="application.cvsanaly.binary">/usr/local/bin/cvsanaly2</parameter>
         <parameter key="application.cvsanaly.extensions">Months, Weeks</parameter>
+        <parameter key="application.cvsanaly.configFile">/var/www/analysis/Config/cvsanaly-config</parameter>
 
         <!-- MLStats -->
         <parameter key="application.mlstats.binary">/usr/local/bin/mlstats</parameter>

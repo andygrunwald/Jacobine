@@ -26,7 +26,7 @@ use Symfony\Component\Process\ProcessUtils;
  *
  * Message format (json encoded):
  *  [
- *      project: Project key from config. E.g. TYPO3
+ *      project: Project to be analyzed. Id of jacobine_project table
  *      checkoutDir: Absolute path to folder which will be analyzed. E.g. /var/www/my/checkout
  *  ]
  *
@@ -96,7 +96,7 @@ class CVSAnaly extends ConsumerAbstract
         }
 
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->executeCVSAnaly($message->checkoutDir, $message->project);
+        list($process, $exception) = $this->executeCVSAnaly($message->checkoutDir);
         if ($exception !== null || $process->isSuccessful() === false) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('CVSAnaly command failed', $context);
@@ -107,22 +107,19 @@ class CVSAnaly extends ConsumerAbstract
     /**
      * Builds the CVSAnaly command
      *
-     * @param array $config
-     * @param string $project
      * @param string $directory
      * @param string $extensions
      * @return string
      */
-    private function buildCVSAnalyCommand(array $config, $project, $directory, $extensions)
+    private function buildCVSAnalyCommand($directory, $extensions)
     {
-        $projectConfig = $config['Projects'][$project];
+        $cvsAnalyBinary = $this->container->getParameter('application.cvsanaly.binary');
+        $configFile = $this->container->getParameter('application.cvsanaly.configFile');
+        $databaseName = $this->container->getParameter('database.database');
 
-        $configFile = rtrim(dirname(CONFIG_FILE), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $configFile .= $projectConfig['CVSAnaly']['ConfigFile'];
-
-        $command = escapeshellcmd($config['Application']['CVSAnaly']['Binary']);
+        $command = escapeshellcmd($cvsAnalyBinary);
         $command .= ' --config-file ' . ProcessUtils::escapeArgument($configFile);
-        $command .= ' --db-database ' . ProcessUtils::escapeArgument($projectConfig['MySQL']['Database']);
+        $command .= ' --db-database ' . ProcessUtils::escapeArgument($databaseName);
         $command .= ' --extensions ' . ProcessUtils::escapeArgument($extensions);
         $command .= ' ' . ProcessUtils::escapeArgument($directory);
 
@@ -132,16 +129,15 @@ class CVSAnaly extends ConsumerAbstract
     /**
      * Returns all active and usable extensions of CVSAnaly
      *
-     * @param array $config
      * @return string
      */
-    private function getCVSAnalyExtensions(array $config)
+    private function getCVSAnalyExtensions()
     {
         // Hardcoded extensions in config, because some extensions may not work correct
         // With this way we can enable / disable various extensions and know that all works fine :)
         // Later on we try to fix all extensions in CVSAnaly to work with all repositories
         // For this we have to execute CVSAnaly with --list-extensions parameter
-        $extensions = $config['Application']['CVSAnaly']['Extensions'];
+        $extensions = $this->container->getParameter('application.cvsanaly.extensions');
 
         if ($extensions) {
             $extensions = str_replace(' ', '', $extensions);
@@ -154,19 +150,17 @@ class CVSAnaly extends ConsumerAbstract
      * Starts a analysis of a given $checkoutDir with CVSAnaly
      *
      * @param string $checkoutDir Directory which should be analyzed by CVSAnalY
-     * @param string $project Project which will be analyzed. Needed to catch the right configuration file
      * @return array [
      *                  0 => Symfony Process object,
      *                  1 => Exception if one was thrown otherwise null
      *               ]
      */
-    private function executeCVSAnaly($checkoutDir, $project)
+    private function executeCVSAnaly($checkoutDir)
     {
         $this->getLogger()->info('Start analyzing directory with CVSAnaly', ['directory' => $checkoutDir]);
 
-        $config = $this->getConfig();
-        $extensions = $this->getCVSAnalyExtensions($config);
-        $command = $this->buildCVSAnalyCommand($config, $project, $checkoutDir, $extensions);
+        $extensions = $this->getCVSAnalyExtensions();
+        $command = $this->buildCVSAnalyCommand($checkoutDir, $extensions);
 
         $process = $this->processFactory->createProcess($command, null);
         $exception = null;
