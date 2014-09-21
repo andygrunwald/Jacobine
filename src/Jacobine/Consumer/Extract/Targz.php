@@ -122,7 +122,9 @@ class Targz extends ConsumerAbstract
         $fileName = substr($fileName, 0, strrpos($fileName, '.'));
         $targetFolder = $folder . $fileName . DIRECTORY_SEPARATOR;
 
-        mkdir($targetFolder);
+        if (file_exists($targetFolder) === false) {
+            mkdir($targetFolder);
+        }
 
         if (is_dir($targetFolder) === false) {
             $this->getLogger()->critical('Directory can`t be created', ['folder' => $folder]);
