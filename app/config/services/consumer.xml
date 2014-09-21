@@ -60,6 +60,7 @@
         <service id="consumer.download.http" class="Jacobine\Consumer\Download\HTTP">
             <tag name="jacobine.consumer" />
             <argument type="service" id="component.database.database" />
+            <argument type="service" id="service.project" />
         </service>
 
         <!-- Extract consumer -->

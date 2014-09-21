@@ -13,6 +13,7 @@ namespace Jacobine\Consumer\Download;
 use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Component\Filesystem\File;
 use Jacobine\Component\Database\Database;
+use Jacobine\Service\Project;
 
 /**
  * Class HTTP
@@ -21,7 +22,7 @@ use Jacobine\Component\Database\Database;
  *
  * Message format (json encoded):
  *  [
- *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *      project: Project to be analyzed. Id of jacobine_project table
  *      versionId: ID of a version record in the database. A succesful download will be flagged
  *      filenamePrefix: Prefix which will be added to the filename if the file is downloaded
  *      filenamePostfix: Postfix which will be added to the filename if the file is downloaded
@@ -37,13 +38,23 @@ class HTTP extends ConsumerAbstract
 {
 
     /**
+     * Project service
+     *
+     * @var \Jacobine\Service\Project
+     */
+    protected $projectService;
+
+    /**
      * Constructor to set dependencies
      *
      * @param Database $database
      */
-    public function __construct(Database $database)
-    {
+    public function __construct(
+        Database $database,
+        Project $projectService
+    ) {
         $this->setDatabase($database);
+        $this->projectService = $projectService;
     }
 
     /**
@@ -102,9 +113,7 @@ class HTTP extends ConsumerAbstract
         $fileName = $message->filenamePrefix . $record['version'] . $message->filenamePostfix;
         $downloadFile = new File($targetTempDir . $fileName);
 
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$message->project];
-        $targetDir = rtrim($projectConfig['ReleasesPath'], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $targetDir = $this->determineDownloadPath($message->project);
         $targetFile = new File($targetDir . $fileName);
 
         // If the file already there do not download it again
@@ -126,12 +135,12 @@ class HTTP extends ConsumerAbstract
         );
         $this->getLogger()->info('Starting download', $context);
 
-        // TODO: Replace timeout ith new config setting
-        $downloadResult = $downloadFile->download($record['url_tar'], $config['Various']['Downloads']['Timeout']);
+        $downloadTimeout = $this->container->getParameter('http.download.timeout');
+        $downloadResult = $downloadFile->download($record['url_tar'], $downloadTimeout);
         if (!$downloadResult) {
             $context = array(
                 'file' => $record['url_tar'],
-                'timeout' => $config['Various']['Downloads']['Timeout'],
+                'timeout' => $downloadTimeout,
             );
             $this->getLogger()->critical('Download command failed', $context);
             throw new \Exception('Download command failed', 1398949775);
@@ -182,23 +191,20 @@ class HTTP extends ConsumerAbstract
     /**
      * Adds new messages to queue system to extract a tar.gz file and get the filesize of this file
      *
-     * @param string $project
+     * @param integer $project
      * @param integer $id
      * @param string $file
      * @return void
      */
     private function addFurtherMessageToQueue($project, $id, $file)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-
         $message = [
             'project' => $project,
             'versionId' => $id,
             'filename' => $file
         ];
 
-        $exchange = $projectConfig['RabbitMQ']['Exchange'];
+        $exchange = $this->container->getParameter('messagequeue.exchange');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'extract.targz');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.filesize');
     }
@@ -233,5 +239,27 @@ class HTTP extends ConsumerAbstract
     {
         $this->getDatabase()->updateRecord('jacobine_versions', ['downloaded' => 1], ['id' => $id]);
         $this->getLogger()->info('Set version as downloaded', ['versionId' => $id]);
+    }
+
+    /**
+     * Determines the path where the downloads should be proceed
+     *
+     * @param integer $projectId Project id of the current project
+     * @return string
+     */
+    private function determineDownloadPath($projectId)
+    {
+        $downloadPath = $this->container->getParameter('storage.path');
+        $downloadPath = rtrim($downloadPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+        // Projectname
+        $projectRecord = $this->projectService->getProjectById($projectId);
+
+        $search = ['/', ' ', '.', '..'];
+        $replace = ['_'];
+        $downloadPath .= str_replace($search, $replace, $projectRecord['projectName']) . DIRECTORY_SEPARATOR;
+        $downloadPath .= 'releases' . DIRECTORY_SEPARATOR;
+
+        return $downloadPath;
     }
 }

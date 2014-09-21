@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class GetTYPO3OrgCommand
@@ -26,6 +25,10 @@ use Symfony\Component\Yaml\Yaml;
  *
  * This commands parses the JSON information, adds the various versions to the database
  * and sends one message per release to the message broker to download it :)
+ *
+ * TODO: Build this a little bit more flexible
+ *       Currently this is only for TYPO3-Releases, but it would make sense to do this with other
+ *       Software as well. Drupal, Wikimedia, etc.
  *
  * Usage:
  *  php console typo3:get.typo3.org
@@ -60,13 +63,6 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     const PROJECT = 'TYPO3';
 
     /**
-     * Config
-     *
-     * @var array
-     */
-    protected $config = [];
-
-    /**
      * HTTP Client
      *
      * @var \Buzz\Browser
@@ -88,11 +84,11 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     protected $messageQueue;
 
     /**
-     * Message Queue Exchange
+     * Project service
      *
-     * @var string
+     * @var \Jacobine\Service\Project
      */
-    protected $exchange;
+    protected $projectService;
 
     /**
      * Configures the current command.
@@ -108,7 +104,7 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     /**
      * Initializes the command just after the input has been validated.
      *
-     * Sets up the config, HTTP client, database and message queue
+     * Sets up the HTTP client, database and message queue
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
@@ -116,17 +112,11 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        // Config
-        $this->config = Yaml::parse(CONFIG_FILE);
-
         $this->remoteService = $this->container->get('component.remoteService.httpRemoteService');
-
-        // The project is hardcoded here, because this command is special for the OpenSourceProject TYPO3
-        $projectConfig = $this->config['Projects'][self::PROJECT];
-        $this->exchange = $projectConfig['RabbitMQ']['Exchange'];
 
         $this->database = $this->container->get('component.database.database');
         $this->messageQueue = $this->container->get('component.amqp.messageQueue');
+        $this->projectService = $this->container->get('service.project');
     }
 
     /**
@@ -141,6 +131,9 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $exchange = $this->container->getParameter('messagequeue.exchange');
+        $projectRecord = $this->projectService->getProjectByName(self::PROJECT);
+
         $versions = $this->getReleaseInformation();
         foreach ($versions as $branch => $data) {
             // $data got two keys: releases + latest
@@ -178,13 +171,13 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
                 // If the current version is not downloaded yet, queue it
                 if (!$versionRecord['downloaded']) {
                     $message = array(
-                        'project' => self::PROJECT,
+                        'project' => $projectRecord['projectId'],
                         'versionId' => $versionRecord['id'],
                         'filenamePrefix' => 'typo3_',
                         'filenamePostfix' => '.tar.gz',
                     );
 
-                    $this->messageQueue->sendSimpleMessage($message, $this->exchange, self::ROUTING);
+                    $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
                 }
             }
         }

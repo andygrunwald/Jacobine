@@ -322,7 +322,7 @@ class Git extends ConsumerAbstract
      */
     private function determineGitCheckoutPath($projectId, array $gitRecord)
     {
-        $checkoutPath = $this->container->getParameter('git.checkout.prefix');;
+        $checkoutPath = $this->container->getParameter('storage.path');
         $checkoutPath = rtrim($checkoutPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
         // Projectname

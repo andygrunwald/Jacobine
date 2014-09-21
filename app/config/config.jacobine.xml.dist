@@ -23,7 +23,7 @@
         <parameter key="http.download.timeout">3600</parameter>
 
         <!-- Pathes -->
-        <parameter key="git.checkout.prefix">/var/www/analysis-data/</parameter>
+        <parameter key="storage.path">/var/www/analysis-data/</parameter>
     </parameters>
 
 </container>

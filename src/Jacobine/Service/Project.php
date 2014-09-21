@@ -123,10 +123,10 @@ class Project
         return $this->database->getRecordsByRawQuery($query, $preparedValues);
     }
 
-    public function getProjectById($project)
+    public function getProjectById($projectId)
     {
         $preparedValues = [
-            ':id' => $project,
+            ':id' => $projectId,
         ];
         $query = '
             SELECT
@@ -137,6 +137,25 @@ class Project
               jacobine_project AS project
             WHERE
               project.id = :id
+            LIMIT 1';
+
+        return $this->database->getFirstRecordByRawQuery($query, $preparedValues);
+    }
+
+    public function getProjectByName($projectName)
+    {
+        $preparedValues = [
+            ':name' => $projectName,
+        ];
+        $query = '
+            SELECT
+              project.id AS projectId,
+              project.name AS projectName,
+              project.website AS projectWebsite
+            FROM
+              jacobine_project AS project
+            WHERE
+              project.name = :name
             LIMIT 1';
 
         return $this->database->getFirstRecordByRawQuery($query, $preparedValues);
