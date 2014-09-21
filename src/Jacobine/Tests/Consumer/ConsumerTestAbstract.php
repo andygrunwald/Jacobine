@@ -69,6 +69,13 @@ abstract class ConsumerTestAbstract extends \PHPUnit_Framework_TestCase
         return $processFactoryMock;
     }
 
+    protected function getProjectServiceMock()
+    {
+        $projectServiceMock = $this->getMock('Jacobine\Service\Project');
+
+        return $projectServiceMock;
+    }
+
     protected function getDatabaseMock()
     {
         // Mock of \Jacobine\Component\Database\DatabaseFactory
