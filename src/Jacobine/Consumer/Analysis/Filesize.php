@@ -24,6 +24,7 @@ use Jacobine\Component\Database\Database;
  *  [
  *      versionId: Version ID to get the regarding version record from version database table
  *      filename: Filename to measure the filesize of
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
