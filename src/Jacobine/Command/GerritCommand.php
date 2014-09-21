@@ -10,13 +10,13 @@
 
 namespace Jacobine\Command;
 
+use Jacobine\Entity\DataSource;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class GerritCommand
@@ -53,18 +53,18 @@ class GerritCommand extends Command implements ContainerAwareInterface
     const ROUTING = 'crawler.gerrit';
 
     /**
-     * Config
-     *
-     * @var array
-     */
-    protected $config = [];
-
-    /**
      * MessageQueue connection
      *
      * @var \Jacobine\Component\AMQP\MessageQueue
      */
     protected $messageQueue;
+
+    /**
+     * Project service
+     *
+     * @var \Jacobine\Service\Project
+     */
+    protected $projectService;
 
     /**
      * Project
@@ -115,7 +115,7 @@ class GerritCommand extends Command implements ContainerAwareInterface
     /**
      * Initializes the command just after the input has been validated.
      *
-     * Sets up the project, config, database and message queue
+     * Sets up the project and message queue
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
@@ -124,9 +124,9 @@ class GerritCommand extends Command implements ContainerAwareInterface
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->setProject($input->getOption('project'));
-        $this->config = Yaml::parse(CONFIG_FILE);
 
         $this->messageQueue = $this->container->get('component.amqp.messageQueue');
+        $this->projectService = $this->container->get('service.project');
     }
 
     /**
@@ -141,10 +141,13 @@ class GerritCommand extends Command implements ContainerAwareInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $projectConfig = $this->config['Projects'][$this->getProject()];
+        $exchange = $this->container->getParameter('messagequeue.exchange');
+        $dataSource = [
+            DataSource::TYPE_GERRIT_PROJECT,
+            DataSource::TYPE_GERRIT_SERVER
+        ];
 
-        $configFile = rtrim(dirname(CONFIG_FILE), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $configFile .= $projectConfig['Gerrit']['ConfigFile'];
+        $configFile = $this->container->getParameter('application.gerrie.configFile');
 
         if (file_exists($configFile) === false) {
             $msg = 'Gerrit config file "%s" does not exist.';
@@ -152,13 +155,35 @@ class GerritCommand extends Command implements ContainerAwareInterface
             throw new \Exception($msg, 1369437144);
         }
 
-        $message = [
-            'project' => $this->getProject(),
-            'configFile' => $configFile,
-            'type' => 'server'
-        ];
+        $project = $this->getProject();
+        if ($project) {
+            $projects = $this->projectService->getProjectByNameWithDatasources($project, $dataSource);
+        } else {
+            $projects = $this->projectService->getAllProjectsWithDatasources($dataSource);
+        }
 
-        $this->messageQueue->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], self::ROUTING);
+        foreach ($projects as $project) {
+
+            switch ($project['datasourceType']) {
+                case DataSource::TYPE_GERRIT_PROJECT:
+                    $type = 'project';
+                    break;
+                case DataSource::TYPE_GERRIT_SERVER:
+                    $type = 'server';
+                    break;
+                default:
+                    $exceptionMessage = 'Datasource type ' . $project['datasourceType'] . ' not supported';
+                    throw new \Exception($exceptionMessage, 1411320967);
+            }
+
+            $message = [
+                'project' => $project['projectId'],
+                'configFile' => $configFile,
+                'type' => $type
+            ];
+            $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
+        }
+
         return null;
     }
 }

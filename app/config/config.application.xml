@@ -31,6 +31,9 @@
         <!-- GithubLinguist -->
         <parameter key="application.linguist.binary">/usr/local/bin/linguist</parameter>
 
+        <!-- Gerrie -->
+        <parameter key="application.gerrie.configFile">/var/www/analysis/Config/gerrit-review.typo3.org.yml</parameter>
+
     </parameters>
 
 </container>
