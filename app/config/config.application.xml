@@ -18,6 +18,7 @@
         <!-- pDepend -->
         <parameter key="application.pdepend.binary">/var/www/analysis/vendor/pdepend/pdepend/src/bin/pdepend</parameter>
         <parameter key="application.pdepend.filepattern">php,inc</parameter>
+        <parameter key="application.pdepend.configFile">/var/www/analysis/Config/pdepend.xml</parameter>
 
         <!-- CVSAnaly -->
         <parameter key="application.cvsanaly.binary">/usr/local/bin/cvsanaly2</parameter>
