@@ -58,6 +58,7 @@
             <argument type="service" id="component.amqp.messageQueue" />
             <argument type="service" id="component.database.database" />
             <argument type="service" id="component.process.processFactory" />
+            <argument type="service" id="service.project" />
         </service>
 
         <service id="consumer.download.http" class="Jacobine\Consumer\Download\HTTP">

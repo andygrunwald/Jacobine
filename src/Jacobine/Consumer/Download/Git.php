@@ -14,6 +14,7 @@ use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Component\Process\ProcessFactory;
 use Jacobine\Component\AMQP\MessageQueue;
 use Jacobine\Component\Database\Database;
+use Jacobine\Service\Project;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -24,7 +25,7 @@ use Symfony\Component\Process\ProcessUtils;
  * Message format (json encoded):
  *  [
  *      id: ID of a git record in the database to receive the git url
- *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
@@ -42,17 +43,30 @@ class Git extends ConsumerAbstract
     protected $processFactory;
 
     /**
+     * Project service
+     *
+     * @var \Jacobine\Service\Project
+     */
+    protected $projectService;
+
+    /**
      * Constructor to set dependencies
      *
      * @param MessageQueue $messageQueue
      * @param Database $database
      * @param ProcessFactory $processFactory
+     * @param Project $projectService
      */
-    public function __construct(MessageQueue $messageQueue, Database $database, ProcessFactory $processFactory)
-    {
+    public function __construct(
+        MessageQueue $messageQueue,
+        Database $database,
+        ProcessFactory $processFactory,
+        Project $projectService
+    ) {
         $this->setDatabase($database);
         $this->setMessageQueue($messageQueue);
         $this->processFactory = $processFactory;
+        $this->projectService = $projectService;
     }
 
     /**
@@ -90,8 +104,11 @@ class Git extends ConsumerAbstract
      */
     protected function process($message)
     {
-        $record = $this->getGitRepositoryFromDatabase($message->id);
-        $context = ['id' => $message->id];
+        $record = $this->getGitRepositoryFromDatabase($message->id, $message->project);
+        $context = [
+            'id' => $message->id,
+            'project' => $message->project
+        ];
 
         // If the record does not exists in the database exit here
         if ($record === false) {
@@ -99,18 +116,11 @@ class Git extends ConsumerAbstract
             throw new \Exception('Record does not exist in git table', 1398949576);
         }
 
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$message->project];
-        $checkoutPath = $projectConfig['GitCheckoutPath'];
-        $checkoutPath = rtrim($checkoutPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-
-        $search = ['/', '.git', '.'];
-        $replace = ['_', '', '-'];
-        $checkoutPath .= str_replace($search, $replace, $record['name']);
-
+        $checkoutPath = $this->determineGitCheckoutPath($message->project, $record);
         $gitDirInCheckoutPath = $checkoutPath . DIRECTORY_SEPARATOR . '.git';
 
-        $gitExecutable = escapeshellcmd($config['Application']['Git']['Binary']);
+        $gitBinary = $this->container->getParameter('application.git.binary');
+        $gitExecutable = escapeshellcmd($gitBinary);
 
         /** @var \Symfony\Component\Process\Process $process */
         if (is_dir($checkoutPath) === true && is_dir($gitDirInCheckoutPath) === true) {
@@ -142,16 +152,13 @@ class Git extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $id, $dir)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-
         $message = [
             'project' => $project,
             'gitId' => $id,
             'checkoutDir' => $dir
         ];
 
-        $exchange = $projectConfig['RabbitMQ']['Exchange'];
+        $exchange = $this->container->getParameter('messagequeue.exchange');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.cvsanaly');
     }
 
@@ -248,7 +255,7 @@ class Git extends ConsumerAbstract
             'git' => $repository,
             'dir' => $checkoutPath
         ];
-        $this->getLogger()->info('Checkout git repository', $context);
+        $this->getLogger()->info('Cloning git repository', $context);
 
         mkdir($checkoutPath, 0744, true);
 
@@ -263,12 +270,17 @@ class Git extends ConsumerAbstract
      * Receives a single git record of the database
      *
      * @param integer $id
+     * @param integer $project
      * @return bool|array
      */
-    private function getGitRepositoryFromDatabase($id)
+    private function getGitRepositoryFromDatabase($id, $project)
     {
         $fields = ['id', 'name', 'git'];
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_git', ['id' => $id], '', '', 1);
+        $where = [
+            'id' => $id,
+            'project' => $project
+        ];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_git', $where, '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -303,5 +315,33 @@ class Git extends ConsumerAbstract
         }
 
         return [$process, $exception];
+    }
+
+    /**
+     * Determines the path where git checkouts should be proceed
+     *
+     * @param int $projectId Project id of the current project
+     * @param array $gitRecord Record of a single git entry
+     * @return string
+     */
+    private function determineGitCheckoutPath($projectId, array $gitRecord)
+    {
+        $checkoutPath = $this->container->getParameter('git.checkout.prefix');;
+        $checkoutPath = rtrim($checkoutPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+        // Projectname
+        $projectRecord = $this->projectService->getProjectById($projectId);
+
+        $search = ['/', ' ', '.', '..'];
+        $replace = ['_'];
+        $checkoutPath .= str_replace($search, $replace, $projectRecord['projectName']) . DIRECTORY_SEPARATOR;
+        $checkoutPath .= 'git' . DIRECTORY_SEPARATOR;
+
+        // Record name
+        $search = ['/', '.git', '.'];
+        $replace = ['_', '', '-'];
+        $checkoutPath .= str_replace($search, $replace, $gitRecord['name']);
+
+        return $checkoutPath;
     }
 }

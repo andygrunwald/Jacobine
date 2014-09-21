@@ -268,6 +268,23 @@ class Database
     }
 
     /**
+     * Get the first record from a database by a self written / raw query.
+     *
+     * @param string $query SQL-Query
+     * @param array $prepareParts Prepared statement parts which will be replaced in query
+     * @return array
+     */
+    public function getFirstRecordByRawQuery($query, array $prepareParts = []) {
+        $result = $this->getRecordsByRawQuery($query, $prepareParts);
+
+        if (count($result) > 0) {
+            $result = array_shift($result);
+        }
+
+        return $result;
+    }
+
+    /**
      * Inserts a single record into the database.
      * A prepared statement will be used.
      *

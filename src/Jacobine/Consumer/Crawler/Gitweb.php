@@ -199,8 +199,8 @@ class Gitweb extends ConsumerAbstract
             'project' => $projectId,
             'id' => $id
         ];
-        $exchange = $this->container->getParameter('messagequeue.exchange');
 
+        $exchange = $this->container->getParameter('messagequeue.exchange');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'download.git');
     }
 
