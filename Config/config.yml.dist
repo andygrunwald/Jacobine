@@ -1,13 +1,4 @@
 Projects:
   TYPO3:
-    MySQL:
-      Database: jacobine
-    RabbitMQ:
-      Exchange: JacobineAnalysis
-    Gitweb: https://git.typo3.org/
     Gerrit:
       ConfigFile: gerrit-review.typo3.org.yml
-    PDepend:
-      ConfigFile: pdepend.xml
-    Mailinglist:
-      Host: http://lists.typo3.org/
