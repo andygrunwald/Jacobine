@@ -28,6 +28,7 @@ use Symfony\Component\Process\ProcessUtils;
  *  [
  *      directory: Absolute path to folder which will be analyzed. E.g. /var/www/my/sourcecode
  *      versionId: Version ID to get the regarding version record from version database table
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
@@ -91,6 +92,9 @@ class GithubLinguist extends ConsumerAbstract
      */
     protected function process($message)
     {
+        // TODO: Fix ruby command.
+        // Currently the linguist bin failed on ruby 1.9.3
+        return;
         // If there is no directory to analyse, exit here
         if (is_dir($message->directory) !== true) {
             $this->getLogger()->critical('Directory does not exist', array('directory' => $message->directory));
@@ -210,8 +214,6 @@ class GithubLinguist extends ConsumerAbstract
      */
     private function executeGithubLinguist($dirToAnalyze)
     {
-        $config = $this->getConfig();
-
         // Execute github-linguist
         $dirToAnalyze = rtrim($dirToAnalyze, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze);
@@ -226,13 +228,11 @@ class GithubLinguist extends ConsumerAbstract
         // source /home/vagrant/.rvm/scripts/rvm
         //
         // @link https://github.com/github/linguist/issues/353
-        $command = 'bundle exec linguist ' . $dirToAnalyze;
-
-        $workingDir = $config['Application']['GithubLinguist']['WorkingDir'];
+        $linguistBin = $this->container->getParameter('application.linguist.binary');
+        $command = $linguistBin . ' ' . $dirToAnalyze;
 
         // Disable process timeout, because pDepend should take a while
-        $processTimeout = null;
-        $process = $this->processFactory->createProcess($command, $processTimeout, $workingDir);
+        $process = $this->processFactory->createProcess($command, null);
 
         $exception = null;
         try {
