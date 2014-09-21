@@ -138,21 +138,6 @@ interface ConsumerInterface
     public function setDatabase($database);
 
     /**
-     * Gets the config
-     *
-     * @return array
-     */
-    public function getConfig();
-
-    /**
-     * Sets the config
-     *
-     * @param array $config
-     * @return void
-     */
-    public function setConfig(array $config);
-
-    /**
      * Gets the message queue
      *
      * @return \Jacobine\Component\AMQP\MessageQueue
