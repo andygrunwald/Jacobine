@@ -26,12 +26,11 @@ class TargzTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $messageQueueMock = $this->getMessageQueueMock(0);
         $databaseMock = $this->getDatabaseMock();
         $processFactoryMock = $this->getProcessFactoryMock();
         $loggerMock = $this->getLoggerMock();
 
-        $this->consumer = new Targz($messageQueueMock, $databaseMock, $processFactoryMock);
+        $this->consumer = new Targz($databaseMock, $processFactoryMock);
         $this->consumer->setLogger($loggerMock);
     }
 
