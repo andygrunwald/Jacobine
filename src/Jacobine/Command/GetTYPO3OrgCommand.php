@@ -170,12 +170,12 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
 
                 // If the current version is not downloaded yet, queue it
                 if (!$versionRecord['downloaded']) {
-                    $message = array(
+                    $message = [
                         'project' => $projectRecord['projectId'],
                         'versionId' => $versionRecord['id'],
                         'filenamePrefix' => 'typo3_',
                         'filenamePostfix' => '.tar.gz',
-                    );
+                    ];
 
                     $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
                 }
@@ -194,7 +194,7 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
      */
     private function insertVersionIntoDatabase($branch, $versionData)
     {
-        $data = array(
+        $data = [
             'branch' => $branch,
             'version' => $versionData['version'],
             'date' => $versionData['date'],
@@ -206,7 +206,7 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
             'url_tar' => $versionData['url']['tar'],
             'url_zip' => $versionData['url']['zip'],
             'downloaded' => 0
-        );
+        ];
         $data['id'] = $this->database->insertRecord('jacobine_versions', $data);
         return $data;
     }
@@ -220,9 +220,9 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     private function getVersionFromDatabase($version)
     {
         $rows = $this->database->getRecords(
-            array('id', 'downloaded'),
+            ['id', 'downloaded'],
             'jacobine_versions',
-            array('version' => $version),
+            ['version' => $version],
             '',
             '',
             1

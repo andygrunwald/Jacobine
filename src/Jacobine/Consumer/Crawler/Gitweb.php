@@ -170,10 +170,10 @@ class Gitweb extends ConsumerAbstract
         /** @var \Buzz\Message\Response $response */
 
         if ($response->getStatusCode() !== 200) {
-            $context = array(
+            $context = [
                 'url' => $url,
                 'statusCode' => $response->getStatusCode()
-            );
+            ];
             $this->getLogger()->error('URL is not crawlable', $context);
             $exceptionMessage = sprintf('URL "%s" is not crawlable', $url);
             throw new \Exception($exceptionMessage, 1369417933);
@@ -209,7 +209,7 @@ class Gitweb extends ConsumerAbstract
      */
     private function getGitRepositoryFromDatabase($projectId, $repository)
     {
-        $fields = array('id');
+        $fields = ['id'];
         $where = [
             'project' => $projectId,
             'git' => $repository
@@ -235,11 +235,11 @@ class Gitweb extends ConsumerAbstract
      */
     private function insertGitRecord($projectId, $name, $repository)
     {
-        $data = array(
+        $data = [
             'project' => $projectId,
             'name' => $name,
             'git' => $repository
-        );
+        ];
 
         $this->getLogger()->info('Inserted new git record', $data);
         return $this->getDatabase()->insertRecord('jacobine_git', $data);

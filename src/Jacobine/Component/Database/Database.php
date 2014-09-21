@@ -198,8 +198,8 @@ class Database
      */
     protected function buildPreparedParts(array $parts, $implodeGlue)
     {
-        $queryParts = array();
-        $prepareParts = array();
+        $queryParts = [];
+        $prepareParts = [];
 
         foreach ($parts as $field => $value) {
             $queryParts[] = $field . ' = :' . $field;
@@ -298,7 +298,7 @@ class Database
         $this->checkIfTableEmpty($table);
         $this->checkIfDataIsEmpty($data);
 
-        $preparedValues = array();
+        $preparedValues = [];
         foreach ($data as $key => $value) {
             $preparedValues[':' . $key] = $value;
         }

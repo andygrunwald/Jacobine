@@ -157,8 +157,8 @@ class Targz extends ConsumerAbstract
      */
     private function getVersionFromDatabase($id)
     {
-        $fields = array('id', 'version', 'extracted');
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', array('id' => $id), '', '', 1);
+        $fields = ['id', 'version', 'extracted'];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', ['id' => $id], '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -178,7 +178,7 @@ class Targz extends ConsumerAbstract
     private function setVersionAsExtractedInDatabase($id)
     {
         $this->getDatabase()->updateRecord('jacobine_versions', ['extracted' => 1], ['id' => $id]);
-        $this->getLogger()->info('Set version record as extracted', array('versionId' => $id));
+        $this->getLogger()->info('Set version record as extracted', ['versionId' => $id]);
     }
 
     /**
@@ -215,10 +215,10 @@ class Targz extends ConsumerAbstract
      */
     private function extractArchive($archive, $target)
     {
-        $context = array(
+        $context = [
             'filename' => $archive,
             'targetFolder' => $target
-        );
+        ];
         $this->getLogger()->info('Extracting file', $context);
 
         // We didnt use the \PharData class to decompress + extract, because

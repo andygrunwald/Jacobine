@@ -152,11 +152,11 @@ class GerritCommand extends Command implements ContainerAwareInterface
             throw new \Exception($msg, 1369437144);
         }
 
-        $message = array(
+        $message = [
             'project' => $this->getProject(),
             'configFile' => $configFile,
             'type' => 'server'
-        );
+        ];
 
         $this->messageQueue->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], self::ROUTING);
         return null;

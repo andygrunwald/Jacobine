@@ -85,26 +85,26 @@ class Filesize extends ConsumerAbstract
 
         // If the record does not exists in the database exit here
         if ($record === false) {
-            $context = array('versionId' => $message->versionId);
+            $context = ['versionId' => $message->versionId];
             $this->getLogger()->critical('Record does not exist in version table', $context);
             throw new \Exception('Record does not exist in version table', 1398885424);
         }
 
         // If the filesize is already saved exit here
         if (isset($record['size_tar']) === true && $record['size_tar']) {
-            $context = array('versionId' => $message->versionId);
+            $context = ['versionId' => $message->versionId];
             $this->getLogger()->info('Record marked as already analyzed', $context);
             return;
         }
 
         // If there is no file, exit here
         if (file_exists($message->filename) !== true) {
-            $context = array('filename' => $message->filename);
+            $context = ['filename' => $message->filename];
             $this->getLogger()->critical('File does not exist', $context);
             throw new \Exception('File does not exist', 1398885531);
         }
 
-        $this->getLogger()->info('Getting filesize', array('filename' => $message->filename));
+        $this->getLogger()->info('Getting filesize', ['filename' => $message->filename]);
         $fileSize = filesize($message->filename);
 
         // Update the 'downloaded' flag in database
@@ -119,8 +119,8 @@ class Filesize extends ConsumerAbstract
      */
     private function getVersionFromDatabase($id)
     {
-        $fields = array('id', 'size_tar');
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', array('id' => $id), '', '', 1);
+        $fields = ['id', 'size_tar'];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', ['id' => $id], '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -142,7 +142,10 @@ class Filesize extends ConsumerAbstract
     {
         $this->getDatabase()->updateRecord('jacobine_versions', ['size_tar' => $fileSize], ['id' => $id]);
 
-        $context = array('filesize' => $fileSize, 'versionId' => $id);
+        $context = [
+            'filesize' => $fileSize,
+            'versionId' => $id
+        ];
         $this->getLogger()->info('Save filesize for version record', $context);
     }
 }

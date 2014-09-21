@@ -68,12 +68,12 @@ class AMQPFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function emptyMessageProvider()
     {
-        return array(
-            array(''),
-            array(0),
-            array(null),
-            array(false)
-        );
+        return [
+            [''],
+            [0],
+            [null],
+            [false]
+        ];
     }
 
     /**

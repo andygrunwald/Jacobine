@@ -48,10 +48,10 @@ class MessageQueue
      *
      * @var array
      */
-    protected $declared = array(
-        'exchange' => array(),
-        'queue' => array(),
-    );
+    protected $declared = [
+        'exchange' => [],
+        'queue' => [],
+    ];
 
     /**
      * Default queue options

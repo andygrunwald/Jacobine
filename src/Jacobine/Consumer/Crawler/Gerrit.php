@@ -154,7 +154,7 @@ class Gerrit extends ConsumerAbstract
         $project = $message->project;
         $gerritServerId = $gerrie->proceedServer($project, $gerritHost);
 
-        $this->getLogger()->info('Requesting projects', array('host' => $gerritHost));
+        $this->getLogger()->info('Requesting projects', ['host' => $gerritHost]);
 
         $projects = $gerrieDataService->getProjects();
 
@@ -163,14 +163,14 @@ class Gerrit extends ConsumerAbstract
             return;
         }
 
-        $parentMapping = array();
+        $parentMapping = [];
         foreach ($projects as $name => $info) {
             $projectId = $gerrie->importProject($name, $info, $parentMapping);
 
-            $context = array(
+            $context = [
                 'projectName' => $name,
                 'projectId' => $projectId
-            );
+            ];
             $this->getLogger()->info('Add project to message queue "crawler"', $context);
             $this->addFurtherMessageToQueue($project, $gerritServerId, $projectId, $message->configFile);
         }
@@ -193,13 +193,13 @@ class Gerrit extends ConsumerAbstract
         $config = $this->getConfig();
         $projectConfig = $config['Projects'][$project];
 
-        $message = array(
+        $message = [
             'project' => $project,
             'projectId' => $projectId,
             'serverId' => $serverId,
             'configFile' => $configFile,
             'type' => 'project'
-        );
+        ];
 
         $exchange = $projectConfig['RabbitMQ']['Exchange'];
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'crawler.gerrit');

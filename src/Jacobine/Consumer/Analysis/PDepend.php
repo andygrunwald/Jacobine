@@ -159,10 +159,10 @@ class PDepend extends ConsumerAbstract
 
         // If there was already a pDepend run, all files must be exist. If yes, exit here
         if ($this->doesAnalysisFilesAlreadyExists($analysisFiles) === true) {
-            $context = array(
+            $context = [
                 'versionId' => $message->versionId,
                 'directory' => $message->directory
-            );
+            ];
             $this->getLogger()->info('Directory already analyzed with pDepend', $context);
             return;
         }

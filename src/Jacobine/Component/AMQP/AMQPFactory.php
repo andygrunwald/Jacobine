@@ -48,7 +48,7 @@ class AMQPFactory
      * @throws \UnexpectedValueException
      * @return AMQPMessage
      */
-    public function createMessage($message, $options = array())
+    public function createMessage($message, $options = [])
     {
         if (!$message) {
             throw new \UnexpectedValueException('Message must not be empty!', 1392656481);

@@ -120,28 +120,28 @@ class HTTP extends ConsumerAbstract
         if ($targetFile->exists() === true && $record['checksum_tar_md5']
             && $targetFile->getMd5OfFile() === $record['checksum_tar_md5']
         ) {
-            $context = array(
+            $context = [
                 'targetFile' => $targetFile->getFile()
-            );
+            ];
             $this->getLogger()->info('File already exists', $context);
             $this->setVersionAsDownloadedInDatabase($record['id']);
             $this->addFurtherMessageToQueue($message->project, $record['id'], $targetFile->getFile());
             return;
         }
 
-        $context = array(
+        $context = [
             'downloadUrl' => $record['url_tar'],
             'targetDownloadFile' => $downloadFile->getFile()
-        );
+        ];
         $this->getLogger()->info('Starting download', $context);
 
         $downloadTimeout = $this->container->getParameter('http.download.timeout');
         $downloadResult = $downloadFile->download($record['url_tar'], $downloadTimeout);
         if (!$downloadResult) {
-            $context = array(
+            $context = [
                 'file' => $record['url_tar'],
                 'timeout' => $downloadTimeout,
-            );
+            ];
             $this->getLogger()->critical('Download command failed', $context);
             throw new \Exception('Download command failed', 1398949775);
         }
@@ -157,10 +157,10 @@ class HTTP extends ConsumerAbstract
             mkdir($targetDir, 0744, true);
         }
 
-        $context = array(
+        $context = [
             'oldFile' => $downloadFile->getFile(),
             'newFile' => $targetFile->getFile()
-        );
+        ];
         $this->getLogger()->info('Rename downloaded file', $context);
         $renameResult = $downloadFile->rename($targetFile->getFile());
 
@@ -172,11 +172,11 @@ class HTTP extends ConsumerAbstract
         // If the hashes are not equal, exit here
         $md5Hash = $downloadFile->getMd5OfFile();
         if ($record['checksum_tar_md5'] && $md5Hash !== $record['checksum_tar_md5']) {
-            $context = array(
+            $context = [
                 'targetFile' => $downloadFile->getFile(),
                 'databaseHash' => $record['checksum_tar_md5'],
                 'fileHash' => $md5Hash
-            );
+            ];
             $this->getLogger()->critical('Checksums for file are not equal', $context);
             throw new \Exception('Checksums for file are not equal', 1398949838);
         }
@@ -217,8 +217,8 @@ class HTTP extends ConsumerAbstract
      */
     private function getVersionFromDatabase($id)
     {
-        $fields = array('id', 'version', 'checksum_tar_md5', 'url_tar', 'downloaded');
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', array('id' => $id), '', '', 1);
+        $fields = ['id', 'version', 'checksum_tar_md5', 'url_tar', 'downloaded'];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', ['id' => $id], '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {

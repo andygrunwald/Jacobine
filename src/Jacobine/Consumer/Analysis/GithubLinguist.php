@@ -97,7 +97,7 @@ class GithubLinguist extends ConsumerAbstract
         return;
         // If there is no directory to analyse, exit here
         if (is_dir($message->directory) !== true) {
-            $this->getLogger()->critical('Directory does not exist', array('directory' => $message->directory));
+            $this->getLogger()->critical('Directory does not exist', ['directory' => $message->directory]);
             throw new \Exception('Directory does not exist', 1398885959);
         }
 
@@ -143,19 +143,19 @@ class GithubLinguist extends ConsumerAbstract
      */
     protected function parseGithubLinguistResults(array $results)
     {
-        $parsedResults = array();
+        $parsedResults = [];
 
         foreach ($results as $line) {
             // Formats a string from "87.58%  PHP" to "87.58" and "PHP"
             $parts = explode(' ', $line);
 
-            $percent = str_replace(array('%', ' '), '', array_shift($parts));
+            $percent = str_replace(['%', ' '], '', array_shift($parts));
             $language = array_pop($parts);
             $language = trim($language);
-            $parsedResults[] = array(
+            $parsedResults[] = [
                 'percent' => $percent,
                 'language' => $language
-            );
+            ];
         }
 
         return $parsedResults;
@@ -170,7 +170,7 @@ class GithubLinguist extends ConsumerAbstract
      */
     protected function storeLinguistDataInDatabase($versionId, array $result)
     {
-        $this->getLogger()->info('Store linguist information in database', array('version' => $versionId));
+        $this->getLogger()->info('Store linguist information in database', ['version' => $versionId]);
         foreach ($result as $language) {
             $language['version'] = $versionId;
             $insertedId = $this->getDatabase()->insertRecord('jacobine_linguist', $language);
@@ -196,7 +196,7 @@ class GithubLinguist extends ConsumerAbstract
 
         if ($deleteResult === false) {
             $msg = 'Delete of linguist records for version failed';
-            $this->getLogger()->critical($msg, array('version' => $versionId));
+            $this->getLogger()->critical($msg, ['version' => $versionId]);
 
             $msg = sprintf('Delete of linguist records for version %s failed', $versionId);
             throw new \Exception($msg, 1368805543);
