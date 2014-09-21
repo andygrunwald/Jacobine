@@ -44,14 +44,12 @@ class Targz extends ConsumerAbstract
     /**
      * Constructor to set dependencies
      *
-     * @param MessageQueue $messageQueue
      * @param Database $database
      * @param ProcessFactory $processFactory
      */
-    public function __construct(MessageQueue $messageQueue, Database $database, ProcessFactory $processFactory)
+    public function __construct(Database $database, ProcessFactory $processFactory)
     {
         $this->processFactory = $processFactory;
-        $this->setMessageQueue($messageQueue);
         $this->setDatabase($database);
     }
 

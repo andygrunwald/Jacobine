@@ -33,12 +33,10 @@
         <!-- Crawler consumer -->
         <service id="consumer.crawler.gerrit" class="Jacobine\Consumer\Crawler\Gerrit">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="component.amqp.messageQueue" />
         </service>
 
         <service id="consumer.crawler.gitweb" class="Jacobine\Consumer\Crawler\Gitweb">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="component.amqp.messageQueue" />
             <argument type="service" id="component.database.database" />
             <argument type="service" id="component.remoteService.httpRemoteService" />
             <argument type="service" id="component.crawler.crawlerFactory" />
@@ -46,7 +44,6 @@
 
         <service id="consumer.crawler.mailinglist" class="Jacobine\Consumer\Crawler\Mailinglist">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="component.amqp.messageQueue" />
             <argument type="service" id="component.remoteService.httpRemoteService" />
             <argument type="service" id="component.crawler.crawlerFactory" />
             <argument type="service" id="component.process.processFactory" />
@@ -55,7 +52,6 @@
         <!-- Download consumer -->
         <service id="consumer.download.git" class="Jacobine\Consumer\Download\Git">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="component.amqp.messageQueue" />
             <argument type="service" id="component.database.database" />
             <argument type="service" id="component.process.processFactory" />
             <argument type="service" id="service.project" />
@@ -63,14 +59,12 @@
 
         <service id="consumer.download.http" class="Jacobine\Consumer\Download\HTTP">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="component.amqp.messageQueue" />
             <argument type="service" id="component.database.database" />
         </service>
 
         <!-- Extract consumer -->
         <service id="consumer.extract.targz" class="Jacobine\Consumer\Extract\Targz">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="component.amqp.messageQueue" />
             <argument type="service" id="component.database.database" />
             <argument type="service" id="component.process.processFactory" />
         </service>
@@ -78,7 +72,6 @@
         <!-- Project consumer -->
         <service id="consumer.project.cud" class="Jacobine\Consumer\Project\CUD">
             <tag name="jacobine.consumer" />
-            <argument type="service" id="component.amqp.messageQueue" />
             <argument type="service" id="service.project" />
         </service>
     </services>

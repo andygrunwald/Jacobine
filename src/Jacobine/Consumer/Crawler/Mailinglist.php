@@ -11,7 +11,6 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Component\AMQP\MessageQueue;
 use Jacobine\Component\Crawler\CrawlerFactory;
 use Jacobine\Component\Process\ProcessFactory;
 use Jacobine\Entity\DataSource;
@@ -67,18 +66,15 @@ class Mailinglist extends ConsumerAbstract
     /**
      * Constructor to set dependencies
      *
-     * @param MessageQueue $messageQueue
      * @param \Buzz\Browser $remoteService
      * @param CrawlerFactory $crawlerFactory
      * @param ProcessFactory $processFactory
      */
     public function __construct(
-        MessageQueue $messageQueue,
         Browser $remoteService,
         CrawlerFactory $crawlerFactory,
         ProcessFactory $processFactory
     ) {
-        $this->setMessageQueue($messageQueue);
         $this->remoteService = $remoteService;
         $this->crawlerFactory = $crawlerFactory;
         $this->processFactory = $processFactory;

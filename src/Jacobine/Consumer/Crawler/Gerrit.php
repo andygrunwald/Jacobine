@@ -11,7 +11,6 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Component\AMQP\MessageQueue;
 
 /**
  * Class Gerrit
@@ -48,16 +47,6 @@ use Jacobine\Component\AMQP\MessageQueue;
  */
 class Gerrit extends ConsumerAbstract
 {
-
-    /**
-     * Constructor to set dependencies
-     *
-     * @param MessageQueue $messageQueue
-     */
-    public function __construct(MessageQueue $messageQueue)
-    {
-        $this->setMessageQueue($messageQueue);
-    }
 
     /**
      * Gets a description of the consumer

@@ -158,6 +158,7 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
         // TODO get rid of config here
         $consumer->setConfig($this->config);
         $consumer->setLogger($logger);
+        $consumer->setMessageQueue($this->messageQueue);
         $consumer->initialize();
 
         $projectConfig = $this->config['Projects'][$this->getProject()];

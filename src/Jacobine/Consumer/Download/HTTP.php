@@ -13,7 +13,6 @@ namespace Jacobine\Consumer\Download;
 use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Component\Filesystem\File;
 use Jacobine\Component\Database\Database;
-use Jacobine\Component\AMQP\MessageQueue;
 
 /**
  * Class HTTP
@@ -40,13 +39,11 @@ class HTTP extends ConsumerAbstract
     /**
      * Constructor to set dependencies
      *
-     * @param MessageQueue $messageQueue
      * @param Database $database
      */
-    public function __construct(MessageQueue $messageQueue, Database $database)
+    public function __construct(Database $database)
     {
         $this->setDatabase($database);
-        $this->setMessageQueue($messageQueue);
     }
 
     /**

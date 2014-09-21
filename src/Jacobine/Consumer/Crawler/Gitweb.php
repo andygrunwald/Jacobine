@@ -11,7 +11,6 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Component\AMQP\MessageQueue;
 use Jacobine\Component\Database\Database;
 use Jacobine\Component\Crawler\CrawlerFactory;
 use Buzz\Browser;
@@ -55,19 +54,16 @@ class Gitweb extends ConsumerAbstract
     /**
      * Constructor to set dependencies
      *
-     * @param MessageQueue $messageQueue
      * @param Database $database
      * @param \Buzz\Browser $remoteService
      * @param \Jacobine\Component\Crawler\CrawlerFactory $crawlerFactory
      */
     public function __construct(
-        MessageQueue $messageQueue,
         Database $database,
         Browser $remoteService,
         CrawlerFactory $crawlerFactory
     ) {
         $this->setDatabase($database);
-        $this->setMessageQueue($messageQueue);
         $this->remoteService = $remoteService;
         $this->crawlerFactory = $crawlerFactory;
     }

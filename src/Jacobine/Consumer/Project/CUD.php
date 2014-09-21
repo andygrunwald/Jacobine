@@ -11,7 +11,6 @@
 namespace Jacobine\Consumer\Project;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Component\AMQP\MessageQueue;
 use Jacobine\Service\Project;
 
 /**
@@ -46,12 +45,10 @@ class CUD extends ConsumerAbstract
     /**
      * Constructor to set dependencies
      *
-     * @param MessageQueue $messageQueue
      * @param \Jacobine\Service\Project $projectService
      */
-    public function __construct(MessageQueue $messageQueue, Project $projectService)
+    public function __construct(Project $projectService)
     {
-        $this->setMessageQueue($messageQueue);
         $this->projectService = $projectService;
     }
 
