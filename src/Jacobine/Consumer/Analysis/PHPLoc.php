@@ -26,6 +26,7 @@ use Symfony\Component\Process\ProcessUtils;
  *  [
  *      directory: Absolute path to folder which will be analyzed. E.g. /var/www/my/sourcecode
  *      versionId: Version ID to get the regarding version record from version database table
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
@@ -82,6 +83,8 @@ class PHPLoc extends ConsumerAbstract
 
     /**
      * The logic of the consumer
+     *
+     * TODO: Add project into phploc table
      *
      * @param \stdClass $message
      * @throws \Exception
@@ -272,20 +275,19 @@ class PHPLoc extends ConsumerAbstract
         $dirToAnalyze = rtrim($dirToAnalyze, DIRECTORY_SEPARATOR);
         $xmlOutput = 'php://stdout';
 
-        $config = $this->getConfig();
-        $filePattern = $config['Application']['PHPLoc']['FilePattern'];
+        $filePattern = $this->container->getParameter('application.phploc.filepattern');
 
         $filePattern = ProcessUtils::escapeArgument($filePattern);
         $xmlOutput = ProcessUtils::escapeArgument($xmlOutput);
         $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze . DIRECTORY_SEPARATOR);
 
-        $command = $config['Application']['PHPLoc']['Binary'];
+        $command = $this->container->getParameter('application.phploc.binary');
         $command .= ' --count-tests --quiet --names ' . $filePattern;
         $command .= ' --log-xml ' . $xmlOutput . ' ' . $dirToAnalyze;
 
         $this->getLogger()->info('Start analyzing with PHPLoc', array('directory' => $dirToAnalyze));
 
-        $timeout = (int) $config['Application']['PHPLoc']['Timeout'];
+        $timeout = (int) $this->container->getParameter('application.phploc.timeout');
         $process = $this->processFactory->createProcess($command, $timeout);
 
         $exception = null;
