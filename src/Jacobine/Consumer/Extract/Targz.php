@@ -13,7 +13,6 @@ namespace Jacobine\Consumer\Extract;
 use Jacobine\Consumer\ConsumerAbstract;
 use Jacobine\Component\Process\ProcessFactory;
 use Jacobine\Component\Database\Database;
-use Jacobine\Component\AMQP\MessageQueue;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -25,6 +24,7 @@ use Symfony\Component\Process\ProcessUtils;
  *  [
  *      versionId: ID of a version record in the database. A succesful download will be flagged
  *      filename: Name of the file which will be extracted
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
@@ -115,10 +115,12 @@ class Targz extends ConsumerAbstract
 
         // Create folder first and change the target folder of tar command via -C parameter
         // via this way we ensure a parent folder for a extracted tar.gz archive every time
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$message->project];
-        $targetFolderPrefix = $projectConfig['Consumer']['Extract\Targz']['TargetFolderPrefix'];
-        $targetFolder = $targetFolderPrefix . $record['version'] . DIRECTORY_SEPARATOR;
+
+        // If the filename is 'typo3_6.2.2.tar.gz' we only want to get typo3_6.2.2.
+        // pathinfo only cuts '.gz'
+        $fileName = $pathInfo['filename'];
+        $fileName = substr($fileName, 0, strrpos($fileName, '.'));
+        $targetFolder = $folder . $fileName . DIRECTORY_SEPARATOR;
 
         mkdir($targetFolder);
 
@@ -142,7 +144,7 @@ class Targz extends ConsumerAbstract
         $this->setVersionAsExtractedInDatabase($message->versionId);
 
         // Adds new messages to queue: analyze phploc
-        $this->addFurtherMessageToQueue($message->project, $record['id'], $folder . $targetFolder);
+        $this->addFurtherMessageToQueue($message->project, $record['id'], $targetFolder);
     }
 
     /**
@@ -187,10 +189,6 @@ class Targz extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $versionId, $directory)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-        $exchange = $projectConfig['RabbitMQ']['Exchange'];
-
         $message = [
             'project' => $project,
             'versionId' => $versionId,
@@ -200,6 +198,7 @@ class Targz extends ConsumerAbstract
         $pDependMessage = $message;
         $pDependMessage['type'] = 'analyze';
 
+        $exchange = $this->container->getParameter('messagequeue.exchange');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.phploc');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.linguist');
         $this->getMessageQueue()->sendSimpleMessage($pDependMessage, $exchange, 'analysis.pdepend');
@@ -220,17 +219,15 @@ class Targz extends ConsumerAbstract
         );
         $this->getLogger()->info('Extracting file', $context);
 
-        $config = $this->getConfig();
-
         // We didnt use the \PharData class to decompress + extract, because
         // a) it is much more slower (performance) than a tar system call
         // b) it eats much more PHP memory which is not useful in a message based env
         $archive = ProcessUtils::escapeArgument($archive);
         $target = ProcessUtils::escapeArgument($target);
-        $command = $config['Application']['Tar']['Binary'];
+        $command = $this->container->getParameter('application.tar.binary');
         $command .= ' -xzf ' . $archive . ' -C ' . $target;
 
-        $timeout = (int) $config['Application']['Tar']['Timeout'];
+        $timeout = (int) $this->container->getParameter('application.tar.timeout');
         $process = $this->processFactory->createProcess($command, $timeout);
 
         $exception = null;
