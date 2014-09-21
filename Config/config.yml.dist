@@ -4,8 +4,6 @@ Projects:
       Database: jacobine
     RabbitMQ:
       Exchange: JacobineAnalysis
-    ReleasesPath: /var/www/analysis-data/TYPO3/releases
-    GitCheckoutPath: /var/www/analysis-data/TYPO3/git
     Gitweb: https://git.typo3.org/
     Gerrit:
       ConfigFile: gerrit-review.typo3.org.yml
