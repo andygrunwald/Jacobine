@@ -11,9 +11,3 @@ Projects:
       ConfigFile: pdepend.xml
     Mailinglist:
       Host: http://lists.typo3.org/
-    Consumer:
-      Download\HTTP:
-        DownloadPrefix: typo3_
-        DownloadPostfix: .tar.gz
-      Extract\Targz:
-        TargetFolderPrefix: typo3_src-
