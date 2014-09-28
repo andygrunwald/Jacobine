@@ -134,6 +134,12 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
         $exchange = $this->container->getParameter('messagequeue.exchange');
         $projectRecord = $this->projectService->getProjectByName(self::PROJECT);
 
+        // If there is no TYPO3 project configured, exit here
+        if (count($projectRecord) == 0) {
+            $this->outputNoProjectMessage($output);
+            return null;
+        }
+
         $versions = $this->getReleaseInformation();
         foreach ($versions as $branch => $data) {
             // $data got two keys: releases + latest
@@ -183,6 +189,35 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
         }
 
         return null;
+    }
+
+    /**
+     * Outputs a help message if there is no configured TYPO3 project.
+     *
+     * @param OutputInterface $output
+     * @return void
+     */
+    private function outputNoProjectMessage(OutputInterface $output) {
+        $messages = [
+            'Hey, cool! You want to download all TYPO3 releases.',
+            'And of course Jacobine will offer you this service :)',
+            '',
+            'But we had seen that you do not created a project named "TYPO3".',
+            'Please create this project first. Just execute:',
+            "\t$ ./console jacobine:create-project",
+            '',
+            'If you had done this, start all consumers and execute',
+            "\t$ ./console jacobine:create-project",
+            '',
+            'I hope this will work now for you.',
+            'Otherwise please get in contact with us.',
+            'Have fun and happy downloading!',
+        ];
+
+        foreach ($messages as $message) {
+            $messageToWrite = sprintf('<%s>%s</%s>', 'comment', $message, 'comment');
+            $output->writeln($messageToWrite);
+        }
     }
 
     /**
