@@ -163,25 +163,30 @@ class GerritCommand extends Command implements ContainerAwareInterface
         }
 
         foreach ($projects as $project) {
+            foreach ($project['dataSources'] as $dataSources) {
+                foreach ($dataSources as $singleSource) {
 
-            switch ($project['datasourceType']) {
-                case DataSource::TYPE_GERRIT_PROJECT:
-                    $type = 'project';
-                    break;
-                case DataSource::TYPE_GERRIT_SERVER:
-                    $type = 'server';
-                    break;
-                default:
-                    $exceptionMessage = 'Datasource type ' . $project['datasourceType'] . ' not supported';
-                    throw new \Exception($exceptionMessage, 1411320967);
+                    switch ($singleSource['type']) {
+                        case DataSource::TYPE_GERRIT_PROJECT:
+                            $type = 'project';
+                            break;
+                        case DataSource::TYPE_GERRIT_SERVER:
+                            $type = 'server';
+                            break;
+                        default:
+                            $exceptionMessage = 'Datasource type ' . $singleSource['type'] . ' not supported';
+                            throw new \Exception($exceptionMessage, 1411320967);
+                    }
+
+                    $message = [
+                        'project' => $project['id'],
+                        'configFile' => $configFile,
+                        'type' => $type
+                    ];
+
+                    $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
+                }
             }
-
-            $message = [
-                'project' => $project['projectId'],
-                'configFile' => $configFile,
-                'type' => $type
-            ];
-            $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
         }
 
         return null;
