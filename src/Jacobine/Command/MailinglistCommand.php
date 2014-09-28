@@ -157,13 +157,17 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
         }
 
         foreach ($projects as $project) {
-            $message = [
-                'project' => $project['projectId'],
-                'type' => $project['datasourceType'],
-                'url' => $project['datasourceContent'],
-            ];
+            foreach ($project['dataSources'] as $dataSources) {
+                foreach ($dataSources as $singleSource) {
+                    $message = [
+                        'project' => $project['id'],
+                        'type' => $singleSource['type'],
+                        'url' => $singleSource['content'],
+                    ];
 
-            $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
+                    $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
+                }
+            }
         }
     }
 }
