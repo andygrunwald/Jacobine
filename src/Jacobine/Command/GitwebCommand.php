@@ -154,12 +154,14 @@ class GitwebCommand extends Command implements ContainerAwareInterface
         }
 
         foreach ($projects as $project) {
-            $message = [
-                'project' => $project['projectId'],
-                'url' => $project['datasourceContent']
-            ];
+            foreach ($project['dataSources'][DataSource::TYPE_GITWEB_SERVER] as $singleSource) {
+                $message = [
+                    'project' => $project['id'],
+                    'url' => $singleSource['content'],
+                ];
 
-            $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
+                $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
+            }
         }
 
         return null;
