@@ -10,24 +10,18 @@
 
 namespace Jacobine\Command;
 
+use Jacobine\Entity\DataSource;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Class ListProjectsCommand
  *
- * Command to list all projects which are valid configured.
- * This command does not execute something. It will only output a list of configured projects.
- *
- * A project must be a fulfill some requirements.
- * This requirements will be checked in isProjectConfigValid().
- * E.g.
- *      Database must be configured
- *      RabbitMQ-Exchange must be configured
- *
- * To check if your new project is configured correct, just configure it and execute this command.
+ * Command to list all projects which are stored in the database.
+ * This command does not execute something. It will only output a list of stored projects with datasources.
  *
  * Usage:
  *  php console jacobine:list-projects
@@ -35,15 +29,17 @@ use Symfony\Component\Yaml\Yaml;
  * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
-class ListProjectsCommand extends Command
+class ListProjectsCommand extends Command implements ContainerAwareInterface
 {
 
+    use ContainerAwareTrait;
+
     /**
-     * Configuration
+     * Project service
      *
-     * @var array
+     * @var \Jacobine\Service\Project
      */
-    protected $config = [];
+    protected $projectService;
 
     /**
      * Configures the current command.
@@ -57,27 +53,6 @@ class ListProjectsCommand extends Command
     }
 
     /**
-     * Sets the configuration
-     *
-     * @param array $config
-     * @return void
-     */
-    public function setConfig($config)
-    {
-        $this->config = $config;
-    }
-
-    /**
-     * Gets the configuration
-     *
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
      * Initializes the command just after the input has been validated.
      *
      * Sets up the config
@@ -88,7 +63,7 @@ class ListProjectsCommand extends Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->setConfig(Yaml::parse(CONFIG_FILE));
+        $this->projectService = $this->container->get('service.project');
     }
 
     /**
@@ -102,57 +77,43 @@ class ListProjectsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $this->getConfig();
+        $projects = $this->projectService->getAllProjectsWithDatasources();
 
-        if (is_array($config['Projects']) === false) {
-            $message = '<error>There are no configured projects available! Please configure one!</error>';
+        if (count($projects) <= 0) {
+            $message = '<error>Oh no! Sadly there a no projects in our storage backend :(</error>';
             $output->writeln($message);
+
+            $message = '<error>But hey, it is not to late! There is a change to add new projects.</error>';
+            $output->writeln($message);
+
+            $message = '<error>Just execute "./console jacobine:create-project" to add some :)</error>';
+            $output->writeln($message);
+
+            $message = '<error>Have fun and see you next time!</error>';
+            $output->writeln($message);
+
             return true;
         }
 
-        foreach ($config['Projects'] as $projectName => $projectConfig) {
-            if ($this->isProjectConfigValid($projectConfig) === false) {
-                continue;
+        foreach ($projects as $project) {
+
+            $message = '<comment>' . $project['name'] . ' (' . $project['website'] . ')</comment>';
+            $output->writeln($message);
+
+            foreach ($project['dataSources'] as $type => $sourcesPerType) {
+
+                $message = '<comment>- ' . DataSource::getTextForType($type) . '</comment>';
+                $output->writeln($message);
+
+                foreach ($sourcesPerType as $singleSource) {
+                    $message = '<comment>  * ' . $singleSource['content'] . '</comment>';
+                    $output->writeln($message);
+                }
             }
 
-            $message = '<comment>' . $projectName . '</comment>';
-            $output->writeln($message);
+            $output->writeln('');
         }
 
         return null;
-    }
-
-    /**
-     * Checks the configuration and necessary config parts
-     *
-     * @param mixed $config
-     * @return bool
-     */
-    private function isProjectConfigValid($config)
-    {
-        if (is_array($config) === false) {
-            return false;
-        }
-
-        // Database settings
-        if (array_key_exists('MySQL', $config) === false
-            || array_key_exists('Database', $config['MySQL']) === false
-        ) {
-            return false;
-        }
-
-        // RabbitMQ settings
-        if (array_key_exists('RabbitMQ', $config) === false
-            || array_key_exists('Exchange', $config['RabbitMQ']) === false
-        ) {
-            return false;
-        }
-
-        // Various settings
-        if (array_key_exists('ReleasesPath', $config) === false) {
-            return false;
-        }
-
-        return true;
     }
 }

@@ -115,12 +115,40 @@ class Project
               project.name = :name
         ';
 
-        list($preparedKeys, $preparedSourceValues) = $this->prepareDatasources($dataSourceTypes);
-        $query .= ' AND datasource.type IN (' . implode(',', $preparedKeys) . ')';
+        if (count($dataSourceTypes) > 0) {
+            list($preparedKeys, $preparedSourceValues) = $this->prepareDatasources($dataSourceTypes);
+            $query .= ' AND datasource.type IN (' . implode(',', $preparedKeys) . ')';
+            $preparedValues = $preparedValues + $preparedSourceValues;
+        }
 
-        $preparedValues = $preparedValues + $preparedSourceValues;
+        $result = $this->database->getRecordsByRawQuery($query, $preparedValues);
+        return $this->restructureProjectDataToArray($result);
+    }
 
-        return $this->database->getRecordsByRawQuery($query, $preparedValues);
+    /**
+     * Restructure the database result of a project into an array structure.
+     * The project is on the first level.
+     * All data sources of the project of a second level.
+     *
+     * @param array $databaseResult
+     * @return array
+     */
+    protected function restructureProjectDataToArray(array $databaseResult) {
+        $projects = [];
+        foreach ($databaseResult as $projectRow) {
+            $id = $projectRow['projectId'];
+            $projects[$id]['id'] = $projectRow['projectId'];
+            $projects[$id]['name'] = $projectRow['projectName'];
+            $projects[$id]['website'] = $projectRow['projectWebsite'];
+
+            $projects[$id]['dataSources'][$projectRow['datasourceType']][] = [
+                'id' => $projectRow['datasourceId'],
+                'type' => $projectRow['datasourceType'],
+                'content' => $projectRow['datasourceContent']
+            ];
+        }
+
+        return $projects;
     }
 
     public function getProjectById($projectId)
@@ -164,10 +192,14 @@ class Project
     public function getAllProjectsWithDatasources(array $dataSourceTypes = []) {
         $query = $this->getProjectBaseQuery();
 
-        list($preparedKeys, $preparedValues) = $this->prepareDatasources($dataSourceTypes);
-        $query .= ' WHERE datasource.type IN (' . implode(',', $preparedKeys) . ')';
+        $preparedValues = [];
+        if (count($dataSourceTypes) > 0) {
+            list($preparedKeys, $preparedValues) = $this->prepareDatasources($dataSourceTypes);
+            $query .= ' WHERE datasource.type IN (' . implode(',', $preparedKeys) . ')';
+        }
 
-        return $this->database->getRecordsByRawQuery($query, $preparedValues);
+        $result = $this->database->getRecordsByRawQuery($query, $preparedValues);
+        return $this->restructureProjectDataToArray($result);
     }
 
     protected function prepareDatasources(array $dataSourceTypes = []) {
@@ -191,6 +223,8 @@ class Project
         $query = '
             SELECT
               project.id AS projectId,
+              project.name AS projectName,
+              project.website AS projectWebsite,
               datasource.id AS datasourceId,
               datasource.type AS datasourceType,
               datasource.content AS datasourceContent
