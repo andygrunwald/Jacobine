@@ -167,7 +167,14 @@ class Project
               project.id = :id
             LIMIT 1';
 
-        return $this->database->getFirstRecordByRawQuery($query, $preparedValues);
+        $result = $this->database->getFirstRecordByRawQuery($query, $preparedValues);
+
+        if (count($result) == 0) {
+            $exceptionMessage = 'No project with ID "' . $projectId . '" found.';
+            throw new \RuntimeException($exceptionMessage, 1411927994);
+        }
+
+        return $result;
     }
 
     public function getProjectByName($projectName)
