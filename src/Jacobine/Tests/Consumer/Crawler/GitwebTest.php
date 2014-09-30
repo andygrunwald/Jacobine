@@ -32,18 +32,4 @@ class GitwebTest extends ConsumerTestAbstract
 
         $this->consumer = new Gitweb($databaseMock, $browserMock, $crawlerFactoryMock);
     }
-
-    public function testConsumerInitializeWithQueueAndRouting()
-    {
-        $config = [
-            'Various' => [
-                'Requests' => [
-                    'Timeout' => 10
-                ]
-            ]
-        ];
-        $this->consumer->setConfig($config);
-
-        parent::testConsumerInitializeWithQueueAndRouting();
-    }
 }
