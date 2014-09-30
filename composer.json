@@ -27,7 +27,7 @@
         "php": ">=5.4.0",
         "ext-curl": "*",
         "videlalvaro/php-amqplib": "2.4.*",
-        "kriswallsmith/buzz": "0.12",
+        "kriswallsmith/buzz": "0.*",
         "symfony/yaml": "2.5.*",
         "symfony/console": "2.5.*",
         "symfony/dom-crawler": "2.5.*",
@@ -37,7 +37,7 @@
         "phploc/phploc": "2.0.*",
         "pdepend/pdepend": "2.0.*",
         "monolog/monolog": "1.10.*",
-        "andygrunwald/gerrie": "0.0.*"
+        "andygrunwald/gerrie": "0.1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.2.*",
