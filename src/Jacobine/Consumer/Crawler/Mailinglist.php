@@ -174,11 +174,11 @@ class Mailinglist extends ConsumerAbstract
         $command .= ' --db-hostname ' . ProcessUtils::escapeArgument($this->container->getParameter('database.host'));
         $command .= ' --db-user ' . ProcessUtils::escapeArgument($this->container->getParameter('database.username'));
         $command .= ' --db-password ' . ProcessUtils::escapeArgument($this->container->getParameter('database.password'));
-        // TODO Currently we log into mlstats database.
+        // TODO Currently we log into jacobine_mlstats database.
         // Why?
         // Because CVSAnaly + MLStats got same table names and no tool supports table prefix :(
         // $command .= ' --db-name ' . ProcessUtils::escapeArgument($this->container->getParameter('database.name'));
-        $command .= ' --db-name ' . ProcessUtils::escapeArgument('mlstats');
+        $command .= ' --db-name ' . ProcessUtils::escapeArgument('jacobine_mlstats');
         $command .= ' ' . ProcessUtils::escapeArgument($url);
 
         return $command;
