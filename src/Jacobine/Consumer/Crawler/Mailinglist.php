@@ -168,6 +168,7 @@ class Mailinglist extends ConsumerAbstract
      */
     private function buildMLStatsCommand($url)
     {
+        $compressedDir = $this->container->getParameter('application.mlstats.compressedDir');
         $command = escapeshellcmd($this->container->getParameter('application.mlstats.binary'));
         $command .= ' --no-report';
         $command .= ' --db-driver ' . ProcessUtils::escapeArgument($this->container->getParameter('database.driver'));
@@ -179,6 +180,7 @@ class Mailinglist extends ConsumerAbstract
         // Because CVSAnaly + MLStats got same table names and no tool supports table prefix :(
         // $command .= ' --db-name ' . ProcessUtils::escapeArgument($this->container->getParameter('database.name'));
         $command .= ' --db-name ' . ProcessUtils::escapeArgument('jacobine_mlstats');
+        $command .= ' --compressed-dir ' . ProcessUtils::escapeArgument($compressedDir);
         $command .= ' ' . ProcessUtils::escapeArgument($url);
 
         return $command;

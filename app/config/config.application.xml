@@ -27,6 +27,7 @@
 
         <!-- MLStats -->
         <parameter key="application.mlstats.binary">/usr/local/bin/mlstats</parameter>
+        <parameter key="application.mlstats.compressedDir">/tmp/mlstats/compressed</parameter>
 
         <!-- GithubLinguist -->
         <parameter key="application.linguist.binary">/usr/local/bin/linguist</parameter>
