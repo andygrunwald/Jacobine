@@ -84,8 +84,6 @@ class PHPLoc extends ConsumerAbstract
     /**
      * The logic of the consumer
      *
-     * TODO: Add project into phploc table
-     *
      * @param \stdClass $message
      * @throws \Exception
      * @return void
