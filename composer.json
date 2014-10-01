@@ -36,7 +36,7 @@
         "symfony/config":"2.5.*",
         "phploc/phploc": "2.0.*",
         "pdepend/pdepend": "2.0.*",
-        "monolog/monolog": "1.10.*",
+        "monolog/monolog": "1.11.*",
         "andygrunwald/gerrie": "0.1.*"
     },
     "require-dev": {
