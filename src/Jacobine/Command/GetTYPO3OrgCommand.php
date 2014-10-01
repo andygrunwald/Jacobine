@@ -140,6 +140,7 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
             return null;
         }
 
+        $projectId = $projectRecord['projectId'];
         $versions = $this->getReleaseInformation();
         foreach ($versions as $branch => $data) {
             // $data got two keys: releases + latest
@@ -167,17 +168,17 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
                 }
 
                 // Try to get the current version from the database
-                $versionRecord = $this->getVersionFromDatabase($releaseVersion);
+                $versionRecord = $this->getVersionFromDatabase($releaseVersion, $projectId);
 
                 // If the current version is not in database already, create it
                 if ($versionRecord === false) {
-                    $versionRecord = $this->insertVersionIntoDatabase($branch, $releaseData);
+                    $versionRecord = $this->insertVersionIntoDatabase($projectId, $branch, $releaseData);
                 }
 
                 // If the current version is not downloaded yet, queue it
                 if (!$versionRecord['downloaded']) {
                     $message = [
-                        'project' => $projectRecord['projectId'],
+                        'project' => $projectId,
                         'versionId' => $versionRecord['id'],
                         'filenamePrefix' => 'typo3_',
                         'filenamePostfix' => '.tar.gz',
@@ -223,13 +224,15 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     /**
      * Stores a single version of TYPO3 into the database table 'versions'
      *
+     * @param integer $projectId Id of project of jacobine_project table
      * @param string $branch Branch version like 4.7, 6.0, 6.1, ...
      * @param array $versionData Data about the current version provided by the json file
      * @return array
      */
-    private function insertVersionIntoDatabase($branch, $versionData)
+    private function insertVersionIntoDatabase($projectId, $branch, $versionData)
     {
         $data = [
+            'project' => $projectId,
             'branch' => $branch,
             'version' => $versionData['version'],
             'date' => $versionData['date'],
@@ -250,14 +253,19 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
      * Receives a single version from the database table 'versions' (if exists).
      *
      * @param string $version A version like 4.5.7, 6.0.4, ...
+     * @param integer $projectId Project id of jacobine_project table
      * @return bool|array
      */
-    private function getVersionFromDatabase($version)
+    private function getVersionFromDatabase($version, $projectId)
     {
+        $where = [
+            'version' => $version,
+            'project' => $projectId
+        ];
         $rows = $this->database->getRecords(
             ['id', 'downloaded'],
             'jacobine_versions',
-            ['version' => $version],
+            $where,
             '',
             '',
             1

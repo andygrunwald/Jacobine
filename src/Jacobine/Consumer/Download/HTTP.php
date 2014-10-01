@@ -218,7 +218,10 @@ class HTTP extends ConsumerAbstract
     private function getVersionFromDatabase($id)
     {
         $fields = ['id', 'version', 'checksum_tar_md5', 'url_tar', 'downloaded'];
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', ['id' => $id], '', '', 1);
+        $where = [
+            'id' => $id
+        ];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', $where, '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -237,7 +240,10 @@ class HTTP extends ConsumerAbstract
      */
     private function setVersionAsDownloadedInDatabase($id)
     {
-        $this->getDatabase()->updateRecord('jacobine_versions', ['downloaded' => 1], ['id' => $id]);
+        $where = [
+            'id' => $id
+        ];
+        $this->getDatabase()->updateRecord('jacobine_versions', ['downloaded' => 1], $where);
         $this->getLogger()->info('Set version as downloaded', ['versionId' => $id]);
     }
 

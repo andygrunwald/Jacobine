@@ -120,7 +120,10 @@ class Filesize extends ConsumerAbstract
     private function getVersionFromDatabase($id)
     {
         $fields = ['id', 'size_tar'];
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', ['id' => $id], '', '', 1);
+        $where = [
+            'id' => $id
+        ];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', $where, '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -140,7 +143,10 @@ class Filesize extends ConsumerAbstract
      */
     private function saveFileSizeOfVersionInDatabase($id, $fileSize)
     {
-        $this->getDatabase()->updateRecord('jacobine_versions', ['size_tar' => $fileSize], ['id' => $id]);
+        $where = [
+            'id' => $id
+        ];
+        $this->getDatabase()->updateRecord('jacobine_versions', ['size_tar' => $fileSize], $where);
 
         $context = [
             'filesize' => $fileSize,

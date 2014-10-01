@@ -158,7 +158,10 @@ class Targz extends ConsumerAbstract
     private function getVersionFromDatabase($id)
     {
         $fields = ['id', 'version', 'extracted'];
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', ['id' => $id], '', '', 1);
+        $where = [
+            'id' => $id
+        ];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', $where, '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -177,7 +180,10 @@ class Targz extends ConsumerAbstract
      */
     private function setVersionAsExtractedInDatabase($id)
     {
-        $this->getDatabase()->updateRecord('jacobine_versions', ['extracted' => 1], ['id' => $id]);
+        $where = [
+            'id' => $id
+        ];
+        $this->getDatabase()->updateRecord('jacobine_versions', ['extracted' => 1], $where);
         $this->getLogger()->info('Set version record as extracted', ['versionId' => $id]);
     }
 

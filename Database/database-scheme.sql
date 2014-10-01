@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `jacobine_datasource` (
 
 CREATE TABLE IF NOT EXISTS `jacobine_versions` (
 	`id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique id of version',
+	`project` int(11) unsigned NOT NULL COMMENT 'ID field of project table',
 	`branch` varchar(4) DEFAULT NULL COMMENT 'Branch of version. E.g. 4.7, 6.0',
 	`version` varchar(13) DEFAULT NULL COMMENT 'Specific version. E.g. 4.7.3, 4.7.4, 6.0.1',
 	`date` varchar(23) DEFAULT NULL COMMENT 'Release date',
