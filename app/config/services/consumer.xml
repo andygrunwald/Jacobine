@@ -33,6 +33,7 @@
         <!-- Crawler consumer -->
         <service id="consumer.crawler.gerrit" class="Jacobine\Consumer\Crawler\Gerrit">
             <tag name="jacobine.consumer" />
+            <argument type="service" id="service.project" />
         </service>
 
         <service id="consumer.crawler.gitweb" class="Jacobine\Consumer\Crawler\Gitweb">
