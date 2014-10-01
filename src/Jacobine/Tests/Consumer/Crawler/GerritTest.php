@@ -26,8 +26,8 @@ class GerritTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $messageQueueMock = $this->getMessageQueueMock(0);
+        $projectServiceMock = $this->getProjectServiceMock();
 
-        $this->consumer = new Gerrit($messageQueueMock);
+        $this->consumer = new Gerrit($projectServiceMock);
     }
 }
