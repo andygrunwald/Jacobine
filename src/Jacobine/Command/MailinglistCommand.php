@@ -143,6 +143,10 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
+            $output->writeln('Start command: ' . $this->getName());
+        }
+
         $exchange = $this->container->getParameter('messagequeue.exchange');
         $dataSource = [
             DataSource::TYPE_MAILMAN_SERVER,
@@ -157,6 +161,10 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
         }
 
         foreach ($projects as $project) {
+            if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
+                $output->writeln('Proceeding project "' . $project['name'] . '"');
+            }
+
             foreach ($project['dataSources'] as $dataSources) {
                 foreach ($dataSources as $singleSource) {
                     $message = [
@@ -165,9 +173,20 @@ class MailinglistCommand extends Command implements ContainerAwareInterface
                         'url' => $singleSource['content'],
                     ];
 
+                    if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
+                        $type = DataSource::getTextForType($singleSource['type']);
+                        $outputMessage = 'Adding message for %s (type: %s)';
+                        $outputMessage = sprintf($outputMessage, $singleSource['content'], $type);
+                        $output->writeln($outputMessage);
+                    }
+
                     $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
                 }
             }
+        }
+
+        if (OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()) {
+            $output->writeln('End command: ' . $this->getName());
         }
     }
 }
