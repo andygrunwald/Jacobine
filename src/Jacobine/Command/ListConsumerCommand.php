@@ -12,6 +12,7 @@ namespace Jacobine\Command;
 
 use Jacobine\Consumer\ConsumerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -69,13 +70,20 @@ class ListConsumerCommand extends Command implements ContainerAwareInterface
         $consumerListService = $this->container->get('dependencyInjection.consumerList');
         $consumerCollection = $consumerListService->getAllConsumer();
 
+        $table = new Table($output);
+        $table->setHeaders(['Consumer', 'Description']);
+
         foreach ($consumerCollection as $consumer) {
             $consumerName = $this->buildConsumerName($consumer);
-
-            $this->writeLine($output, $consumerName, $consumer->getDescription());
+            $table->addRow([
+                    "<comment>" . $consumerName . "</comment>",
+                    $consumer->getDescription()
+                ]);
         }
 
-        return null;
+        $table->render();
+
+        return 0;
     }
 
     /**
@@ -96,21 +104,5 @@ class ListConsumerCommand extends Command implements ContainerAwareInterface
         $consumerName = implode('\\\\', $classNameParts);
 
         return $consumerName;
-    }
-
-    /**
-     * Outputs one line on the console.
-     *
-     * @param OutputInterface $output
-     * @param string $name
-     * @param string $description
-     * @return void
-     */
-    protected function writeLine(OutputInterface $output, $name, $description)
-    {
-        $name = str_pad($name, self::PAD_LENGTH, ' ');
-        $message = '<comment>' . $name . '</comment>';
-        $message .= '<comment>' . $description . '</comment>';
-        $output->writeln($message);
     }
 }

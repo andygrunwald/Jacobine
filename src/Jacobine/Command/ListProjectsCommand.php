@@ -12,6 +12,7 @@ namespace Jacobine\Command;
 
 use Jacobine\Entity\DataSource;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -92,28 +93,33 @@ class ListProjectsCommand extends Command implements ContainerAwareInterface
             $message = '<error>Have fun and see you next time!</error>';
             $output->writeln($message);
 
-            return true;
+            return 1;
         }
 
-        foreach ($projects as $project) {
+        $table = new Table($output);
+        $table->setHeaders(['Name', 'Website', 'Data sources']);
 
-            $message = '<comment>' . $project['name'] . ' (' . $project['website'] . ')</comment>';
-            $output->writeln($message);
+        foreach ($projects as $project) {
+            $message = '';
+            $row = [];
+            $row[] = $project['name'];
+            $row[] = $project['website'];
 
             foreach ($project['dataSources'] as $type => $sourcesPerType) {
-
-                $message = '<comment>- ' . DataSource::getTextForType($type) . '</comment>';
-                $output->writeln($message);
+                $message = ' ' . DataSource::getTextForType($type) . "\n";
 
                 foreach ($sourcesPerType as $singleSource) {
-                    $message = '<comment>  * ' . $singleSource['content'] . '</comment>';
-                    $output->writeln($message);
+                    $message .= '   * ' . $singleSource['content'];
                 }
             }
 
-            $output->writeln('');
+            $row[] = $message;
+
+            $table->addRow($row);
         }
 
-        return null;
+        $table->render();
+
+        return 0;
     }
 }

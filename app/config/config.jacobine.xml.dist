@@ -22,7 +22,7 @@
         <parameter key="http.request.timeout">20</parameter>
         <parameter key="http.download.timeout">3600</parameter>
 
-        <!-- Pathes -->
+        <!-- Paths -->
         <parameter key="storage.path">/var/www/analysis-data/</parameter>
     </parameters>
 
