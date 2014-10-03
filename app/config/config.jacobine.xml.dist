@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
+    <!-- 
+        You can overwrite config settings (e.g. parameters) here.
+    -->
+    <!--
     <parameters>
-        <!-- Timeout for HTTP -->
-        <parameter key="http.request.timeout">20</parameter>
-        <parameter key="http.download.timeout">3600</parameter>
-
-        <!-- Paths -->
-        <parameter key="storage.path">/var/www/analysis-data/</parameter>
+        
     </parameters>
+    -->
 
 </container>

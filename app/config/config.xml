@@ -5,6 +5,7 @@
         <import resource="config.server.xml" />
         <import resource="config.logger.xml" />
         <import resource="config.application.xml" />
+        <import resource="config.various.xml" />
         <import resource="config.jacobine.xml" />
     </imports>
 
