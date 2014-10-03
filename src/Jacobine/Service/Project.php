@@ -205,6 +205,8 @@ class Project
             $query .= ' WHERE datasource.type IN (' . implode(',', $preparedKeys) . ')';
         }
 
+        $query .= ' ORDER BY project.name, datasource.type';
+
         $result = $this->database->getRecordsByRawQuery($query, $preparedValues);
         return $this->restructureProjectDataToArray($result);
     }

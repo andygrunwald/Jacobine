@@ -105,12 +105,18 @@ class ListProjectsCommand extends Command implements ContainerAwareInterface
             $row[] = $project['name'];
             $row[] = $project['website'];
 
+            $i = 0;
             foreach ($project['dataSources'] as $type => $sourcesPerType) {
-                $message = ' ' . DataSource::getTextForType($type) . "\n";
+                if ($i > 0) {
+                    $message .= chr(10);
+                }
+                $message .= DataSource::getTextForType($type);
 
                 foreach ($sourcesPerType as $singleSource) {
-                    $message .= '   * ' . $singleSource['content'];
+                    $message .= chr(10) . '   * ' . $singleSource['content'];
                 }
+
+                $i++;
             }
 
             $row[] = $message;
