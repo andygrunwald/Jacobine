@@ -2,22 +2,6 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
     <parameters>
-        <!-- MySQL -->
-        <parameter key="database.driver">mysql</parameter>
-        <parameter key="database.host">localhost</parameter>
-        <parameter key="database.port">3306</parameter>
-        <parameter key="database.username">root</parameter>
-        <parameter key="database.password"></parameter>
-        <parameter key="database.database">jacobine</parameter>
-
-        <!-- RabbitMQ -->
-        <parameter key="messagequeue.host">192.168.33.55</parameter>
-        <parameter key="messagequeue.port">5672</parameter>
-        <parameter key="messagequeue.username">analysis</parameter>
-        <parameter key="messagequeue.password">analysis</parameter>
-        <parameter key="messagequeue.vhost">analysis</parameter>
-        <parameter key="messagequeue.exchange">JacobineAnalysis</parameter>
-
         <!-- Timeout for HTTP -->
         <parameter key="http.request.timeout">20</parameter>
         <parameter key="http.download.timeout">3600</parameter>
