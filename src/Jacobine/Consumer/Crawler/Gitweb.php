@@ -11,26 +11,25 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\MessageQueue;
-use Jacobine\Helper\Database;
-use Jacobine\Helper\CrawlerFactory;
+use Jacobine\Component\Database\Database;
+use Jacobine\Component\Crawler\CrawlerFactory;
 use Buzz\Browser;
 
 /**
  * Class Gitweb
  *
  * A consumer to crawl a Gitweb Server (https://git.wiki.kernel.org/index.php/Gitweb).
- * Every (git) project which is on the given Gitweb server will be stored in the gitweb database table.
+ * Every (git) project which is on the given Gitweb server will be stored in the git database table.
  * Further more a message to download the git repository will be created.
  *
  * Message format (json encoded):
  *  [
  *      url: URL of the Gitweb server. E.g. http://git.typo3.org/
- *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Crawler\\Gitweb
+ *  php console jacobine:consumer Crawler\\Gitweb
  *
  * @package Jacobine\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -48,26 +47,23 @@ class Gitweb extends ConsumerAbstract
     /**
      * Factory to create DOMCrawler
      *
-     * @var \Jacobine\Helper\CrawlerFactory
+     * @var \Jacobine\Component\Crawler\CrawlerFactory
      */
     protected $crawlerFactory;
 
     /**
      * Constructor to set dependencies
      *
-     * @param MessageQueue $messageQueue
      * @param Database $database
      * @param \Buzz\Browser $remoteService
-     * @param \Jacobine\Helper\CrawlerFactory $crawlerFactory
+     * @param \Jacobine\Component\Crawler\CrawlerFactory $crawlerFactory
      */
     public function __construct(
-        MessageQueue $messageQueue,
         Database $database,
         Browser $remoteService,
         CrawlerFactory $crawlerFactory
     ) {
         $this->setDatabase($database);
-        $this->setMessageQueue($messageQueue);
         $this->remoteService = $remoteService;
         $this->crawlerFactory = $crawlerFactory;
     }
@@ -143,12 +139,16 @@ class Gitweb extends ConsumerAbstract
                 '//table[@class="projects_list"]/tr[@class="metadata_url"]/td[2]'
             )->text();
 
-            $gitwebRecord = $this->getGitwebFromDatabase($gitUrl);
-            if ($gitwebRecord === false) {
-                $id = $this->insertGitwebRecord($name, $gitUrl);
+            $gitRecord = $this->getGitRepositoryFromDatabase($message->project, $gitUrl);
+            if ($gitRecord === false) {
+                $id = $this->insertGitRecord($message->project, $name, $gitUrl);
             } else {
-                $id = $gitwebRecord['id'];
-                $this->getLogger()->info('Gitweb record already exists', ['git' => $gitUrl]);
+                $id = $gitRecord['id'];
+                $context = [
+                    'project' => $message->project,
+                    'git' => $gitUrl
+                ];
+                $this->getLogger()->info('Git record already exists', $context);
             }
 
             $this->addFurtherMessageToQueue($message->project, $id);
@@ -165,15 +165,15 @@ class Gitweb extends ConsumerAbstract
      */
     private function getContent($browser, $url)
     {
-        $this->getLogger()->info('Requesting url',['url' => $url]);
+        $this->getLogger()->info('Requesting url', ['url' => $url]);
         $response = $browser->get($url);
         /** @var \Buzz\Message\Response $response */
 
         if ($response->getStatusCode() !== 200) {
-            $context = array(
+            $context = [
                 'url' => $url,
                 'statusCode' => $response->getStatusCode()
-            );
+            ];
             $this->getLogger()->error('URL is not crawlable', $context);
             $exceptionMessage = sprintf('URL "%s" is not crawlable', $url);
             throw new \Exception($exceptionMessage, 1369417933);
@@ -185,33 +185,36 @@ class Gitweb extends ConsumerAbstract
     /**
      * Adds new messages to queue system to download the git repository
      *
-     * @param string $project
+     * @param int $projectId
      * @param integer $id
      * @return void
      */
-    private function addFurtherMessageToQueue($project, $id)
+    private function addFurtherMessageToQueue($projectId, $id)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-
         $message = [
-            'project' => $project,
+            'project' => $projectId,
             'id' => $id
         ];
 
-        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'download.git');
+        $exchange = $this->container->getParameter('messagequeue.exchange');
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'download.git');
     }
 
     /**
-     * Receives a single gitweb record of the database
+     * Receives a single git record of the database
      *
+     * @param int $projectId
      * @param string $repository
      * @return bool|array
      */
-    private function getGitwebFromDatabase($repository)
+    private function getGitRepositoryFromDatabase($projectId, $repository)
     {
-        $fields = array('id');
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_gitweb', ['git' => $repository], '', '', 1);
+        $fields = ['id'];
+        $where = [
+            'project' => $projectId,
+            'git' => $repository
+        ];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_git', $where, '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -223,20 +226,22 @@ class Gitweb extends ConsumerAbstract
     }
 
     /**
-     * Inserts a new gitweb record to database
+     * Inserts a new git record to database
      *
+     * @param int $projectId
      * @param string $name
      * @param string $repository
      * @return string
      */
-    private function insertGitwebRecord($name, $repository)
+    private function insertGitRecord($projectId, $name, $repository)
     {
-        $data = array(
+        $data = [
+            'project' => $projectId,
             'name' => $name,
             'git' => $repository
-        );
+        ];
 
-        $this->getLogger()->info('Inserted new gitweb record', $data);
-        return $this->getDatabase()->insertRecord('jacobine_gitweb', $data);
+        $this->getLogger()->info('Inserted new git record', $data);
+        return $this->getDatabase()->insertRecord('jacobine_git', $data);
     }
 }

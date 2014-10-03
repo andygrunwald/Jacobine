@@ -11,9 +11,8 @@
 namespace Jacobine\Consumer\Extract;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\ProcessFactory;
-use Jacobine\Helper\Database;
-use Jacobine\Helper\MessageQueue;
+use Jacobine\Component\Process\ProcessFactory;
+use Jacobine\Component\Database\Database;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -25,10 +24,11 @@ use Symfony\Component\Process\ProcessUtils;
  *  [
  *      versionId: ID of a version record in the database. A succesful download will be flagged
  *      filename: Name of the file which will be extracted
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Extract\\Targz
+ *  php console jacobine:consumer Extract\\Targz
  *
  * @package Jacobine\Consumer\Extract
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -37,21 +37,19 @@ class Targz extends ConsumerAbstract
 {
 
     /**
-     * @var \Jacobine\Helper\ProcessFactory
+     * @var \Jacobine\Component\Process\ProcessFactory
      */
     protected $processFactory;
 
     /**
      * Constructor to set dependencies
      *
-     * @param MessageQueue $messageQueue
      * @param Database $database
      * @param ProcessFactory $processFactory
      */
-    public function __construct(MessageQueue $messageQueue, Database $database, ProcessFactory $processFactory)
+    public function __construct(Database $database, ProcessFactory $processFactory)
     {
         $this->processFactory = $processFactory;
-        $this->setMessageQueue($messageQueue);
         $this->setDatabase($database);
     }
 
@@ -117,12 +115,16 @@ class Targz extends ConsumerAbstract
 
         // Create folder first and change the target folder of tar command via -C parameter
         // via this way we ensure a parent folder for a extracted tar.gz archive every time
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$message->project];
-        $targetFolderPrefix = $projectConfig['Consumer']['Extract\Targz']['TargetFolderPrefix'];
-        $targetFolder = $targetFolderPrefix . $record['version'] . DIRECTORY_SEPARATOR;
 
-        mkdir($targetFolder);
+        // If the filename is 'typo3_6.2.2.tar.gz' we only want to get typo3_6.2.2.
+        // pathinfo only cuts '.gz'
+        $fileName = $pathInfo['filename'];
+        $fileName = substr($fileName, 0, strrpos($fileName, '.'));
+        $targetFolder = $folder . $fileName . DIRECTORY_SEPARATOR;
+
+        if (file_exists($targetFolder) === false) {
+            mkdir($targetFolder);
+        }
 
         if (is_dir($targetFolder) === false) {
             $this->getLogger()->critical('Directory can`t be created', ['folder' => $folder]);
@@ -144,7 +146,7 @@ class Targz extends ConsumerAbstract
         $this->setVersionAsExtractedInDatabase($message->versionId);
 
         // Adds new messages to queue: analyze phploc
-        $this->addFurtherMessageToQueue($message->project, $record['id'], $folder . $targetFolder);
+        $this->addFurtherMessageToQueue($message->project, $record['id'], $targetFolder);
     }
 
     /**
@@ -155,8 +157,11 @@ class Targz extends ConsumerAbstract
      */
     private function getVersionFromDatabase($id)
     {
-        $fields = array('id', 'version', 'extracted');
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', array('id' => $id), '', '', 1);
+        $fields = ['id', 'version', 'extracted'];
+        $where = [
+            'id' => $id
+        ];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', $where, '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -175,8 +180,11 @@ class Targz extends ConsumerAbstract
      */
     private function setVersionAsExtractedInDatabase($id)
     {
-        $this->getDatabase()->updateRecord('jacobine_versions', ['extracted' => 1], ['id' => $id]);
-        $this->getLogger()->info('Set version record as extracted', array('versionId' => $id));
+        $where = [
+            'id' => $id
+        ];
+        $this->getDatabase()->updateRecord('jacobine_versions', ['extracted' => 1], $where);
+        $this->getLogger()->info('Set version record as extracted', ['versionId' => $id]);
     }
 
     /**
@@ -189,10 +197,6 @@ class Targz extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $versionId, $directory)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-        $exchange = $projectConfig['RabbitMQ']['Exchange'];
-
         $message = [
             'project' => $project,
             'versionId' => $versionId,
@@ -202,6 +206,7 @@ class Targz extends ConsumerAbstract
         $pDependMessage = $message;
         $pDependMessage['type'] = 'analyze';
 
+        $exchange = $this->container->getParameter('messagequeue.exchange');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.phploc');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'analysis.linguist');
         $this->getMessageQueue()->sendSimpleMessage($pDependMessage, $exchange, 'analysis.pdepend');
@@ -216,23 +221,21 @@ class Targz extends ConsumerAbstract
      */
     private function extractArchive($archive, $target)
     {
-        $context = array(
+        $context = [
             'filename' => $archive,
             'targetFolder' => $target
-        );
+        ];
         $this->getLogger()->info('Extracting file', $context);
-
-        $config = $this->getConfig();
 
         // We didnt use the \PharData class to decompress + extract, because
         // a) it is much more slower (performance) than a tar system call
         // b) it eats much more PHP memory which is not useful in a message based env
         $archive = ProcessUtils::escapeArgument($archive);
         $target = ProcessUtils::escapeArgument($target);
-        $command = $config['Application']['Tar']['Binary'];
+        $command = $this->container->getParameter('application.tar.binary');
         $command .= ' -xzf ' . $archive . ' -C ' . $target;
 
-        $timeout = (int) $config['Application']['Tar']['Timeout'];
+        $timeout = (int) $this->container->getParameter('application.tar.timeout');
         $process = $this->processFactory->createProcess($command, $timeout);
 
         $exception = null;

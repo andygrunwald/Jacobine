@@ -26,25 +26,10 @@ class GitwebTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $messageQueueMock = $this->getMessageQueueMock(0);
         $databaseMock = $this->getDatabaseMock();
         $browserMock = $this->getBrowserMock();
-        $crawlerFactoryMock = $this->getMock('Jacobine\Helper\CrawlerFactory');
+        $crawlerFactoryMock = $this->getMock('Jacobine\Component\Crawler\CrawlerFactory');
 
-        $this->consumer = new Gitweb($messageQueueMock, $databaseMock, $browserMock, $crawlerFactoryMock);
-    }
-
-    public function testConsumerInitializeWithQueueAndRouting()
-    {
-        $config = [
-            'Various' => [
-                'Requests' => [
-                    'Timeout' => 10
-                ]
-            ]
-        ];
-        $this->consumer->setConfig($config);
-
-        parent::testConsumerInitializeWithQueueAndRouting();
+        $this->consumer = new Gitweb($databaseMock, $browserMock, $crawlerFactoryMock);
     }
 }

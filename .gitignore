@@ -3,7 +3,6 @@
 
 app/config/config.jacobine.xml
 
-Config/config.yml
 Config/cvsanaly-config
 Config/gerrit-review.typo3.org.yml
 Config/id_rsa

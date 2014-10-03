@@ -11,7 +11,7 @@
 namespace Jacobine\Consumer\Analysis;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\Database;
+use Jacobine\Component\Database\Database;
 
 /**
  * Class Filesize
@@ -24,10 +24,11 @@ use Jacobine\Helper\Database;
  *  [
  *      versionId: Version ID to get the regarding version record from version database table
  *      filename: Filename to measure the filesize of
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Analysis\\Filesize
+ *  php console jacobine:consumer Analysis\\Filesize
  *
  * @package Jacobine\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -84,26 +85,26 @@ class Filesize extends ConsumerAbstract
 
         // If the record does not exists in the database exit here
         if ($record === false) {
-            $context = array('versionId' => $message->versionId);
+            $context = ['versionId' => $message->versionId];
             $this->getLogger()->critical('Record does not exist in version table', $context);
             throw new \Exception('Record does not exist in version table', 1398885424);
         }
 
         // If the filesize is already saved exit here
         if (isset($record['size_tar']) === true && $record['size_tar']) {
-            $context = array('versionId' => $message->versionId);
+            $context = ['versionId' => $message->versionId];
             $this->getLogger()->info('Record marked as already analyzed', $context);
             return;
         }
 
         // If there is no file, exit here
         if (file_exists($message->filename) !== true) {
-            $context = array('filename' => $message->filename);
+            $context = ['filename' => $message->filename];
             $this->getLogger()->critical('File does not exist', $context);
             throw new \Exception('File does not exist', 1398885531);
         }
 
-        $this->getLogger()->info('Getting filesize', array('filename' => $message->filename));
+        $this->getLogger()->info('Getting filesize', ['filename' => $message->filename]);
         $fileSize = filesize($message->filename);
 
         // Update the 'downloaded' flag in database
@@ -118,8 +119,11 @@ class Filesize extends ConsumerAbstract
      */
     private function getVersionFromDatabase($id)
     {
-        $fields = array('id', 'size_tar');
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', array('id' => $id), '', '', 1);
+        $fields = ['id', 'size_tar'];
+        $where = [
+            'id' => $id
+        ];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_versions', $where, '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -139,9 +143,15 @@ class Filesize extends ConsumerAbstract
      */
     private function saveFileSizeOfVersionInDatabase($id, $fileSize)
     {
-        $this->getDatabase()->updateRecord('jacobine_versions', ['size_tar' => $fileSize], ['id' => $id]);
+        $where = [
+            'id' => $id
+        ];
+        $this->getDatabase()->updateRecord('jacobine_versions', ['size_tar' => $fileSize], $where);
 
-        $context = array('filesize' => $fileSize, 'versionId' => $id);
+        $context = [
+            'filesize' => $fileSize,
+            'versionId' => $id
+        ];
         $this->getLogger()->info('Save filesize for version record', $context);
     }
 }

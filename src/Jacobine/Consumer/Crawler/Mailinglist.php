@@ -11,9 +11,9 @@
 namespace Jacobine\Consumer\Crawler;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\MessageQueue;
-use Jacobine\Helper\CrawlerFactory;
-use Jacobine\Helper\ProcessFactory;
+use Jacobine\Component\Crawler\CrawlerFactory;
+use Jacobine\Component\Process\ProcessFactory;
+use Jacobine\Entity\DataSource;
 use Symfony\Component\Process\ProcessUtils;
 use Buzz\Browser;
 
@@ -31,12 +31,12 @@ use Buzz\Browser;
  * Message format (json encoded):
  *  [
  *      type: "server" or "list" to identify the task of the consumer
- *      host: Host of the mailinglist / mailinglist server
+ *      url: Url of the mailinglist / mailinglist server
  *      project: Project to be analyzed. Must be a configured project in "configFile"
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Crawler\\Mailinglist
+ *  php console jacobine:consumer Crawler\\Mailinglist
  *
  * @package Jacobine\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -54,65 +54,30 @@ class Mailinglist extends ConsumerAbstract
     /**
      * Factory to create DOMCrawler
      *
-     * @var \Jacobine\Helper\CrawlerFactory
+     * @var \Jacobine\Component\Crawler\CrawlerFactory
      */
     protected $crawlerFactory;
 
     /**
-     * @var \Jacobine\Helper\ProcessFactory
+     * @var \Jacobine\Component\Process\ProcessFactory
      */
     protected $processFactory;
 
     /**
-     * Database credentials for mlstats
-     *
-     * TODO REFACTOR THIS! Really dirty hack ...
-     *
-     * @var array
-     */
-    protected $databaseCredentials = [
-        'driver' => '',
-        'host' => '',
-        'username' => '',
-        'password' => '',
-        'name' => ''
-    ];
-
-    /**
      * Constructor to set dependencies
      *
-     * @param MessageQueue $messageQueue
      * @param \Buzz\Browser $remoteService
      * @param CrawlerFactory $crawlerFactory
      * @param ProcessFactory $processFactory
-     * @param string $databaseDriver
-     * @param string $databaseHost
-     * @param string $databaseUsername
-     * @param string $databasePassword
-     * @param string $databaseName
      */
     public function __construct(
-        MessageQueue $messageQueue,
         Browser $remoteService,
         CrawlerFactory $crawlerFactory,
-        ProcessFactory $processFactory,
-        $databaseDriver,
-        $databaseHost,
-        $databaseUsername,
-        $databasePassword,
-        $databaseName
+        ProcessFactory $processFactory
     ) {
-        $this->setMessageQueue($messageQueue);
         $this->remoteService = $remoteService;
         $this->crawlerFactory = $crawlerFactory;
         $this->processFactory = $processFactory;
-
-        // TODO DIRTY HACK! Refactor it, please :(
-        $this->databaseCredentials['driver'] = $databaseDriver;
-        $this->databaseCredentials['host'] = $databaseHost;
-        $this->databaseCredentials['username'] = $databaseUsername;
-        $this->databaseCredentials['password'] = $databasePassword;
-        $this->databaseCredentials['name'] = $databaseName;
     }
 
     /**
@@ -157,12 +122,13 @@ class Mailinglist extends ConsumerAbstract
         $type = strtolower($message->type);
         switch ($type) {
             // A complete mailinglist server (e.g. mailman)
-            case 'server':
+            case DataSource::TYPE_MAILMAN_SERVER:
                 $this->processMailinglistServer($message);
                 break;
 
             // A single mailinglist
-            case 'list':
+            case DataSource::TYPE_MAILMAN_LIST:
+                // TODO TESTEN UND FIXEN
                 $this->processSingleMailinglist($message);
                 break;
 
@@ -183,36 +149,8 @@ class Mailinglist extends ConsumerAbstract
      */
     private function processSingleMailinglist($message)
     {
-        // TODO This does currently not work "out of the box", because the current mlstats master requires a already setuped database
-        // or mlstats creates a new database itselfs
-        // This can be (in a good way) done by importing the sql scheme from
-        // https://github.com/MetricsGrimoire/MailingListStats/blob/master/db/data_model_mysql.sql via the command
-        //      mysql -uroot jacobine < ./tools/MetricsGrimoire/MLStats/db/data_model_mysql.sql
-        // but this does not work either, because the scheme is not complete :(
-        // Field mailing_list_url is missing :(
-        // _mysql_exceptions.OperationalError: (1054, "Unknown column 'mailing_list_url' in 'field list'")
-        //
-        // I already opened an issue about this:
-        // #36: Create table even if database exists
-        // https://github.com/MetricsGrimoire/MailingListStats/issues/36
-        // So we have to wait :(
-
-        // Further more we got two / three more issues to solve:
-        // #45: Changed message_body from TEXT to MEDIUMTEXT, because we got messages > 65.535 bytes
-        // @link https://github.com/MetricsGrimoire/MailingListStats/pull/45
-        // #40: Raise subject field from 255 to 320 chars
-        // @link https://github.com/MetricsGrimoire/MailingListStats/pull/40
-        // #22: Error parsing list archive: column `Subject` is not big enough
-        // @link https://github.com/MetricsGrimoire/MailingListStats/issues/22
-        // TODO Write SQL queries to fix #45, #40 and #22
-
-        // TODO Maybe it would be useful to log the (incremental) output of the commands as wel
-        // The incremental can be getted every 5 seconds or something
-        // Further more most of the tools logs messages with "\n" in it. How to handle this?
-        // Another question is if we can handle stderr + stdout (if the tool throws warnings / errors to stderr).
-
         /** @var \Symfony\Component\Process\Process $process */
-        list($process, $exception) = $this->executeMLStats($message->host);
+        list($process, $exception) = $this->executeMLStats($message->url);
         $context = $this->getContextOfCommand($process, $exception);
         if ($exception !== null || $process->isSuccessful() === false) {
             $this->getLogger()->critical('mlstats command failed', $context);
@@ -223,24 +161,26 @@ class Mailinglist extends ConsumerAbstract
     /**
      * Builds the mlstats command
      *
-     * TODO Refactor this! This is a REALLY HEAVY HACK to inject all database credentials directly in the command :(
      * Idea: Open a issue at MLStats to do this via config file...
      *
-     * @param array $config
      * @param string $url
      * @return string
      */
-    private function buildMLStatsCommand(array $config, $url)
+    private function buildMLStatsCommand($url)
     {
-        $command = escapeshellcmd($config['Application']['MLStats']['Binary']);
+        $compressedDir = $this->container->getParameter('application.mlstats.compressedDir');
+        $command = escapeshellcmd($this->container->getParameter('application.mlstats.binary'));
         $command .= ' --no-report';
-        $command .= ' --db-driver ' . ProcessUtils::escapeArgument($this->databaseCredentials['driver']);
-        $command .= ' --db-hostname ' . ProcessUtils::escapeArgument($this->databaseCredentials['host']);
-        $command .= ' --db-user ' . ProcessUtils::escapeArgument($this->databaseCredentials['username']);
-        $command .= ' --db-password ' . ProcessUtils::escapeArgument($this->databaseCredentials['password']);
-        // TODO Currently we log into mlstats database. Why? See comments in $this->processSingleMailinglist();
-        //$command .= ' --db-name ' . ProcessUtils::escapeArgument($this->databaseCredentials['name']);
-        $command .= ' --db-name ' . ProcessUtils::escapeArgument('mlstats');
+        $command .= ' --db-driver ' . ProcessUtils::escapeArgument($this->container->getParameter('database.driver'));
+        $command .= ' --db-hostname ' . ProcessUtils::escapeArgument($this->container->getParameter('database.host'));
+        $command .= ' --db-user ' . ProcessUtils::escapeArgument($this->container->getParameter('database.username'));
+        $command .= ' --db-password ' . ProcessUtils::escapeArgument($this->container->getParameter('database.password'));
+        // TODO Currently we log into jacobine_mlstats database.
+        // Why?
+        // Because CVSAnaly + MLStats got same table names and no tool supports table prefix :(
+        // $command .= ' --db-name ' . ProcessUtils::escapeArgument($this->container->getParameter('database.name'));
+        $command .= ' --db-name ' . ProcessUtils::escapeArgument('jacobine_mlstats');
+        $command .= ' --compressed-dir ' . ProcessUtils::escapeArgument($compressedDir);
         $command .= ' ' . ProcessUtils::escapeArgument($url);
 
         return $command;
@@ -261,12 +201,12 @@ class Mailinglist extends ConsumerAbstract
     {
         $this->getLogger()->info('Start crawling mailinglist with mlstats', ['mailinglist' => $url]);
 
-        $config = $this->getConfig();
-        $command = $this->buildMLStatsCommand($config, $url);
+        $command = $this->buildMLStatsCommand($url);
         $process = $this->processFactory->createProcess($command, null);
         $exception = null;
         try {
             $process->run();
+
         } catch (\Exception $exception) {
             // This catch section is empty, because we got an error handling in the caller area
             // We check not only the exception. We use the result command of the process as well
@@ -287,17 +227,19 @@ class Mailinglist extends ConsumerAbstract
     private function processMailinglistServer($message)
     {
         try {
-            $content = $this->getContent($this->remoteService, $message->host);
+            $content = $this->getContent($this->remoteService, $message->url);
+
         } catch (\Exception $e) {
             // At first this seems to be not so smart to catch an exception and throw a new one,
             // but i do this because i want to add the custom error message.
             // If there is a better way a pull request is welcome :)
             $context = [
-                'url' => $message->host,
+                'project' => $message->project,
+                'url' => $message->url,
                 'message' => $e->getMessage()
             ];
-            $this->getLogger()->error('Reading mailinglist host frontend failed', $context);
-            throw new \Exception('Reading mailinglist host frontend failed', 1403431979);
+            $this->getLogger()->error('Reading mailinglist frontend failed', $context);
+            throw new \Exception('Reading mailinglist frontend failed', 1403431979);
         }
 
         $remoteClient = $this->remoteService->getClient();
@@ -352,11 +294,13 @@ class Mailinglist extends ConsumerAbstract
 
             try {
                 $content = $this->getContent($this->remoteService, $listInfoSingle);
+
             } catch (\Exception $e) {
                 // At first this seems to be not so smart to catch an exception and throw a new one,
                 // but i do this because i want to add the custom error message.
                 // If there is a better way a pull request is welcome :)
                 $context = [
+                    'project' => $message->project,
                     'url' => $listInfoSingle,
                     'message' => $e->getMessage()
                 ];
@@ -375,12 +319,12 @@ class Mailinglist extends ConsumerAbstract
             $crawler = $this->crawlerFactory->create($content);
             /* @var $crawler \Symfony\Component\DomCrawler\Crawler */
             $detailUrl = $crawler->filterXPath('//table[1]/tr/td[1]/p/a')->attr('href');
-            $detailUrl = $this->makeAbsoluteUrl($message->host, $detailUrl);
+            $detailUrl = $this->makeAbsoluteUrl($message->url, $detailUrl);
 
             // Check if there is a private or public mailing list
             // Public got "/pipermail/" in it
             // Private got "/private/" in it
-            // TODO: Currently we (jacobine) do not support private mailing lists, but this should be implemented
+            // TODO: Currently we (Jacobine) do not support private mailing lists, but this should be implemented
             // in future, because mlstats supports it (via --web-user && --web-password parameter)
             // Until this we skip private mailinglists
             // And we skip wrong links where is no "pipermail" occurrence.
@@ -428,16 +372,14 @@ class Mailinglist extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $detailUrl)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-
         $message = [
             'project' => $project,
-            'type' => 'list',
-            'host' => $detailUrl,
+            'type' => DataSource::TYPE_MAILMAN_LIST,
+            'url' => $detailUrl,
         ];
+        $exchange = $this->container->getParameter('messagequeue.exchange');
 
-        $this->getMessageQueue()->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], 'crawler.mailinglist');
+        $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'crawler.mailinglist');
     }
 
     /**

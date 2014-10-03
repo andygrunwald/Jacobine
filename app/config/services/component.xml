@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <services>
+        <!--
+            AMQP component
+        -->
+        <service id="component.amqp.amqpFactory" class="Jacobine\Component\AMQP\AMQPFactory" />
+
+        <service id="component.amqp.messageQueue" class="Jacobine\Component\AMQP\MessageQueue">
+            <argument type="service" id="component.amqp.amqpConnection" />
+            <argument type="service" id="component.amqp.amqpFactory" />
+        </service>
+
+        <service id="component.amqp.amqpConnection" class="PhpAmqpLib\Connection\AMQPConnection"
+                 factory-service="component.amqp.amqpFactory" factory-method="createConnection">
+            <argument>%messagequeue.host%</argument>
+            <argument>%messagequeue.port%</argument>
+            <argument>%messagequeue.username%</argument>
+            <argument>%messagequeue.password%</argument>
+            <argument>%messagequeue.vhost%</argument>
+        </service>
+
+        <!--
+            Database component
+        -->
+        <service id="component.database.databaseFactory" class="Jacobine\Component\Database\DatabaseFactory" />
+
+        <service id="component.database.database" class="Jacobine\Component\Database\Database">
+            <argument type="service" id="component.database.databaseFactory" />
+            <argument>%database.driver%</argument>
+            <argument>%database.host%</argument>
+            <argument>%database.port%</argument>
+            <argument>%database.username%</argument>
+            <argument>%database.password%</argument>
+            <argument>%database.database%</argument>
+        </service>
+
+        <!--
+            Process
+        -->
+        <service id="component.process.processFactory" class="Jacobine\Component\Process\ProcessFactory" />
+
+        <!--
+            Logger
+        -->
+        <service id="component.logger.loggerFactory" class="Jacobine\Component\Logger\LoggerFactory" />
+
+        <!--
+            Crawler
+        -->
+        <service id="component.crawler.crawlerFactory" class="Jacobine\Component\Crawler\CrawlerFactory" />
+
+        <!--
+            RemoteService
+        -->
+        <service id="component.remoteService.remoteServiceFactory" class="Jacobine\Component\RemoteService\RemoteServiceFactory" />
+
+        <service id="component.remoteService.httpRemoteService" class="Buzz\Browser"
+                 factory-service="component.remoteService.remoteServiceFactory" factory-method="createHttpService">
+            <argument>%http.request.timeout%</argument>
+        </service>
+    </services>
+
+</container>

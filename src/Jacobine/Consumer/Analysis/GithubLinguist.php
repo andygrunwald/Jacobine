@@ -11,8 +11,8 @@
 namespace Jacobine\Consumer\Analysis;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\ProcessFactory;
-use Jacobine\Helper\Database;
+use Jacobine\Component\Process\ProcessFactory;
+use Jacobine\Component\Database\Database;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -28,10 +28,11 @@ use Symfony\Component\Process\ProcessUtils;
  *  [
  *      directory: Absolute path to folder which will be analyzed. E.g. /var/www/my/sourcecode
  *      versionId: Version ID to get the regarding version record from version database table
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Analysis\\GithubLinguist
+ *  php console jacobine:consumer Analysis\\GithubLinguist
  *
  * @package Jacobine\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -40,7 +41,7 @@ class GithubLinguist extends ConsumerAbstract
 {
 
     /**
-     * @var \Jacobine\Helper\ProcessFactory
+     * @var \Jacobine\Component\Process\ProcessFactory
      */
     protected $processFactory;
 
@@ -91,9 +92,12 @@ class GithubLinguist extends ConsumerAbstract
      */
     protected function process($message)
     {
+        // TODO: Fix ruby command.
+        // Currently the linguist bin failed on ruby 1.9.3
+        return;
         // If there is no directory to analyse, exit here
         if (is_dir($message->directory) !== true) {
-            $this->getLogger()->critical('Directory does not exist', array('directory' => $message->directory));
+            $this->getLogger()->critical('Directory does not exist', ['directory' => $message->directory]);
             throw new \Exception('Directory does not exist', 1398885959);
         }
 
@@ -139,19 +143,19 @@ class GithubLinguist extends ConsumerAbstract
      */
     protected function parseGithubLinguistResults(array $results)
     {
-        $parsedResults = array();
+        $parsedResults = [];
 
         foreach ($results as $line) {
             // Formats a string from "87.58%  PHP" to "87.58" and "PHP"
             $parts = explode(' ', $line);
 
-            $percent = str_replace(array('%', ' '), '', array_shift($parts));
+            $percent = str_replace(['%', ' '], '', array_shift($parts));
             $language = array_pop($parts);
             $language = trim($language);
-            $parsedResults[] = array(
+            $parsedResults[] = [
                 'percent' => $percent,
                 'language' => $language
-            );
+            ];
         }
 
         return $parsedResults;
@@ -166,7 +170,7 @@ class GithubLinguist extends ConsumerAbstract
      */
     protected function storeLinguistDataInDatabase($versionId, array $result)
     {
-        $this->getLogger()->info('Store linguist information in database', array('version' => $versionId));
+        $this->getLogger()->info('Store linguist information in database', ['version' => $versionId]);
         foreach ($result as $language) {
             $language['version'] = $versionId;
             $insertedId = $this->getDatabase()->insertRecord('jacobine_linguist', $language);
@@ -192,7 +196,7 @@ class GithubLinguist extends ConsumerAbstract
 
         if ($deleteResult === false) {
             $msg = 'Delete of linguist records for version failed';
-            $this->getLogger()->critical($msg, array('version' => $versionId));
+            $this->getLogger()->critical($msg, ['version' => $versionId]);
 
             $msg = sprintf('Delete of linguist records for version %s failed', $versionId);
             throw new \Exception($msg, 1368805543);
@@ -210,8 +214,6 @@ class GithubLinguist extends ConsumerAbstract
      */
     private function executeGithubLinguist($dirToAnalyze)
     {
-        $config = $this->getConfig();
-
         // Execute github-linguist
         $dirToAnalyze = rtrim($dirToAnalyze, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze);
@@ -226,13 +228,11 @@ class GithubLinguist extends ConsumerAbstract
         // source /home/vagrant/.rvm/scripts/rvm
         //
         // @link https://github.com/github/linguist/issues/353
-        $command = 'bundle exec linguist ' . $dirToAnalyze;
-
-        $workingDir = $config['Application']['GithubLinguist']['WorkingDir'];
+        $linguistBin = $this->container->getParameter('application.linguist.binary');
+        $command = $linguistBin . ' ' . $dirToAnalyze;
 
         // Disable process timeout, because pDepend should take a while
-        $processTimeout = null;
-        $process = $this->processFactory->createProcess($command, $processTimeout, $workingDir);
+        $process = $this->processFactory->createProcess($command, null);
 
         $exception = null;
         try {

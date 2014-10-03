@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
  * A consumer must be registered in the DIC as a consumer (tag "jacobine.consumer").
  *
  * Usage:
- *  php console analysis:list-consumer
+ *  php console jacobine:list-consumer
  *
  * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -50,7 +50,7 @@ class ListConsumerCommand extends Command implements ContainerAwareInterface
      */
     protected function configure()
     {
-        $this->setName('analysis:list-consumer')
+        $this->setName('jacobine:list-consumer')
              ->setDescription('Lists all available consumer');
     }
 

@@ -33,17 +33,17 @@ class SymfonyConsoleHandlerTest extends \PHPUnit_Framework_TestCase
      * @param array $context
      * @return array Record
      */
-    protected function getRecord($level = Logger::WARNING, $message = 'test', $context = array())
+    protected function getRecord($level = Logger::WARNING, $message = 'test', $context = [])
     {
-        return array(
+        return [
             'message' => $message,
             'context' => $context,
             'level' => $level,
             'level_name' => Logger::getLevelName($level),
             'channel' => 'test',
             'datetime' => \DateTime::createFromFormat('U.u', sprintf('%.6F', microtime(true))),
-            'extra' => array(),
-        );
+            'extra' => [],
+        ];
     }
 
     /**

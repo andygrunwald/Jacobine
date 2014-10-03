@@ -10,13 +10,13 @@
 
 namespace Jacobine\Command;
 
+use Jacobine\Entity\DataSource;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class GitwebCommand
@@ -53,18 +53,18 @@ class GitwebCommand extends Command implements ContainerAwareInterface
     const ROUTING = 'crawler.gitweb';
 
     /**
-     * Config
-     *
-     * @var array
-     */
-    protected $config = [];
-
-    /**
      * MessageQueue connection
      *
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     protected $messageQueue;
+
+    /**
+     * Project service
+     *
+     * @var \Jacobine\Service\Project
+     */
+    protected $projectService;
 
     /**
      * Project
@@ -115,7 +115,7 @@ class GitwebCommand extends Command implements ContainerAwareInterface
     /**
      * Initializes the command just after the input has been validated.
      *
-     * Sets up the project, config, database and message queue
+     * Sets up the project, project service and message queue
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
@@ -124,9 +124,9 @@ class GitwebCommand extends Command implements ContainerAwareInterface
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->setProject($input->getOption('project'));
-        $this->config = Yaml::parse(CONFIG_FILE);
 
-        $this->messageQueue = $this->container->get('helper.messageQueue');
+        $this->messageQueue = $this->container->get('component.amqp.messageQueue');
+        $this->projectService = $this->container->get('service.project');
     }
 
     /**
@@ -141,24 +141,29 @@ class GitwebCommand extends Command implements ContainerAwareInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $projectConfig = $this->config['Projects'][$this->getProject()];
+        $exchange = $this->container->getParameter('messagequeue.exchange');
+        $dataSource = [
+            DataSource::TYPE_GITWEB_SERVER
+        ];
 
-        // If we do not get a gitweb, exit here
-        if (isset($projectConfig['Gitweb']) === false) {
-            return null;
+        $project = $this->getProject();
+        if ($project) {
+            $projects = $this->projectService->getProjectByNameWithDatasources($project, $dataSource);
+        } else {
+            $projects = $this->projectService->getAllProjectsWithDatasources($dataSource);
         }
 
-        $gitwebUrl = $projectConfig['Gitweb'];
-        if (filter_var($gitwebUrl, FILTER_VALIDATE_URL) === false) {
-            throw new \Exception('"' . $gitwebUrl . '" seems to be not a valid url', 1369417543);
+        foreach ($projects as $project) {
+            foreach ($project['dataSources'][DataSource::TYPE_GITWEB_SERVER] as $singleSource) {
+                $message = [
+                    'project' => $project['id'],
+                    'url' => $singleSource['content'],
+                ];
+
+                $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
+            }
         }
 
-        $message = array(
-            'project' => $this->getProject(),
-            'url' => $gitwebUrl
-        );
-
-        $this->messageQueue->sendSimpleMessage($message, $projectConfig['RabbitMQ']['Exchange'], self::ROUTING);
         return null;
     }
 }

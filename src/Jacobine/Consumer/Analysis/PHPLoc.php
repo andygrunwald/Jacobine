@@ -11,8 +11,8 @@
 namespace Jacobine\Consumer\Analysis;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\ProcessFactory;
-use Jacobine\Helper\Database;
+use Jacobine\Component\Process\ProcessFactory;
+use Jacobine\Component\Database\Database;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -26,10 +26,11 @@ use Symfony\Component\Process\ProcessUtils;
  *  [
  *      directory: Absolute path to folder which will be analyzed. E.g. /var/www/my/sourcecode
  *      versionId: Version ID to get the regarding version record from version database table
+ *      project: Project to be analyzed. Id of jacobine_project table
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Analysis\\PHPLoc
+ *  php console jacobine:consumer Analysis\\PHPLoc
  *
  * @package Jacobine\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -38,7 +39,7 @@ class PHPLoc extends ConsumerAbstract
 {
 
     /**
-     * @var \Jacobine\Helper\ProcessFactory
+     * @var \Jacobine\Component\Process\ProcessFactory
      */
     protected $processFactory;
 
@@ -97,7 +98,7 @@ class PHPLoc extends ConsumerAbstract
 
         // If there is no directory to analyse, exit here
         if (is_dir($message->directory) !== true) {
-            $this->getLogger()->critical('Directory does not exist', array('directory' => $message->directory));
+            $this->getLogger()->critical('Directory does not exist', ['directory' => $message->directory]);
             throw new \Exception('Directory does not exist', 1398886624);
         }
 
@@ -130,7 +131,7 @@ class PHPLoc extends ConsumerAbstract
      */
     private function storePhpLocDataInDatabase($versionId, $phpLocResults)
     {
-        $data = array(
+        $data = [
             'version' => (int) $versionId,
             // Directories
             'directories' => (int) $phpLocResults->directories,
@@ -228,12 +229,15 @@ class PHPLoc extends ConsumerAbstract
             'super_global_variable_accesses' => (int) $phpLocResults->superGlobalVariableAccesses,
             // Dependencies > Global Accesses > Global Constants
             'global_constant_accesses' => (int) $phpLocResults->globalConstantAccesses,
-        );
+        ];
 
         $insertedId = $this->getDatabase()->insertRecord('jacobine_phploc', $data);
 
         $msg = 'Stored analzye results for version record in PHPLoc record';
-        $context = array('versionId' => $versionId, 'phpLocRecord' => $insertedId);
+        $context = [
+            'versionId' => $versionId,
+            'phpLocRecord' => $insertedId
+        ];
         $this->getLogger()->info($msg, $context);
     }
 
@@ -245,8 +249,8 @@ class PHPLoc extends ConsumerAbstract
      */
     private function getPhpLocDataFromDatabase($id)
     {
-        $fields = array('version');
-        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_phploc', array('version' => $id), '', '', 1);
+        $fields = ['version'];
+        $rows = $this->getDatabase()->getRecords($fields, 'jacobine_phploc', ['version' => $id], '', '', 1);
 
         $row = false;
         if (count($rows) === 1) {
@@ -272,20 +276,19 @@ class PHPLoc extends ConsumerAbstract
         $dirToAnalyze = rtrim($dirToAnalyze, DIRECTORY_SEPARATOR);
         $xmlOutput = 'php://stdout';
 
-        $config = $this->getConfig();
-        $filePattern = $config['Application']['PHPLoc']['FilePattern'];
+        $filePattern = $this->container->getParameter('application.phploc.filepattern');
 
         $filePattern = ProcessUtils::escapeArgument($filePattern);
         $xmlOutput = ProcessUtils::escapeArgument($xmlOutput);
         $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze . DIRECTORY_SEPARATOR);
 
-        $command = $config['Application']['PHPLoc']['Binary'];
+        $command = $this->container->getParameter('application.phploc.binary');
         $command .= ' --count-tests --quiet --names ' . $filePattern;
         $command .= ' --log-xml ' . $xmlOutput . ' ' . $dirToAnalyze;
 
-        $this->getLogger()->info('Start analyzing with PHPLoc', array('directory' => $dirToAnalyze));
+        $this->getLogger()->info('Start analyzing with PHPLoc', ['directory' => $dirToAnalyze]);
 
-        $timeout = (int) $config['Application']['PHPLoc']['Timeout'];
+        $timeout = (int) $this->container->getParameter('application.phploc.timeout');
         $process = $this->processFactory->createProcess($command, $timeout);
 
         $exception = null;

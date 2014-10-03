@@ -11,6 +11,8 @@
 namespace Jacobine\Consumer;
 
 use \Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Class ConsumerAbstract
@@ -21,8 +23,10 @@ use \Psr\Log\LoggerInterface;
  * @package Jacobine\Consumer
  * @author Andy Grunwald <andygrunwald@gmail.com>
  */
-abstract class ConsumerAbstract implements ConsumerInterface
+abstract class ConsumerAbstract implements ConsumerInterface, ContainerAwareInterface
 {
+
+    use ContainerAwareTrait;
 
     /**
      * The queue options
@@ -57,21 +61,14 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Database connection
      *
-     * @var \Jacobine\Helper\Database
+     * @var \Jacobine\Component\Database\Database
      */
     private $database;
 
     /**
-     * Config
-     *
-     * @var array
-     */
-    private $config = [];
-
-    /**
      * MessageQueue connection
      *
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     private $messageQueue;
 
@@ -210,7 +207,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Gets the database
      *
-     * @return \Jacobine\Helper\Database
+     * @return \Jacobine\Component\Database\Database
      */
     public function getDatabase()
     {
@@ -220,7 +217,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Sets the database
      *
-     * @param \Jacobine\Helper\Database $database
+     * @param \Jacobine\Component\Database\Database $database
      * @return void
      */
     public function setDatabase($database)
@@ -229,30 +226,9 @@ abstract class ConsumerAbstract implements ConsumerInterface
     }
 
     /**
-     * Gets the config
-     *
-     * @return array
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * Sets the config
-     *
-     * @param array $config
-     * @return void
-     */
-    public function setConfig(array $config)
-    {
-        $this->config = $config;
-    }
-
-    /**
      * Gets the message queue
      *
-     * @return \Jacobine\Helper\MessageQueue
+     * @return \Jacobine\Component\AMQP\MessageQueue
      */
     public function getMessageQueue()
     {
@@ -262,7 +238,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
     /**
      * Sets the message queue
      *
-     * @param \Jacobine\Helper\MessageQueue $messageQueue
+     * @param \Jacobine\Component\AMQP\MessageQueue $messageQueue
      * @return void
      */
     public function setMessageQueue($messageQueue)
@@ -419,7 +395,7 @@ abstract class ConsumerAbstract implements ConsumerInterface
         $context = [
             'command' => $command,
             'commandOutput' => $process->getOutput(),
-            'pid' => $process->getPid(),
+            'commandErrorOutput' => $process->getErrorOutput(),
             'wasSuccessful' => var_export($process->isSuccessful(), true),
             'exitCode' => $process->getExitCode(),
             'exceptionCode' => $exceptionCode,

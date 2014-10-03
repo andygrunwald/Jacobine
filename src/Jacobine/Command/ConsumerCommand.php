@@ -17,8 +17,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\Yaml\Yaml;
-use Jacobine\Monolog\Handler\SymfonyConsoleHandler;
 
 /**
  * Class ConsumerCommand
@@ -30,10 +28,10 @@ use Jacobine\Monolog\Handler\SymfonyConsoleHandler;
  * This class reflects the single entry point for every consumer.
  *
  * Usage:
- *  php console analysis:consumer ConsumerName [--project=ProjectName]
+ *  php console jacobine:consumer ConsumerName
  *
  * e.g. to start the Download HTTP consumer
- *  php console analysis:consumer Download\\HTTP --project=TYPO3
+ *  php console jacobine:consumer Download\\HTTP
  *
  * @package Jacobine\Command
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -46,30 +44,9 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
     /**
      * MessageQueue connection
      *
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     protected $messageQueue;
-
-    /**
-     * Database connection
-     *
-     * @var \Jacobine\Helper\Database
-     */
-    protected $database;
-
-    /**
-     * Config
-     *
-     * @var array
-     */
-    protected $config = [];
-
-    /**
-     * Project
-     *
-     * @var string
-     */
-    protected $project;
 
     /**
      * Configures the current command.
@@ -78,43 +55,15 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
      */
     protected function configure()
     {
-        $this->setName('analysis:consumer')
+        $this->setName('jacobine:consumer')
              ->setDescription('Generic task for message queue consumer')
-             ->addOption(
-                 'project',
-                 null,
-                 InputOption::VALUE_OPTIONAL,
-                 'Choose the project (for configuration, etc.).',
-                 'TYPO3'
-             )
              ->addArgument('consumer', InputArgument::REQUIRED, 'Part namespace of consumer');
-    }
-
-    /**
-     * Returns the current project
-     *
-     * @return string
-     */
-    protected function getProject()
-    {
-        return $this->project;
-    }
-
-    /**
-     * Sets the current project
-     *
-     * @param string $project
-     * @return void
-     */
-    protected function setProject($project)
-    {
-        $this->project = $project;
     }
 
     /**
      * Initializes the command just after the input has been validated.
      *
-     * Sets up the project, config, database and message queue
+     * Sets up the message queue
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
@@ -122,10 +71,7 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->setProject($input->getOption('project'));
-        $this->config = Yaml::parse(CONFIG_FILE);
-
-        $this->messageQueue = $this->container->get('helper.messageQueue');
+        $this->messageQueue = $this->container->get('component.amqp.messageQueue');
     }
 
     /**
@@ -151,23 +97,22 @@ class ConsumerCommand extends Command implements ContainerAwareInterface
 
         $logger = $this->container->get('logger.' . $consumerToGet);
 
-        // TODO Remove setMessageQueue, because we migrated to DIC
         // Create, initialize and start consumer
         $consumer = $this->container->get($consumerToGet);
         /* @var \Jacobine\Consumer\ConsumerAbstract $consumer */
-        $consumer->setConfig($this->config);
-        $consumer->setMessageQueue($this->messageQueue);
+        $consumer->setContainer($this->container);
         $consumer->setLogger($logger);
+        $consumer->setMessageQueue($this->messageQueue);
         $consumer->initialize();
 
-        $projectConfig = $this->config['Projects'][$this->getProject()];
-        $consumer->setExchangeOption('name', $projectConfig['RabbitMQ']['Exchange']);
+        $exchange = $this->container->getParameter('messagequeue.exchange');
+        $consumer->setExchangeOption('name', $exchange);
 
         $consumerIdent = str_replace('\\', '\\\\', $consumerIdent);
-        $logger->info('Consumer starts', array('consumer' => $consumerIdent));
+        $logger->info('Consumer starts', ['consumer' => $consumerIdent]);
 
         // Register consumer at message queue
-        $callback = array($consumer, 'consume');
+        $callback = [$consumer, 'consume'];
         $this->messageQueue->basicConsume(
             $consumer->getExchangeOptions(),
             $consumer->getQueueOptions(),

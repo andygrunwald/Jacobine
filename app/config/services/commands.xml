@@ -26,11 +26,11 @@
             <tag name="jacobine.command" />
         </service>
 
-        <service id="command.NNTPCommand" class="Jacobine\Command\NNTPCommand">
+        <service id="command.MailinglistCommand" class="Jacobine\Command\MailinglistCommand">
             <tag name="jacobine.command" />
         </service>
 
-        <service id="command.MailinglistCommand" class="Jacobine\Command\MailinglistCommand">
+        <service id="command.CreateProjectCommand" class="Jacobine\Command\CreateProjectCommand">
             <tag name="jacobine.command" />
         </service>
     </services>
