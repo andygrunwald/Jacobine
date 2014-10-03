@@ -15,7 +15,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class GetTYPO3OrgCommand
@@ -26,6 +25,10 @@ use Symfony\Component\Yaml\Yaml;
  *
  * This commands parses the JSON information, adds the various versions to the database
  * and sends one message per release to the message broker to download it :)
+ *
+ * TODO: Build this a little bit more flexible
+ *       Currently this is only for TYPO3-Releases, but it would make sense to do this with other
+ *       Software as well. Drupal, Wikimedia, etc.
  *
  * Usage:
  *  php console typo3:get.typo3.org
@@ -60,13 +63,6 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     const PROJECT = 'TYPO3';
 
     /**
-     * Config
-     *
-     * @var array
-     */
-    protected $config = [];
-
-    /**
      * HTTP Client
      *
      * @var \Buzz\Browser
@@ -76,23 +72,23 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     /**
      * Database connection
      *
-     * @var \Jacobine\Helper\Database
+     * @var \Jacobine\Component\Database\Database
      */
     protected $database;
 
     /**
      * MessageQueue connection
      *
-     * @var \Jacobine\Helper\MessageQueue
+     * @var \Jacobine\Component\AMQP\MessageQueue
      */
     protected $messageQueue;
 
     /**
-     * Message Queue Exchange
+     * Project service
      *
-     * @var string
+     * @var \Jacobine\Service\Project
      */
-    protected $exchange;
+    protected $projectService;
 
     /**
      * Configures the current command.
@@ -108,7 +104,7 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     /**
      * Initializes the command just after the input has been validated.
      *
-     * Sets up the config, HTTP client, database and message queue
+     * Sets up the HTTP client, database and message queue
      *
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
@@ -116,17 +112,11 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        // Config
-        $this->config = Yaml::parse(CONFIG_FILE);
+        $this->remoteService = $this->container->get('component.remoteService.httpRemoteService');
 
-        $this->remoteService = $this->container->get('helper.httpRemoteService');
-
-        // The project is hardcoded here, because this command is special for the OpenSourceProject TYPO3
-        $projectConfig = $this->config['Projects'][self::PROJECT];
-        $this->exchange = $projectConfig['RabbitMQ']['Exchange'];
-
-        $this->database = $this->container->get('helper.database');
-        $this->messageQueue = $this->container->get('helper.messageQueue');
+        $this->database = $this->container->get('component.database.database');
+        $this->messageQueue = $this->container->get('component.amqp.messageQueue');
+        $this->projectService = $this->container->get('service.project');
     }
 
     /**
@@ -141,6 +131,16 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $exchange = $this->container->getParameter('messagequeue.exchange');
+        $projectRecord = $this->projectService->getProjectByName(self::PROJECT);
+
+        // If there is no TYPO3 project configured, exit here
+        if (count($projectRecord) == 0) {
+            $this->outputNoProjectMessage($output);
+            return null;
+        }
+
+        $projectId = $projectRecord['projectId'];
         $versions = $this->getReleaseInformation();
         foreach ($versions as $branch => $data) {
             // $data got two keys: releases + latest
@@ -168,23 +168,23 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
                 }
 
                 // Try to get the current version from the database
-                $versionRecord = $this->getVersionFromDatabase($releaseVersion);
+                $versionRecord = $this->getVersionFromDatabase($releaseVersion, $projectId);
 
                 // If the current version is not in database already, create it
                 if ($versionRecord === false) {
-                    $versionRecord = $this->insertVersionIntoDatabase($branch, $releaseData);
+                    $versionRecord = $this->insertVersionIntoDatabase($projectId, $branch, $releaseData);
                 }
 
                 // If the current version is not downloaded yet, queue it
                 if (!$versionRecord['downloaded']) {
-                    $message = array(
-                        'project' => self::PROJECT,
+                    $message = [
+                        'project' => $projectId,
                         'versionId' => $versionRecord['id'],
                         'filenamePrefix' => 'typo3_',
                         'filenamePostfix' => '.tar.gz',
-                    );
+                    ];
 
-                    $this->messageQueue->sendSimpleMessage($message, $this->exchange, self::ROUTING);
+                    $this->messageQueue->sendSimpleMessage($message, $exchange, self::ROUTING);
                 }
             }
         }
@@ -193,15 +193,46 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
     }
 
     /**
+     * Outputs a help message if there is no configured TYPO3 project.
+     *
+     * @param OutputInterface $output
+     * @return void
+     */
+    private function outputNoProjectMessage(OutputInterface $output) {
+        $messages = [
+            'Hey, cool! You want to download all TYPO3 releases.',
+            'And of course Jacobine will offer you this service :)',
+            '',
+            'But we had seen that you do not created a project named "TYPO3".',
+            'Please create this project first. Just execute:',
+            "\t$ ./console jacobine:create-project",
+            '',
+            'If you had done this, start all consumers and execute',
+            "\t$ ./console jacobine:create-project",
+            '',
+            'I hope this will work now for you.',
+            'Otherwise please get in contact with us.',
+            'Have fun and happy downloading!',
+        ];
+
+        foreach ($messages as $message) {
+            $messageToWrite = sprintf('<%s>%s</%s>', 'comment', $message, 'comment');
+            $output->writeln($messageToWrite);
+        }
+    }
+
+    /**
      * Stores a single version of TYPO3 into the database table 'versions'
      *
+     * @param integer $projectId Id of project of jacobine_project table
      * @param string $branch Branch version like 4.7, 6.0, 6.1, ...
      * @param array $versionData Data about the current version provided by the json file
      * @return array
      */
-    private function insertVersionIntoDatabase($branch, $versionData)
+    private function insertVersionIntoDatabase($projectId, $branch, $versionData)
     {
-        $data = array(
+        $data = [
+            'project' => $projectId,
             'branch' => $branch,
             'version' => $versionData['version'],
             'date' => $versionData['date'],
@@ -213,7 +244,7 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
             'url_tar' => $versionData['url']['tar'],
             'url_zip' => $versionData['url']['zip'],
             'downloaded' => 0
-        );
+        ];
         $data['id'] = $this->database->insertRecord('jacobine_versions', $data);
         return $data;
     }
@@ -222,14 +253,19 @@ class GetTYPO3OrgCommand extends Command implements ContainerAwareInterface
      * Receives a single version from the database table 'versions' (if exists).
      *
      * @param string $version A version like 4.5.7, 6.0.4, ...
+     * @param integer $projectId Project id of jacobine_project table
      * @return bool|array
      */
-    private function getVersionFromDatabase($version)
+    private function getVersionFromDatabase($version, $projectId)
     {
+        $where = [
+            'version' => $version,
+            'project' => $projectId
+        ];
         $rows = $this->database->getRecords(
-            array('id', 'downloaded'),
+            ['id', 'downloaded'],
             'jacobine_versions',
-            array('version' => $version),
+            $where,
             '',
             '',
             1

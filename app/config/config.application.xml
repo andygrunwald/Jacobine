@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <parameters>
+
+        <!-- Tar -->
+        <parameter key="application.tar.binary">/bin/tar</parameter>
+        <parameter key="application.tar.timeout">600</parameter>
+
+        <!-- Git -->
+        <parameter key="application.git.binary">/usr/bin/git</parameter>
+
+        <!-- PHPLoc -->
+        <parameter key="application.phploc.binary">/var/www/analysis/vendor/phploc/phploc/composer/bin/phploc</parameter>
+        <parameter key="application.phploc.filepattern">*.php,*.inc</parameter>
+        <parameter key="application.phploc.timeout">1200</parameter>
+
+        <!-- pDepend -->
+        <parameter key="application.pdepend.binary">/var/www/analysis/vendor/pdepend/pdepend/src/bin/pdepend</parameter>
+        <parameter key="application.pdepend.filepattern">php,inc</parameter>
+        <parameter key="application.pdepend.configFile">/var/www/analysis/Config/pdepend.xml</parameter>
+
+        <!-- CVSAnaly -->
+        <parameter key="application.cvsanaly.binary">/usr/local/bin/cvsanaly2</parameter>
+        <parameter key="application.cvsanaly.extensions">Months, Weeks</parameter>
+        <parameter key="application.cvsanaly.configFile">/var/www/analysis/Config/cvsanaly-config</parameter>
+
+        <!-- MLStats -->
+        <parameter key="application.mlstats.binary">/usr/local/bin/mlstats</parameter>
+        <parameter key="application.mlstats.compressedDir">/tmp/mlstats/compressed</parameter>
+
+        <!-- GithubLinguist -->
+        <parameter key="application.linguist.binary">/usr/local/bin/linguist</parameter>
+
+        <!-- Gerrie -->
+        <parameter key="application.gerrie.configFile">/var/www/analysis/Config/gerrit-review.typo3.org.yml</parameter>
+
+    </parameters>
+
+</container>

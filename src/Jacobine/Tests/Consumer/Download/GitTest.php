@@ -26,10 +26,10 @@ class GitTest extends ConsumerTestAbstract
 
     public function setUp()
     {
-        $messageQueueMock = $this->getMessageQueueMock(0);
         $databaseMock = $this->getDatabaseMock();
         $processFactoryMock = $this->getProcessFactoryMock();
+        $projectServiceMock = $this->getProjectServiceMock();
 
-        $this->consumer = new Git($messageQueueMock, $databaseMock, $processFactoryMock);
+        $this->consumer = new Git($databaseMock, $processFactoryMock, $projectServiceMock);
     }
 }

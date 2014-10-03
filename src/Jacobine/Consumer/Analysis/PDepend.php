@@ -11,7 +11,7 @@
 namespace Jacobine\Consumer\Analysis;
 
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\ProcessFactory;
+use Jacobine\Component\Process\ProcessFactory;
 use Symfony\Component\Process\ProcessUtils;
 
 /**
@@ -26,10 +26,12 @@ use Symfony\Component\Process\ProcessUtils;
  *  [
  *      directory: Absolute path to folder which will be analyzed. E.g. /var/www/my/sourcecode
  *      versionId: Version ID to get the regarding version record from version database table
+ *      project: Project to be analyzed. Id of jacobine_project table
+ *      type: Mode of message. Possible values "analyze", "import-jDepend-xml" or "import-summary-xml"
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Analysis\\PDepend
+ *  php console jacobine:consumer Analysis\\PDepend
  *
  * @package Jacobine\Consumer\Analysis
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -38,7 +40,7 @@ class PDepend extends ConsumerAbstract
 {
 
     /**
-     * @var \Jacobine\Helper\ProcessFactory
+     * @var \Jacobine\Component\Process\ProcessFactory
      */
     protected $processFactory;
 
@@ -157,10 +159,10 @@ class PDepend extends ConsumerAbstract
 
         // If there was already a pDepend run, all files must be exist. If yes, exit here
         if ($this->doesAnalysisFilesAlreadyExists($analysisFiles) === true) {
-            $context = array(
+            $context = [
                 'versionId' => $message->versionId,
                 'directory' => $message->directory
-            );
+            ];
             $this->getLogger()->info('Directory already analyzed with pDepend', $context);
             return;
         }
@@ -192,10 +194,6 @@ class PDepend extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $versionId, array $analysisFiles)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-        $exchange = $projectConfig['RabbitMQ']['Exchange'];
-
         $jDependXmlMessage = [
             'project' => $project,
             'versionId' => $versionId,
@@ -207,6 +205,7 @@ class PDepend extends ConsumerAbstract
         $summaryXmlMessage['type'] = 'import-summary-xml';
         $summaryXmlMessage['content'] = file_get_contents($analysisFiles['summaryXmlFile']);
 
+        $exchange = $this->container->getParameter('messagequeue.exchange');
         $messageQueue = $this->getMessageQueue();
         $messageQueue->sendSimpleMessage($jDependXmlMessage, $exchange, 'analysis.pdepend');
         $messageQueue->sendSimpleMessage($summaryXmlMessage, $exchange, 'analysis.pdepend');
@@ -285,25 +284,24 @@ class PDepend extends ConsumerAbstract
      */
     private function executePDepend($dirToAnalyze, array $analysisFiles, $project)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-        $configFile  = rtrim(dirname(CONFIG_FILE), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $configFile .= $projectConfig['PDepend']['ConfigFile'];
-
-        $filePattern = $config['Application']['PDepend']['FilePattern'];
+        $filePattern = $this->container->getParameter('application.pdepend.filepattern');
         $filePattern = ProcessUtils::escapeArgument($filePattern);
 
         $analysisFiles['jDependChartFile'] = ProcessUtils::escapeArgument($analysisFiles['jDependChartFile']);
         $analysisFiles['jDependXmlFile'] = ProcessUtils::escapeArgument($analysisFiles['jDependXmlFile']);
         $analysisFiles['overviewPyramidFile'] = ProcessUtils::escapeArgument($analysisFiles['overviewPyramidFile']);
         $analysisFiles['summaryXmlFile'] = ProcessUtils::escapeArgument($analysisFiles['summaryXmlFile']);
-        $pDependConfigFile = ProcessUtils::escapeArgument($configFile);
+
+        // $configFile = $this->container->getParameter('application.pdepend.configFile');
+        // $pDependConfigFile = ProcessUtils::escapeArgument($configFile);
 
         $dirToAnalyze = ProcessUtils::escapeArgument($dirToAnalyze . DIRECTORY_SEPARATOR);
 
         // Execute pDepend
-        $command = $config['Application']['PDepend']['Binary'];
-        $command .= ' --configuration=' . $pDependConfigFile;
+        $command = $this->container->getParameter('application.pdepend.binary');
+        // TODO: Fix configuration file
+        // It seems to be that there got some changes after upgrading to pdepend 2.0.x
+        // $command .= ' --configuration=' . $pDependConfigFile;
         $command .= ' --jdepend-chart=' . $analysisFiles['jDependChartFile'];
         $command .= ' --jdepend-xml=' . $analysisFiles['jDependXmlFile'];
         $command .= ' --overview-pyramid=' . $analysisFiles['overviewPyramidFile'];

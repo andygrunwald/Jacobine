@@ -17,7 +17,7 @@ use \Psr\Log\LoggerInterface;
  *
  * Interface of a single consumer.
  * Every consumer must implement this interface.
- * With this it is possible to start this consumer via our consumer command `php console analysis:consumer CONSUMERNAME`
+ * With this it is possible to start this consumer via our consumer command `php console jacobine:consumer CONSUMERNAME`
  *
  * @package Jacobine\Consumer
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -125,44 +125,29 @@ interface ConsumerInterface
     /**
      * Gets the database
      *
-     * @return \Jacobine\Helper\Database
+     * @return \Jacobine\Component\Database\Database
      */
     public function getDatabase();
 
     /**
      * Sets the database
      *
-     * @param \Jacobine\Helper\Database $database
+     * @param \Jacobine\Component\Database\Database $database
      * @return void
      */
     public function setDatabase($database);
 
     /**
-     * Gets the config
-     *
-     * @return array
-     */
-    public function getConfig();
-
-    /**
-     * Sets the config
-     *
-     * @param array $config
-     * @return void
-     */
-    public function setConfig(array $config);
-
-    /**
      * Gets the message queue
      *
-     * @return \Jacobine\Helper\MessageQueue
+     * @return \Jacobine\Component\AMQP\MessageQueue
      */
     public function getMessageQueue();
 
     /**
      * Sets the message queue
      *
-     * @param \Jacobine\Helper\MessageQueue $messageQueue
+     * @param \Jacobine\Component\AMQP\MessageQueue $messageQueue
      * @return void
      */
     public function setMessageQueue($messageQueue);

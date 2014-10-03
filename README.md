@@ -1,6 +1,6 @@
 # Jacobine
 
-[![Build Status](https://travis-ci.org/andygrunwald/Jacobine.svg?branch=jacobine-rename)](https://travis-ci.org/andygrunwald/Jacobine)
+[![Build Status](https://travis-ci.org/andygrunwald/Jacobine.svg?branch=master)](https://travis-ci.org/andygrunwald/Jacobine)
 [![Dependency Status](https://www.versioneye.com/user/projects/5357f76afe0d07a60c00013c/badge.png)](https://www.versioneye.com/user/projects/5357f76afe0d07a60c00013c)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/badges/quality-score.png?s=ce1b08496df51dccb7fe58ba3ba084c13b5bccb1)](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/)
 [![Code Coverage](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/badges/coverage.png?s=3128770a021cc50d581865aad3fb6225407ee574)](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/)
@@ -32,8 +32,8 @@ This project provide different parts which are linked / works with RabbitMQ as p
 
 ### Consumer
 
-All consumers are started via the `analysis:consumer`-command of the `console`located in `/var/www/analysis/application`.
-E.g. `php console analysis:consumer --project=TYPO3 Extract\\Targz`
+All consumers are started via the `jacobine:consumer`-command of the `console`located in `/var/www/analysis/application`.
+E.g. `php console jacobine:consumer --project=TYPO3 Extract\\Targz`
 
 * `Analysis\\CVSAnaly`: Executes the CVSAnaly analysis on a given folder and stores the results in database.
 * `Analysis\\Filesize`: Determines the filesize in bytes and stores them in version database table.
@@ -47,7 +47,7 @@ E.g. `php console analysis:consumer --project=TYPO3 Extract\\Targz`
 * `Download\\HTTP`: Downloads a HTTP resource.
 * `Extract\\Targz`: Extracts a *.tar.gz archive.
 
-To list all available consumers execute `php console analysis:list-consumer`.
+To list all available consumers execute `php console jacobine:list-consumer`.
 
 ## Requirements
 

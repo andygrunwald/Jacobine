@@ -42,16 +42,16 @@ class SymfonyConsoleHandler extends AbstractProcessingHandler
     /**
      * @var array
      */
-    protected $levelStyles = array(
+    protected $levelStyles = [
         Logger::DEBUG => 'debug',
         Logger::NOTICE => 'notice',
         Logger::INFO => 'info',
         Logger::WARNING => 'warning',
         Logger::ERROR => 'error',
-        Logger::CRITICAL => array('critical', 'error'),
-        Logger::ALERT => array('alert', 'error'),
-        Logger::EMERGENCY => array('emergency', 'error')
-    );
+        Logger::CRITICAL => ['critical', 'error'],
+        Logger::ALERT => ['alert', 'error'],
+        Logger::EMERGENCY => ['emergency', 'error']
+    ];
 
     /**
      * Construct

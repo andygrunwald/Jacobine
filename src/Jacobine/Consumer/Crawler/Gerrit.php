@@ -10,8 +10,9 @@
 
 namespace Jacobine\Consumer\Crawler;
 
+use Gerrie\Gerrie;
 use Jacobine\Consumer\ConsumerAbstract;
-use Jacobine\Helper\MessageQueue;
+use Jacobine\Service\Project;
 
 /**
  * Class Gerrit
@@ -34,14 +35,14 @@ use Jacobine\Helper\MessageQueue;
  * Message format (json encoded):
  *  [
  *      configFile: Absolute path to a Gerrie config file which will be used. E.g. /var/www/my/Gerrie/config
- *      project: Project to be analyzed. Must be a configured project in "configFile"
+ *      project: Project to be analyzed. Id of jacobine_project table
  *      serverId: Server id of Gerrit server stored in Gerries database. Returned by Gerrie::proceedServer()
  *      projectId: Project id of Gerrit server stored in Gerries database. Returned by Gerrie::importProject()
  *      type: "server" to crawl a server or "project" to crawl a project
  *  ]
  *
  * Usage:
- *  php console analysis:consumer Crawler\\Gerrit
+ *  php console jacobine:consumer Crawler\\Gerrit
  *
  * @package Jacobine\Consumer\Crawler
  * @author Andy Grunwald <andygrunwald@gmail.com>
@@ -50,13 +51,20 @@ class Gerrit extends ConsumerAbstract
 {
 
     /**
+     * Project service
+     *
+     * @var \Jacobine\Service\Project
+     */
+    protected $projectService;
+
+    /**
      * Constructor to set dependencies
      *
-     * @param MessageQueue $messageQueue
+     * @param Project $projectService
      */
-    public function __construct(MessageQueue $messageQueue)
+    public function __construct(Project $projectService)
     {
-        $this->setMessageQueue($messageQueue);
+        $this->projectService = $projectService;
     }
 
     /**
@@ -100,41 +108,45 @@ class Gerrit extends ConsumerAbstract
             throw new \Exception('Gerrit config file does not exist', 1398886834);
         }
 
+        // Projectname
+        $projectRecord = $this->projectService->getProjectById($message->project);
+        $projectId = $message->project;
+        $projectName = $projectRecord['projectName'];
+
         // Bootstrap Gerrie
         $gerrieConfig = $this->initialGerrieConfig($message->configFile);
         $databaseConfig = $gerrieConfig->getConfigurationValue('Database');
-        $projectConfig = $gerrieConfig->getConfigurationValue('Gerrit.' . $message->project);
+        $projectConfig = $gerrieConfig->getConfigurationValue('Gerrit.' . $projectName);
 
         // TODO get Gerrie classes via DIC
         $gerrieDatabase = new \Gerrie\Helper\Database($databaseConfig);
-        $gerrieDataService = \Gerrie\Helper\Factory::getDataService($gerrieConfig, $message->project);
+        $gerrieDataService = \Gerrie\Helper\Factory::getDataService($gerrieConfig, $projectName);
 
-        $gerrie = new \Gerrie\Gerrie($gerrieDatabase, $gerrieDataService, $projectConfig);
+        $gerrie = new Gerrie($gerrieDatabase, $gerrieDataService, $projectConfig);
         $gerrie->setOutput($this->getLogger());
 
         $gerritHost = $gerrieDataService->getHost();
 
         switch ($message->type) {
             case 'server':
-                $this->processServer($message, $gerrie, $gerritHost, $gerrieDataService);
+                $this->processServer($projectId, $projectName, $message->configFile, $gerrie, $gerritHost, $gerrieDataService);
                 break;
             case 'project':
                 $this->processProject($message, $gerrie, $gerritHost);
                 break;
         }
-
     }
 
     /**
      * Imports all changesets + dependencies of a single Gerrit project
      *
      * @param \stdClas  $message
-     * @param \Gerrie\Gerrie $gerrie
+     * @param Gerrie $gerrie
      * @param string $gerritHost
      * @throws \Exception
      * @return void
      */
-    private function processProject($message, \Gerrie\Gerrie $gerrie, $gerritHost)
+    private function processProject($message, Gerrie $gerrie, $gerritHost)
     {
         $gerritProject = $gerrie->getGerritProjectById($message->serverId, $message->projectId);
 
@@ -155,17 +167,18 @@ class Gerrit extends ConsumerAbstract
     /**
      * Imports all projects of a single Gerrit review server and creates new messages to crawl those projects
      *
-     * @param \stdClass $message
-     * @param \Gerrie\Gerrie $gerrie
+     * @param integer $projectId
+     * @param string $projectName
+     * @param string $configFile
+     * @param Gerrie $gerrie
      * @param string $gerritHost
-     * @param $gerrieDataService
+     * @param \Gerrie\DataService\Base $gerrieDataService
      */
-    private function processServer($message, \Gerrie\Gerrie $gerrie, $gerritHost, $gerrieDataService)
+    private function processServer($projectId, $projectName, $configFile, Gerrie $gerrie, $gerritHost, \Gerrie\DataService\Base $gerrieDataService)
     {
-        $project = $message->project;
-        $gerritServerId = $gerrie->proceedServer($project, $gerritHost);
+        $gerritServerId = $gerrie->proceedServer($projectName, $gerritHost);
 
-        $this->getLogger()->info('Requesting projects', array('host' => $gerritHost));
+        $this->getLogger()->info('Requesting projects', ['host' => $gerritHost]);
 
         $projects = $gerrieDataService->getProjects();
 
@@ -174,16 +187,16 @@ class Gerrit extends ConsumerAbstract
             return;
         }
 
-        $parentMapping = array();
+        $parentMapping = [];
         foreach ($projects as $name => $info) {
-            $projectId = $gerrie->importProject($name, $info, $parentMapping);
+            $gerrieProjectId = $gerrie->importProject($name, $info, $parentMapping);
 
-            $context = array(
+            $context = [
                 'projectName' => $name,
-                'projectId' => $projectId
-            );
+                'projectId' => $gerrieProjectId
+            ];
             $this->getLogger()->info('Add project to message queue "crawler"', $context);
-            $this->addFurtherMessageToQueue($project, $gerritServerId, $projectId, $message->configFile);
+            $this->addFurtherMessageToQueue($projectId, $gerritServerId, $gerrieProjectId, $configFile);
         }
 
         $this->getLogger()->info('Set correct project parent child relation');
@@ -193,7 +206,7 @@ class Gerrit extends ConsumerAbstract
     /**
      * Adds new messages to queue system to import a single gerrit project
      *
-     * @param string $project
+     * @param integer $project
      * @param integer $serverId
      * @param integer $projectId
      * @param string $configFile
@@ -201,18 +214,15 @@ class Gerrit extends ConsumerAbstract
      */
     private function addFurtherMessageToQueue($project, $serverId, $projectId, $configFile)
     {
-        $config = $this->getConfig();
-        $projectConfig = $config['Projects'][$project];
-
-        $message = array(
+        $message = [
             'project' => $project,
             'projectId' => $projectId,
             'serverId' => $serverId,
             'configFile' => $configFile,
             'type' => 'project'
-        );
+        ];
 
-        $exchange = $projectConfig['RabbitMQ']['Exchange'];
+        $exchange = $this->container->getParameter('messagequeue.exchange');
         $this->getMessageQueue()->sendSimpleMessage($message, $exchange, 'crawler.gerrit');
     }
 
