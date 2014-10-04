@@ -127,7 +127,7 @@ class Git extends ConsumerAbstract
             list($process, $exception) = $this->executeGitClone($gitExecutable, $record['git'], $checkoutPath);
         }
 
-        if ($exception !== null || $process->isSuccessful() === false) {
+        if ($exception !== null || ($process !== null && $process->isSuccessful() === false)) {
             $context = $this->getContextOfCommand($process, $exception);
             $logMessage = sprintf('git %s failed', $action);
             $this->getLogger()->error($logMessage, $context);

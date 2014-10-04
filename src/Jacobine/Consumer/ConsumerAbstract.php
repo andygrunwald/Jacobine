@@ -386,18 +386,30 @@ abstract class ConsumerAbstract implements ConsumerInterface, ContainerAwareInte
      * @param \Exception $exception
      * @return array
      */
-    protected function getContextOfCommand(\Symfony\Component\Process\Process $process, \Exception $exception = null)
+    protected function getContextOfCommand(\Symfony\Component\Process\Process $process = null, \Exception $exception = null)
     {
-        $command = (($process instanceof \Symfony\Component\Process\Process) ? $process->getCommandLine(): null);
-        $exceptionCode = (($exception instanceof \Exception) ? $exception->getCode(): 0);
-        $exceptionMessage = (($exception instanceof \Exception) ? $exception->getMessage(): '');
+        $command = $commandOutput = $errorOutput = $wasSuccessful = $exitCode = null;
+        if ($process !== null) {
+            $command = $process->getCommandLine();
+            $commandOutput = $process->getOutput();
+            $errorOutput = $process->getErrorOutput();
+            $wasSuccessful = var_export($process->isSuccessful(), true);
+            $exitCode = $process->getExitCode();
+        }
+
+        $exceptionCode = 0;
+        $exceptionMessage = null;
+        if ($exception !== null) {
+            $exceptionCode = $exception->getCode();
+            $exceptionMessage = $exception->getMessage();
+        }
 
         $context = [
             'command' => $command,
-            'commandOutput' => $process->getOutput(),
-            'commandErrorOutput' => $process->getErrorOutput(),
-            'wasSuccessful' => var_export($process->isSuccessful(), true),
-            'exitCode' => $process->getExitCode(),
+            'commandOutput' => $commandOutput,
+            'commandErrorOutput' => $errorOutput,
+            'wasSuccessful' => $wasSuccessful,
+            'exitCode' => $exitCode,
             'exceptionCode' => $exceptionCode,
             'exceptionMessage' => $exceptionMessage
         ];

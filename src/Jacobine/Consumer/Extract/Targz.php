@@ -133,7 +133,7 @@ class Targz extends ConsumerAbstract
 
         /** @var \Symfony\Component\Process\Process $process */
         list($process, $exception) = $this->extractArchive($message->filename, $targetFolder);
-        if ($exception !== null || $process->isSuccessful() === false) {
+        if ($exception !== null || ($process !== null && $process->isSuccessful() === false)) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('Extract command failed', $context);
             throw new \Exception('Extract command failed', 1398950082);

@@ -104,7 +104,7 @@ class PHPLoc extends ConsumerAbstract
 
         /** @var \Symfony\Component\Process\Process $process */
         list($process, $exception) = $this->executePHPLoc($message->directory);
-        if ($exception !== null || $process->isSuccessful() === false) {
+        if ($exception !== null || ($process !== null && $process->isSuccessful() === false)) {
             $context = $this->getContextOfCommand($process, $exception);
             $this->getLogger()->critical('PHPLoc command failed', $context);
             throw new \Exception('PHPLoc command failed', 1398886649);

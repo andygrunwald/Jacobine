@@ -152,7 +152,7 @@ class Mailinglist extends ConsumerAbstract
         /** @var \Symfony\Component\Process\Process $process */
         list($process, $exception) = $this->executeMLStats($message->url);
         $context = $this->getContextOfCommand($process, $exception);
-        if ($exception !== null || $process->isSuccessful() === false) {
+        if ($exception !== null || ($process !== null && $process->isSuccessful() === false)) {
             $this->getLogger()->critical('mlstats command failed', $context);
             throw new \Exception('mlstats command failed', 1403445667);
         }
