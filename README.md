@@ -4,6 +4,7 @@
 [![Dependency Status](https://www.versioneye.com/user/projects/5357f76afe0d07a60c00013c/badge.png)](https://www.versioneye.com/user/projects/5357f76afe0d07a60c00013c)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/badges/quality-score.png?s=ce1b08496df51dccb7fe58ba3ba084c13b5bccb1)](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/)
 [![Code Coverage](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/badges/coverage.png?s=3128770a021cc50d581865aad3fb6225407ee574)](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/)
+[![Documentation Status](https://readthedocs.org/projects/jacobine/badge/?version=latest)](https://readthedocs.org/projects/jacobine/?badge=latest)
 
 Jacobine aims to take many different analysis on open source projects (source code, ecosystem and community).
 Analysis can be the size of the different versions in MB, the most active contributers, the atmosphere / mood of the communication in the community (e.g. twitter) or to combine many data sources to answer questions like "At which point in time is the most activity for contribution?" (just an example).
