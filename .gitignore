@@ -9,3 +9,6 @@ Config/id_rsa
 Config/id_rsa.pub
 tools
 vendor
+
+# Docs
+docs/_build/
