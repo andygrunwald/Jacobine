@@ -1,7 +1,7 @@
 # Jacobine
 
 [![Build Status](https://travis-ci.org/Jacobine/Jacobine.svg?branch=master)](https://travis-ci.org/Jacobine/Jacobine)
-[![Dependency Status](https://www.versioneye.com/user/projects/5357f76afe0d07a60c00013c/badge.png)](https://www.versioneye.com/user/projects/5357f76afe0d07a60c00013c)
+[![Dependency Status](https://www.versioneye.com/user/projects/5443c1dc53acfaf22a000056/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5443c1dc53acfaf22a000056)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/badges/quality-score.png?s=ce1b08496df51dccb7fe58ba3ba084c13b5bccb1)](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/)
 [![Code Coverage](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/badges/coverage.png?s=3128770a021cc50d581865aad3fb6225407ee574)](https://scrutinizer-ci.com/g/andygrunwald/Jacobine/)
 [![Documentation Status](https://readthedocs.org/projects/jacobine/badge/?version=latest)](https://readthedocs.org/projects/jacobine/?badge=latest)
