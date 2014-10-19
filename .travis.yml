@@ -12,7 +12,6 @@ before_script:
     - composer install --dev
 
 script:
-    - sh -c "echo $TRAVIS_PHP_VERSION"
     - ./vendor/bin/phpunit --coverage-clover=coverage.clover
 
 after_script:
