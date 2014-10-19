@@ -13,7 +13,7 @@ before_script:
 
 script:
     - sh -c "echo $TRAVIS_PHP_VERSION"
-    - phpunit --coverage-clover=coverage.clover
+    - ./vendor/bin/phpunit --coverage-clover=coverage.clover
 
 after_script:
   - sh -c "if [ '$TRAVIS_PHP_VERSION' = '5.6' ]; then wget https://scrutinizer-ci.com/ocular.phar; fi"
