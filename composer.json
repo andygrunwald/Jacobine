@@ -28,19 +28,19 @@
         "ext-curl": "*",
         "videlalvaro/php-amqplib": "2.4.*",
         "kriswallsmith/buzz": "0.*",
-        "symfony/yaml": "2.5.*",
-        "symfony/console": "2.5.*",
-        "symfony/dom-crawler": "2.5.*",
-        "symfony/process": "2.5.*",
-        "symfony/dependency-injection":"2.5.*",
-        "symfony/config":"2.5.*",
+        "symfony/yaml": "2.6.*",
+        "symfony/console": "2.6.*",
+        "symfony/dom-crawler": "2.6.*",
+        "symfony/process": "2.6.*",
+        "symfony/dependency-injection":"2.6.*",
+        "symfony/config":"2.6.*",
         "phploc/phploc": "2.0.*",
         "pdepend/pdepend": "2.0.*",
-        "monolog/monolog": "1.11.*",
-        "andygrunwald/gerrie": "0.1.*"
+        "monolog/monolog": "1.12.*",
+        "andygrunwald/gerrie": "0.2.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.3.*",
+        "phpunit/phpunit": "4.4.*",
         "phpunit/dbunit": "1.3.*",
         "mikey179/vfsStream": "1.4.*"
     },
