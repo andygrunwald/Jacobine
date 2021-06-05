@@ -26,7 +26,7 @@
     "require": {
         "php": ">=5.4.0",
         "ext-curl": "*",
-        "videlalvaro/php-amqplib": "2.4.*",
+        "videlalvaro/php-amqplib": "2.9.*",
         "kriswallsmith/buzz": "0.*",
         "symfony/yaml": "2.6.*",
         "symfony/console": "2.6.*",
