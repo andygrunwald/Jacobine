@@ -32,7 +32,7 @@
         "symfony/console": "2.6.*",
         "symfony/dom-crawler": "2.6.*",
         "symfony/process": "2.8.*",
-        "symfony/dependency-injection":"2.6.*",
+        "symfony/dependency-injection":"2.8.*",
         "symfony/config":"2.6.*",
         "phploc/phploc": "2.0.*",
         "pdepend/pdepend": "2.0.*",
