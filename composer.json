@@ -33,7 +33,7 @@
         "symfony/dom-crawler": "2.6.*",
         "symfony/process": "2.8.*",
         "symfony/dependency-injection":"2.6.*",
-        "symfony/config":"2.6.*",
+        "symfony/config":"2.8.*",
         "phploc/phploc": "2.0.*",
         "pdepend/pdepend": "2.0.*",
         "monolog/monolog": "1.12.*",
